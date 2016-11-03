@@ -1,0 +1,13 @@
+spring:
+  jpa:
+    generate-ddl: true
+    show-sql: true
+  mail:
+    host: 
+  datasource:
+    url: ${datasource.url}
+    username: ${datasource.username}
+    password: ${datasource.password}
+logging:
+  level:
+    root: info
