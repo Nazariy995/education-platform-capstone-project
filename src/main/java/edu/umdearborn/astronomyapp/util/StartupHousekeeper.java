@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 
 import edu.umdearborn.astronomyapp.entity.Role;
+import edu.umdearborn.astronomyapp.entity.Role.RoleValue;
 import edu.umdearborn.astronomyapp.entity.AstroAppUser;
 import edu.umdearborn.astronomyapp.repository.RoleRepository;
 import edu.umdearborn.astronomyapp.repository.UserRepository;
@@ -58,7 +59,7 @@ public class StartupHousekeeper {
         roles = new ArrayList<Role>();
       }
       Role adminRole = new Role();
-      adminRole.setRole("ROLE_ADMIN");
+      adminRole.setRole(RoleValue.ADMIN);
       adminRole.setUser(user);
       roles.add(adminRole);
       user.setRoles(roles);

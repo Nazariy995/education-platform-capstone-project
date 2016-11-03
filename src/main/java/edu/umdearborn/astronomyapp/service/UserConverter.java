@@ -19,7 +19,7 @@ public class UserConverter implements Converter<AstroAppUser, User> {
   public User convert(AstroAppUser astroAppUser) {
     Collection<GrantedAuthority> authorities = new ArrayList<>();
     for (Role role : astroAppUser.getRoles()) {
-      GrantedAuthority authority = new SimpleGrantedAuthority(role.getRole());
+      GrantedAuthority authority = new SimpleGrantedAuthority(role.getRole().roleValue());
       authorities.add(authority);
     }
     return new User(astroAppUser.getEmail(), astroAppUser.getPasswordHash(),

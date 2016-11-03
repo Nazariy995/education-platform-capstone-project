@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonInclude(Include.NON_NULL)
@@ -28,6 +29,7 @@ public class AstroAppUser implements Serializable {
   private static final long serialVersionUID = -7245103766854987243L;
 
   @Id
+  @JsonProperty("username")
   private String email;
 
   @Column(nullable = false)

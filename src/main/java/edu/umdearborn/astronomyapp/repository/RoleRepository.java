@@ -16,6 +16,6 @@ import edu.umdearborn.astronomyapp.entity.Role;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, String> {
 
-  @Query("select count(r) > 0 from Role r where r.role = 'ROLE_ADMIN'")
+  @Query("select count(r) > 0 from Role r where r.role = 'ADMIN'")
   public boolean adminExists();
 }
