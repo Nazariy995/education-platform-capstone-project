@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -62,6 +64,16 @@ public class Role implements Serializable {
   @Override
   public boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj, "user");
+  }
+
+  @Override
+  public int hashCode() {
+    return HashCodeBuilder.reflectionHashCode(this, "user");
+  }
+
+  @Override
+  public String toString() {
+    return new ReflectionToStringBuilder(this).setExcludeFieldNames("user").toString();
   }
 
 }

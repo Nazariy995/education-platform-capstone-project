@@ -16,17 +16,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     // @formatter:off
     http
+//      Uncomment when running locally with H2 database and web console
+//      !!  When running H2, ensure you uncomment <scope>test<scope> from   !!
+//      !!  the H2 dependency in pom.xml                                    !!
+//      .headers()
+//        .frameOptions().disable().and()
       .cors()
         .and()
+      .csrf()
+        .disable()
       .requiresChannel()
         .anyRequest()
         .requiresInsecure() // TODO: Setup HTTPS
-        .and()
-      .authorizeRequests()
-        .antMatchers("/", "/home", "/static/**", "/login", "/logout").permitAll()
-        .antMatchers("/admin/**").hasRole("ADMIN")
-        .antMatchers("/instructor/**").hasRole("INSTRUCTOR")
-        .anyRequest().fullyAuthenticated()
         .and()
       .formLogin()
         .defaultSuccessUrl("/home", false)
@@ -39,6 +40,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .logoutSuccessUrl("/login?logout")
         .clearAuthentication(true)
         .invalidateHttpSession(true)
+        .and()
+      .authorizeRequests()
+        .antMatchers("/", "/home", "/static/**", "/h2-console/**").permitAll()
+        .antMatchers("/admin/**").hasRole("ADMIN")
+        .antMatchers("/instructor/**").hasRole("INSTRUCTOR")
+        .anyRequest().fullyAuthenticated()
         .and()
       .sessionManagement()
         .invalidSessionUrl("/login?invalid-session")

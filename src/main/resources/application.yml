@@ -1,9 +1,4 @@
 spring:
-  jpa:
-    generate-ddl: true
-    show-sql: true
-  mail:
-    host: 
   datasource:
     url: ${datasource.url}
     username: ${datasource.username}
@@ -11,3 +6,8 @@ spring:
 logging:
   level:
     root: info
+server:
+  session:
+    timeout: 1800 #(30 minutes)
+    cookie:
+      name: SESSIONID

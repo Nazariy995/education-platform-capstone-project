@@ -1,6 +1,7 @@
 package edu.umdearborn.astronomyapp.entity;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -12,6 +13,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
@@ -52,7 +55,7 @@ public class AstroAppUser implements Serializable {
 
   @Column(nullable = false)
   private boolean isEnabled = true;
-  
+
   @JsonIdentityReference(alwaysAsId = true)
   @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "role")
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
@@ -81,7 +84,7 @@ public class AstroAppUser implements Serializable {
   public void setEmail(String email) {
     this.email = email;
   }
-  
+
   @JsonIgnore
   public String getPasswordHash() {
     return passwordHash;
@@ -133,7 +136,27 @@ public class AstroAppUser implements Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj);
+    return EqualsBuilder.reflectionEquals(this, obj, "passwordHash");
+  }
+
+  @Override
+  public int hashCode() {
+    return HashCodeBuilder.reflectionHashCode(this, "passwordHash");
+  }
+
+  @Override
+  public String toString() {
+    return (new ReflectionToStringBuilder(this) {
+
+      @Override
+      protected Object getValue(Field field)
+          throws IllegalArgumentException, IllegalAccessException {
+        if ("passwordHash".equalsIgnoreCase(field.getName()) && super.getValue(field) != null) {
+          return "******";
+        }
+        return super.getValue(field);
+      }
+    }).toString();
   }
 
 }
