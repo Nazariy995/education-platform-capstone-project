@@ -3,6 +3,10 @@ package edu.umdearborn.astronomyapp.entity;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -10,10 +14,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "multipleChoiceOptionId"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"humanReadableText", "optionQuestionId"}), indexes = @Index(columnList = "optionQuestionId"))
 public class MultipleChoiceOption extends AbstractOption {
 
   private static final long serialVersionUID = -5311013272908483434L;
-
+  
+  @NotNull
   private String humanReadableText;
 
   public String getHumanReadableText() {

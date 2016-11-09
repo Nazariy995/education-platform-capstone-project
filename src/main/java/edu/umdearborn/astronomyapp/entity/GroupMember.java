@@ -7,6 +7,7 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -15,7 +16,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "groupMemberId"))
-@Table(indexes = @Index(columnList = "moduleGroupId"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"courseUserId", "moduleGroupId"}),
+    indexes = @Index(columnList = "moduleGroupId"))
 public class GroupMember extends AbstractGeneratedId {
 
   private static final long serialVersionUID = -1177655419609052637L;

@@ -5,10 +5,14 @@ import java.util.Date;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -17,6 +21,10 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "answerId"))
+@Table(
+    uniqueConstraints = @UniqueConstraint(
+        columnNames = {"moduleGroupId", "questionId", "submissionNumber"}),
+    indexes = {@Index(columnList = "moduleGroupId"), @Index(columnList = "submissionNumber")})
 public class Answer extends AbstractGeneratedId {
 
   private static final long serialVersionUID = 7968210698660722474L;
@@ -34,6 +42,7 @@ public class Answer extends AbstractGeneratedId {
   @NotNull
   private int pointesEarned = 0;
 
+  @Min(0)
   @NotNull
   private int submissionNumber = 0;
 

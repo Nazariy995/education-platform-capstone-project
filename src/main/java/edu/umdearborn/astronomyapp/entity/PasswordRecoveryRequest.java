@@ -5,8 +5,10 @@ import java.util.Date;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Future;
@@ -18,6 +20,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "token"))
+@Table(indexes = @Index(columnList = "email"))
 public class PasswordRecoveryRequest extends AbstractGeneratedId {
 
   private static final long serialVersionUID = -834154778189285366L;

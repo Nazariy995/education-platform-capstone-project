@@ -21,8 +21,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 @Entity
 public class AstroAppUser implements Serializable {
@@ -48,6 +48,7 @@ public class AstroAppUser implements Serializable {
   private String lastName;
 
   @NotNull
+  @JsonProperty(access = Access.WRITE_ONLY)
   private String passwordHash;
 
   @NotNull
@@ -94,7 +95,6 @@ public class AstroAppUser implements Serializable {
     this.email = email;
   }
 
-  @JsonIgnore
   public String getPasswordHash() {
     return passwordHash;
   }

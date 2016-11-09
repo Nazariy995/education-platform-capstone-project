@@ -5,6 +5,8 @@ import java.util.Date;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Future;
@@ -16,6 +18,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "courseId"))
+@Table(indexes = {@Index(columnList = "subjectCode"), @Index(columnList = "courseCode")})
 public class Course extends AbstractGeneratedId {
 
   private static final long serialVersionUID = 2442282448974230234L;

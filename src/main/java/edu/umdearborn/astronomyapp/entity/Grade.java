@@ -3,8 +3,11 @@ package edu.umdearborn.astronomyapp.entity;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -13,20 +16,22 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "gradeId"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"courseUserId", "moduleId"}),
+    indexes = @Index(columnList = "courseUserId"))
 public class Grade extends AbstractGeneratedId {
 
   private static final long serialVersionUID = -6636738045828148302L;
-  
+
   @NotNull
   @ManyToOne
   @JoinColumn(name = "courseUserId")
   private CourseUser user;
-  
+
   @NotNull
   @ManyToOne
   @JoinColumn(name = "moduleId")
   private Module module;
-  
+
   @NotNull
   private int totalPointsEarned = 0;
 

@@ -9,6 +9,7 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -17,7 +18,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "courseUserId"))
-@Table(indexes = @Index(columnList = "courseId"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"email", "courseId"}),
+    indexes = @Index(columnList = "email"))
 public class CourseUser extends AbstractGeneratedId {
 
   private static final long serialVersionUID = 453757782768837852L;

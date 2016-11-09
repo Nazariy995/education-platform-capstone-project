@@ -7,6 +7,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -21,7 +22,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"pageId", "itemOrder"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"pageId", "itemOrder"}),
+    indexes = @Index(columnList = "pageId"))
 @AttributeOverride(name = "id", column = @Column(name = "pageItemId"))
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "pageItemType")
