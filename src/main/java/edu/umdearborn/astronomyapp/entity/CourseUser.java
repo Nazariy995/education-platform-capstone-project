@@ -1,15 +1,14 @@
 package edu.umdearborn.astronomyapp.entity;
 
-import java.util.Date;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.Future;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -17,21 +16,29 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
-@AttributeOverride(name = "id", column = @Column(name = "token"))
-public class PasswordRecoveryRequest extends AbstractGeneratedId {
+@AttributeOverride(name = "id", column = @Column(name = "courseUserId"))
+@Table(indexes = @Index(columnList = "courseId"))
+public class CourseUser extends AbstractGeneratedId {
 
-  private static final long serialVersionUID = -834154778189285366L;
+  private static final long serialVersionUID = 453757782768837852L;
+
+  public static enum CourseRole {
+    STUDENT, TA, INSTRUCTOR, NUL;
+  }
 
   @NotNull
   @ManyToOne
-  @JoinColumn(name = "email", updatable = false)
+  @JoinColumn(name = "email")
   private AstroAppUser user;
 
   @NotNull
-  @Future
-  @Temporal(TemporalType.TIMESTAMP)
-  @Column(updatable = false)
-  private Date expirationTimestamp;
+  @ManyToOne
+  @JoinColumn(name = "courseId")
+  private Course course;
+
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  private CourseRole role = CourseRole.NUL;
 
   public AstroAppUser getUser() {
     return user;
@@ -41,12 +48,20 @@ public class PasswordRecoveryRequest extends AbstractGeneratedId {
     this.user = user;
   }
 
-  public Date getExpirationTimestamp() {
-    return expirationTimestamp;
+  public Course getCourse() {
+    return course;
   }
 
-  public void setExpirationTimestamp(Date expirationTimestamp) {
-    this.expirationTimestamp = expirationTimestamp;
+  public void setCourse(Course course) {
+    this.course = course;
+  }
+
+  public CourseRole getRole() {
+    return role;
+  }
+
+  public void setRole(CourseRole role) {
+    this.role = role;
   }
 
   @Override

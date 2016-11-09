@@ -19,8 +19,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //      Uncomment when running locally with H2 database and web console
 //      !!  When running H2, ensure you uncomment <scope>test<scope> from   !!
 //      !!  the H2 dependency in pom.xml                                    !!
-//      .headers()
-//        .frameOptions().disable().and()
+      .headers()
+        .frameOptions().disable().and()
       .cors()
         .and()
       .csrf()

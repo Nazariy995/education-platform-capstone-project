@@ -5,60 +5,69 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@JsonInclude(Include.NON_NULL)
 @Entity
-@Table(name = "\"user\"")
 public class AstroAppUser implements Serializable {
 
   private static final long serialVersionUID = -7245103766854987243L;
+
+  public static enum Role {
+    USER, INSTRUCTOR, ADMIN, NUL;
+
+    public String roleValue() {
+      return "ROLE_" + toString();
+    }
+  }
 
   @Id
   @JsonProperty("username")
   private String email;
 
-  @Column(nullable = false)
+  @NotNull
   private String firstName;
 
-  @Column(nullable = false)
+  @NotNull
   private String lastName;
 
-  @Column(nullable = false)
+  @NotNull
   private String passwordHash;
 
-  @Column(nullable = false)
+  @NotNull
   private boolean isUserNonExpired = true;
 
-  @Column(nullable = false)
+  @NotNull
   private boolean isPasswordNonExpired = true;
 
-  @Column(nullable = false)
+  @NotNull
   private boolean isUserNonLocked = true;
 
-  @Column(nullable = false)
+  @NotNull
   private boolean isEnabled = true;
 
-  @JsonIdentityReference(alwaysAsId = true)
-  @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "role")
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
+  @NotNull
+  @ElementCollection(targetClass = Role.class)
+  @JoinTable(name = "ROLE", uniqueConstraints = @UniqueConstraint(columnNames = {"role", "email"}),
+      joinColumns = @JoinColumn(name = "email"), indexes = @Index(columnList = "email"))
+  @Column(name = "role")
+  @Enumerated(EnumType.STRING)
   private Collection<Role> roles = new ArrayList<>();
 
   public String getFirstName() {
