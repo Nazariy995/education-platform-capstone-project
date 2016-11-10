@@ -3,6 +3,7 @@ package edu.umdearborn.astronomyapp.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
@@ -21,7 +22,7 @@ public class AbstractOptionsQuestion<T extends AbstractOption> extends Question
 
   @Valid
   @Size(min = 1)
-  @OneToMany
+  @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "optionQuestionId")
   private Set<T> options = new HashSet<>();
 
