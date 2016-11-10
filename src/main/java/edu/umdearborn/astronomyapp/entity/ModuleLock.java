@@ -1,6 +1,6 @@
 package edu.umdearborn.astronomyapp.entity;
 
-import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -9,9 +9,8 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
-import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -19,12 +18,18 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
-@AttributeOverride(name = "id", column = @Column(name = "gradeId"))
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"courseUserId", "moduleId"}),
-    indexes = @Index(columnList = "courseUserId"))
-public class Grade extends AbstractGeneratedId {
+@AttributeOverride(name = "id", column = @Column(name = "moduleLockId"))
+@Table(indexes = {@Index(columnList = "moduleId"), @Index(columnList = "moduleGroupId"),
+    @Index(columnList = "expirationTimestamp")})
+public class ModuleLock extends AbstractGeneratedId {
 
-  private static final long serialVersionUID = -6636738045828148302L;
+  private static final long serialVersionUID = 5772684472161202294L;
+
+  @Valid
+  @NotNull
+  @ManyToOne
+  @JoinColumn(name = "moduleId", updatable = false)
+  private Module module;
 
   @Valid
   @NotNull
@@ -35,23 +40,12 @@ public class Grade extends AbstractGeneratedId {
   @Valid
   @NotNull
   @ManyToOne
-  @JoinColumn(name = "moduleId", updatable = false)
-  private Module module;
+  @JoinColumn(name = "moduleGroupId", updatable = false)
+  private ModuleGroup group;
 
   @NotNull
-  @DecimalMin("0")
-  @Column(precision = 8, scale = 4)
-  private BigDecimal totalPointsEarned = new BigDecimal(0);
-
-  private String comment;
-
-  public CourseUser getUser() {
-    return user;
-  }
-
-  public void setUser(CourseUser user) {
-    this.user = user;
-  }
+  @Future
+  private Date expirationTimestamp;
 
   public Module getModule() {
     return module;
@@ -61,20 +55,28 @@ public class Grade extends AbstractGeneratedId {
     this.module = module;
   }
 
-  public BigDecimal getTotalPointsEarned() {
-    return totalPointsEarned;
+  public CourseUser getUser() {
+    return user;
   }
 
-  public void setTotalPointsEarned(BigDecimal totalPointsEarned) {
-    this.totalPointsEarned = totalPointsEarned;
+  public void setUser(CourseUser user) {
+    this.user = user;
   }
 
-  public String getComment() {
-    return comment;
+  public ModuleGroup getGroup() {
+    return group;
   }
 
-  public void setComment(String comment) {
-    this.comment = comment;
+  public void setGroup(ModuleGroup group) {
+    this.group = group;
+  }
+
+  public Date getExpirationTimestamp() {
+    return expirationTimestamp;
+  }
+
+  public void setExpirationTimestamp(Date expirationTimestamp) {
+    this.expirationTimestamp = expirationTimestamp;
   }
 
   @Override

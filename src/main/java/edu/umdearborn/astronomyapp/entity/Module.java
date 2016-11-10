@@ -3,15 +3,18 @@ package edu.umdearborn.astronomyapp.entity;
 import java.util.Date;
 
 import javax.persistence.AttributeOverride;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.Valid;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -27,9 +30,10 @@ public class Module extends AbstractGeneratedId {
 
   private static final long serialVersionUID = -8759136244090977612L;
 
+  @Valid
   @NotNull
   @ManyToOne
-  @JoinColumn(name = "courseId")
+  @JoinColumn(name = "courseId", updatable = false)
   private Course course;
 
   @NotNull
@@ -39,23 +43,21 @@ public class Module extends AbstractGeneratedId {
   @Min(1)
   private int maxStudents = 1;
 
+  @Lob
+  @Basic(fetch = FetchType.LAZY)
   private String humanReadableText;
 
-  @NotNull
   @Temporal(TemporalType.TIMESTAMP)
   private Date openTimestamp;
 
-  @NotNull
   @Future
   @Temporal(TemporalType.TIMESTAMP)
   private Date closeTimestamp;
 
-  @NotNull
   @Future
   @Temporal(TemporalType.TIMESTAMP)
   private Date dueDate;
 
-  @NotNull
   @Temporal(TemporalType.TIMESTAMP)
   private Date visibleTimestamp;
 
@@ -121,16 +123,6 @@ public class Module extends AbstractGeneratedId {
 
   public void setVisibleTimestamp(Date visibleTimestamp) {
     this.visibleTimestamp = visibleTimestamp;
-  }
-
-  @PrePersist
-  public void prePersist() {
-    if (visibleTimestamp == null) {
-      visibleTimestamp = new Date();
-    }
-    if (closeTimestamp == null) {
-      closeTimestamp = dueDate;
-    }
   }
 
   @Override

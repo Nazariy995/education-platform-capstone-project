@@ -14,8 +14,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -36,13 +38,16 @@ public class PageItem extends AbstractGeneratedId {
     TEXT, QUESTION, NUL;
   }
 
+  @Valid
   @NotNull
   @ManyToOne
   @JoinColumn(name = "pageId")
   private Page page;
 
+  @Valid
   @NotNull
   @Enumerated(EnumType.STRING)
+  @Column(length = 8)
   private PageItemType pageItemType = PageItemType.NUL;
 
   @NotNull
@@ -51,6 +56,7 @@ public class PageItem extends AbstractGeneratedId {
   private int order = 0;
 
   @NotNull
+  @Size(min = 1)
   private String humanReadableText;
 
   public Page getPage() {

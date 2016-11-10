@@ -7,6 +7,7 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -20,9 +21,10 @@ public class ModuleGroup extends AbstractGeneratedId {
 
   private static final long serialVersionUID = -5650773937729046598L;
 
+  @Valid
   @NotNull
   @ManyToOne
-  @JoinColumn(name = "moduleId")
+  @JoinColumn(name = "moduleId", updatable = false)
   private Module module;
 
   public Module getModule() {

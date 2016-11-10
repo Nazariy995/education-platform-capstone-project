@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -18,8 +19,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "courseUserId"))
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"email", "courseId"}),
-    indexes = @Index(columnList = "email"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"userId", "courseId"}),
+    indexes = @Index(columnList = "userId"))
 public class CourseUser extends AbstractGeneratedId {
 
   private static final long serialVersionUID = 453757782768837852L;
@@ -28,19 +29,24 @@ public class CourseUser extends AbstractGeneratedId {
     STUDENT, TA, INSTRUCTOR, NUL;
   }
 
+  @Valid
   @NotNull
   @ManyToOne
-  @JoinColumn(name = "email")
+  @JoinColumn(name = "userId", updatable = false)
   private AstroAppUser user;
 
+  @Valid
   @NotNull
   @ManyToOne
-  @JoinColumn(name = "courseId")
+  @JoinColumn(name = "courseId", updatable = false)
   private Course course;
 
   @NotNull
   @Enumerated(EnumType.STRING)
   private CourseRole role = CourseRole.NUL;
+
+  @NotNull
+  private boolean isActive = true;
 
   public AstroAppUser getUser() {
     return user;
@@ -64,6 +70,14 @@ public class CourseUser extends AbstractGeneratedId {
 
   public void setRole(CourseRole role) {
     this.role = role;
+  }
+
+  public boolean isActive() {
+    return isActive;
+  }
+
+  public void setActive(boolean isActive) {
+    this.isActive = isActive;
   }
 
   @Override

@@ -11,6 +11,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -24,17 +25,22 @@ public class Course extends AbstractGeneratedId {
   private static final long serialVersionUID = 2442282448974230234L;
 
   @NotNull
+  @Column(updatable = false)
+  @Size(min = 1, max = 6)
   private String subjectCode;
 
   @NotNull
+  @Column(updatable = false)
+  @Size(min = 1, max = 6)
   private String courseCode;
 
   @NotNull
+  @Size(min = 1, max = 60)
   private String courseTitle;
 
   @Temporal(TemporalType.TIMESTAMP)
   private Date openTimestamp;
-  
+
   @Future
   @Temporal(TemporalType.TIMESTAMP)
   private Date closeTimestamp;

@@ -1,13 +1,17 @@
 package edu.umdearborn.astronomyapp.entity;
 
 import javax.persistence.AttributeOverride;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -23,9 +27,10 @@ public class Page extends AbstractGeneratedId {
 
   private static final long serialVersionUID = 3881270380048176L;
 
+  @Valid
   @NotNull
   @ManyToOne
-  @JoinColumn(name = "moduleId")
+  @JoinColumn(name = "moduleId", updatable = false)
   private Module module;
 
   @NotNull
@@ -33,6 +38,8 @@ public class Page extends AbstractGeneratedId {
   @Column(name = "pageOrder")
   private int order = 0;
 
+  @Lob
+  @Basic(fetch = FetchType.LAZY)
   private String humanReadableText;
 
   public Module getModule() {

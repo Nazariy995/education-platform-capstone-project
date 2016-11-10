@@ -6,6 +6,7 @@ import static org.hamcrest.core.StringContains.containsString;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class AstroAppUserTest {
 
@@ -39,6 +40,16 @@ public class AstroAppUserTest {
     assertThat("Equals method is checking the password field", user1.equals(user2));
     user2.setEnabled(false);
     assertThat("user1.enabled does not equal user2.enabled", !user1.equals(user2));
+  }
+  
+  @Test
+  public void a() {
+    int max = 0;
+    for (int i = 0; i < 50; i++) {
+      max = Math.max(max, new BCryptPasswordEncoder().encode("p").length());
+    }
+    
+    System.out.println(max);
   }
 
 }

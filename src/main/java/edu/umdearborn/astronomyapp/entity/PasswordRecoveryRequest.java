@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.Valid;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 
@@ -20,14 +21,15 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "token"))
-@Table(indexes = @Index(columnList = "email"))
+@Table(indexes = @Index(columnList = "userId"))
 public class PasswordRecoveryRequest extends AbstractGeneratedId {
 
   private static final long serialVersionUID = -834154778189285366L;
 
+  @Valid
   @NotNull
   @ManyToOne
-  @JoinColumn(name = "email", updatable = false)
+  @JoinColumn(name = "userId", updatable = false)
   private AstroAppUser user;
 
   @NotNull

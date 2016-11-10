@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -22,6 +23,7 @@ public class UnitOption extends AbstractOption {
 
   private static final long serialVersionUID = -2298005560218235570L;
 
+  @Valid
   @NotNull
   @OneToOne
   @JoinColumn(name = "unitId")

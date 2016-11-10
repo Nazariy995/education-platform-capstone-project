@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
+import javax.validation.Valid;
 import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -13,11 +14,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @MappedSuperclass
-public class AbstractOptionsQuestion<T extends AbstractOption> extends AbstractGeneratedId
+public class AbstractOptionsQuestion<T extends AbstractOption> extends Question
     implements MachineGradeable {
 
   private static final long serialVersionUID = -3078009736538827491L;
 
+  @Valid
   @Size(min = 1)
   @OneToMany
   @JoinColumn(name = "optionQuestionId")

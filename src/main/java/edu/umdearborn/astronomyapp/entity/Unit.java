@@ -8,7 +8,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -22,13 +24,17 @@ public class Unit extends AbstractGeneratedId {
 
   private static final long serialVersionUID = 5457895373300173472L;
 
+  @Valid
   @NotNull
   @ManyToOne
-  @JoinColumn(name = "courseId")
+  @JoinColumn(name = "courseId", updatable = false)
   private Course courseId;
 
   @NotNull
+  @Size(min = 1, max = 10)
   private String humanReadableText;
+
+  private String helpText;
 
   @NotNull
   private boolean isActive = true;
@@ -47,6 +53,14 @@ public class Unit extends AbstractGeneratedId {
 
   public void setHumanReadableText(String humanReadableText) {
     this.humanReadableText = humanReadableText;
+  }
+
+  public String getHelpText() {
+    return helpText;
+  }
+
+  public void setHelpText(String helpText) {
+    this.helpText = helpText;
   }
 
   public boolean isActive() {

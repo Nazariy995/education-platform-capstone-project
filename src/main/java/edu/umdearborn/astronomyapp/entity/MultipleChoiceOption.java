@@ -7,19 +7,23 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
-@AttributeOverride(name = "id", column = @Column(name = "multipleChoiceOptionId"))
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"humanReadableText", "optionQuestionId"}), indexes = @Index(columnList = "optionQuestionId"))
+@AttributeOverride(name = "id", column = @Column(name = "multipleChoiceId"))
+@Table(
+    uniqueConstraints = @UniqueConstraint(columnNames = {"humanReadableText", "optionQuestionId"}),
+    indexes = @Index(columnList = "optionQuestionId"))
 public class MultipleChoiceOption extends AbstractOption {
 
   private static final long serialVersionUID = -5311013272908483434L;
-  
+
   @NotNull
+  @Size(min = 1)
   private String humanReadableText;
 
   public String getHumanReadableText() {

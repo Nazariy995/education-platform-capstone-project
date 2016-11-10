@@ -1,9 +1,12 @@
 package edu.umdearborn.astronomyapp.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -13,7 +16,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
 @DiscriminatorValue("NUMERIC")
-@AttributeOverride(name = "optionQuestionId", column = @Column(name = "numericQuestionId"))
+@AttributeOverride(name = "optionQuestionId", column = @Column(name = "numericQuestionOptionId"))
 public class NumericQuestion extends AbstractOptionsQuestion<UnitOption> {
 
   private static final long serialVersionUID = -4122369698440997963L;
@@ -23,14 +26,27 @@ public class NumericQuestion extends AbstractOptionsQuestion<UnitOption> {
   // private static final String DECIMAL_FORMAT = "0.0E0";
 
   @Min(0)
+  @Max(10)
   @NotNull
   private int requiresScale = 0;
 
   @NotNull
-  private int correctCoefficient = 0;
+  @Column(precision = 11, scale = 10)
+  private BigDecimal correctCoefficient = new BigDecimal(0);
 
   @NotNull
+  @Min(0)
+  @Max(10)
   private int correctExponenet = 0;
+
+  @NotNull
+  @Column(precision = 11, scale = 10)
+  private BigDecimal allowedCoefficientSpread = new BigDecimal(0);
+
+  @NotNull
+  @Min(0)
+  @Max(10)
+  private int allowedExponenetSpread = 0;
 
   public int getRequiresScale() {
     return requiresScale;
@@ -40,11 +56,11 @@ public class NumericQuestion extends AbstractOptionsQuestion<UnitOption> {
     this.requiresScale = requiresScale;
   }
 
-  public int getCorrectCoefficient() {
+  public BigDecimal getCorrectCoefficient() {
     return correctCoefficient;
   }
 
-  public void setCorrectCoefficient(int correctCoefficient) {
+  public void setCorrectCoefficient(BigDecimal correctCoefficient) {
     this.correctCoefficient = correctCoefficient;
   }
 
@@ -75,6 +91,22 @@ public class NumericQuestion extends AbstractOptionsQuestion<UnitOption> {
   // return options.parallelStream().filter(x -> x.isCorrect())
   // .map(x -> x.getUnit().getHumanReadableText()).findFirst().orElse("");
   // }
+
+  public BigDecimal getAllowedCoefficientSpread() {
+    return allowedCoefficientSpread;
+  }
+
+  public void setAllowedCoefficientSpread(BigDecimal allowedCoefficientSpread) {
+    this.allowedCoefficientSpread = allowedCoefficientSpread;
+  }
+
+  public int getAllowedExponenetSpread() {
+    return allowedExponenetSpread;
+  }
+
+  public void setAllowedExponenetSpread(int allowedExponenetSpread) {
+    this.allowedExponenetSpread = allowedExponenetSpread;
+  }
 
   @Override
   public boolean equals(Object obj) {

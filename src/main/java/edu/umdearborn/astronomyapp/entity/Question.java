@@ -1,5 +1,8 @@
 package edu.umdearborn.astronomyapp.entity;
 
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -7,7 +10,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -37,11 +40,13 @@ public class Question extends PageItem {
   }
 
   @NotNull
-  @Min(0)
-  private int points = 0;
+  @DecimalMin("0")
+  @Column(precision = 8, scale = 4)
+  private BigDecimal points = new BigDecimal(0);
 
   @NotNull
   @Enumerated(EnumType.STRING)
+  @Column(length = 15)
   private QuestionType questionType = QuestionType.NUL;
 
   @NotNull
@@ -49,11 +54,11 @@ public class Question extends PageItem {
 
   private String defaultComment;
 
-  public int getPoints() {
+  public BigDecimal getPoints() {
     return points;
   }
 
-  public void setPoints(int points) {
+  public void setPoints(BigDecimal points) {
     this.points = points;
   }
 

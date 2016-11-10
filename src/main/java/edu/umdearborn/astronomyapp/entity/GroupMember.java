@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -22,14 +23,16 @@ public class GroupMember extends AbstractGeneratedId {
 
   private static final long serialVersionUID = -1177655419609052637L;
 
+  @Valid
   @NotNull
   @ManyToOne
-  @JoinColumn(name = "courseUserId")
+  @JoinColumn(name = "courseUserId", updatable = false)
   private CourseUser courseUser;
 
+  @Valid
   @NotNull
   @ManyToOne
-  @JoinColumn(name = "moduleGroupId")
+  @JoinColumn(name = "moduleGroupId", updatable = false)
   private ModuleGroup module;
 
   public CourseUser getCourseUser() {

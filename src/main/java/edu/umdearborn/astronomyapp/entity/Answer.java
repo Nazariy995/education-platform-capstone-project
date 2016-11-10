@@ -1,5 +1,6 @@
 package edu.umdearborn.astronomyapp.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.AttributeOverride;
@@ -12,6 +13,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -29,18 +32,21 @@ public class Answer extends AbstractGeneratedId {
 
   private static final long serialVersionUID = 7968210698660722474L;
 
+  @Valid
   @NotNull
   @ManyToOne
-  @JoinColumn(name = "moduleGroupId")
+  @JoinColumn(name = "moduleGroupId", updatable = false)
   private ModuleGroup group;
 
+  @Valid
   @NotNull
   @ManyToOne
-  @JoinColumn(name = "questionId")
+  @JoinColumn(name = "questionId", updatable = false)
   private Question quiestion;
 
   @NotNull
-  private int pointesEarned = 0;
+  @DecimalMin("0")
+  private BigDecimal pointesEarned = new BigDecimal(0);
 
   @Min(0)
   @NotNull
@@ -69,11 +75,11 @@ public class Answer extends AbstractGeneratedId {
     this.quiestion = quiestion;
   }
 
-  public int getPointesEarned() {
+  public BigDecimal getPointesEarned() {
     return pointesEarned;
   }
 
-  public void setPointesEarned(int pointesEarned) {
+  public void setPointesEarned(BigDecimal pointesEarned) {
     this.pointesEarned = pointesEarned;
   }
 

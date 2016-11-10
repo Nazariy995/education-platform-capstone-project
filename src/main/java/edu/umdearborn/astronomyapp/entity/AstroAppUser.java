@@ -1,21 +1,22 @@
 package edu.umdearborn.astronomyapp.entity;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -25,7 +26,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 @Entity
-public class AstroAppUser implements Serializable {
+@AttributeOverride(name = "id", column = @Column(name = "userId"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"userId"}))
+public class AstroAppUser extends AbstractGeneratedId {
 
   private static final long serialVersionUID = -7245103766854987243L;
 
@@ -37,18 +40,23 @@ public class AstroAppUser implements Serializable {
     }
   }
 
-  @Id
   @JsonProperty("username")
+  @NotNull
+  @Column(updatable = false)
+  @Size(min = 5, max = 255)
   private String email;
 
   @NotNull
+  @Size(min = 1, max = 35)
   private String firstName;
 
   @NotNull
+  @Size(min = 1, max = 35)
   private String lastName;
 
   @NotNull
-  @JsonProperty(access = Access.WRITE_ONLY)
+  @JsonProperty(value = "password", access = Access.WRITE_ONLY)
+  @Column(length = 62)
   private String passwordHash;
 
   @NotNull
@@ -65,9 +73,9 @@ public class AstroAppUser implements Serializable {
 
   @NotNull
   @ElementCollection(targetClass = Role.class)
-  @JoinTable(name = "ROLE", uniqueConstraints = @UniqueConstraint(columnNames = {"role", "email"}),
-      joinColumns = @JoinColumn(name = "email"), indexes = @Index(columnList = "email"))
-  @Column(name = "role")
+  @JoinTable(name = "ROLE", uniqueConstraints = @UniqueConstraint(columnNames = {"role", "userId"}),
+      joinColumns = @JoinColumn(name = "userId"), indexes = @Index(columnList = "userId"))
+  @Column(name = "role", length = 10)
   @Enumerated(EnumType.STRING)
   private Collection<Role> roles = new ArrayList<>();
 
