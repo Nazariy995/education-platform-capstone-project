@@ -9,5 +9,7 @@ logging:
 server:
   session:
     timeout: 1800 #(30 minutes)
+    persistent: true
     cookie:
       name: SESSIONID
+      http-only: true

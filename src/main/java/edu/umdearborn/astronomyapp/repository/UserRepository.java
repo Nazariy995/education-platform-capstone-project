@@ -19,7 +19,6 @@ import edu.umdearborn.astronomyapp.entity.AstroAppUser;
 @Repository
 public interface UserRepository extends JpaRepository<AstroAppUser, String> {
 
-  //
   @EntityGraph(attributePaths = "roles", type = EntityGraphType.LOAD)
   @Query("select u from AstroAppUser u join fetch u.roles r where "
       + "lower(u.email) = lower(:email)")

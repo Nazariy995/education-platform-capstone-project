@@ -1,5 +1,7 @@
 package edu.umdearborn.astronomyapp.entity;
 
+import static edu.umdearborn.astronomyapp.util.constants.CommonConstants.ISO_DATE_FORMAT;
+
 import java.util.Date;
 
 import javax.persistence.AttributeOverride;
@@ -16,6 +18,8 @@ import javax.validation.constraints.Size;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "courseId"))
@@ -39,10 +43,12 @@ public class Course extends AbstractGeneratedId {
   private String courseTitle;
 
   @Temporal(TemporalType.TIMESTAMP)
+  @JsonFormat(pattern = ISO_DATE_FORMAT, locale = "UTC")
   private Date openTimestamp;
 
   @Future
   @Temporal(TemporalType.TIMESTAMP)
+  @JsonFormat(pattern = ISO_DATE_FORMAT, locale = "UTC")
   private Date closeTimestamp;
 
   public String getSubjectCode() {

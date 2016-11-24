@@ -43,7 +43,7 @@ public class StartupHousekeeper {
         user.setEmail("admin");
         user.setFirstName("admin");
         user.setLastName("admin");
-        user.setPasswordHash(passwordEncoder.encode("admin"));
+        user.setPassword(passwordEncoder.encode("admin"));
       }
       user.getRoles().add(Role.ADMIN);
       userRepository.save(user);

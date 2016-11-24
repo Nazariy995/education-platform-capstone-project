@@ -1,8 +1,8 @@
 package edu.umdearborn.astronomyapp.entity;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -22,12 +22,15 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "userId"))
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"userId"}))
+@JsonIgnoreProperties("id")
 public class AstroAppUser extends AbstractGeneratedId {
 
   private static final long serialVersionUID = -7245103766854987243L;
@@ -40,7 +43,6 @@ public class AstroAppUser extends AbstractGeneratedId {
     }
   }
 
-  @JsonProperty("username")
   @NotNull
   @Column(updatable = false)
   @Size(min = 5, max = 255)
@@ -55,9 +57,9 @@ public class AstroAppUser extends AbstractGeneratedId {
   private String lastName;
 
   @NotNull
-  @JsonProperty(value = "password", access = Access.WRITE_ONLY)
+  @JsonProperty(access = Access.WRITE_ONLY)
   @Column(length = 62)
-  private String passwordHash;
+  private String password;
 
   @NotNull
   private boolean isUserNonExpired = true;
@@ -77,7 +79,7 @@ public class AstroAppUser extends AbstractGeneratedId {
       joinColumns = @JoinColumn(name = "userId"), indexes = @Index(columnList = "userId"))
   @Column(name = "role", length = 10)
   @Enumerated(EnumType.STRING)
-  private Collection<Role> roles = new ArrayList<>();
+  private Set<Role> roles = new HashSet<>();
 
   public String getFirstName() {
     return firstName;
@@ -103,14 +105,15 @@ public class AstroAppUser extends AbstractGeneratedId {
     this.email = email;
   }
 
-  public String getPasswordHash() {
-    return passwordHash;
+  public String getPassword() {
+    return password;
   }
 
-  public void setPasswordHash(String passwordHash) {
-    this.passwordHash = passwordHash;
+  public void setPassword(String password) {
+    this.password = password;
   }
 
+  @JsonIgnore
   public boolean isUserNonExpired() {
     return isUserNonExpired;
   }
@@ -119,6 +122,7 @@ public class AstroAppUser extends AbstractGeneratedId {
     this.isUserNonExpired = isUserNonExpired;
   }
 
+  @JsonIgnore
   public boolean isPasswordNonExpired() {
     return isPasswordNonExpired;
   }
@@ -127,6 +131,7 @@ public class AstroAppUser extends AbstractGeneratedId {
     this.isPasswordNonExpired = isPasswordNonExpired;
   }
 
+  @JsonIgnore
   public boolean isUserNonLocked() {
     return isUserNonLocked;
   }
@@ -135,6 +140,7 @@ public class AstroAppUser extends AbstractGeneratedId {
     this.isUserNonLocked = isUserNonLocked;
   }
 
+  @JsonIgnore
   public boolean isEnabled() {
     return isEnabled;
   }
@@ -143,11 +149,11 @@ public class AstroAppUser extends AbstractGeneratedId {
     this.isEnabled = isEnabled;
   }
 
-  public Collection<Role> getRoles() {
+  public Set<Role> getRoles() {
     return roles;
   }
 
-  public void setRoles(Collection<Role> roles) {
+  public void setRoles(Set<Role> roles) {
     this.roles = roles;
   }
 

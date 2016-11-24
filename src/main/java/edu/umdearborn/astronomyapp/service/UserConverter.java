@@ -21,7 +21,7 @@ public class UserConverter implements Converter<AstroAppUser, User> {
         astroAppUser.getRoles().parallelStream().map(r -> new SimpleGrantedAuthority(r.roleValue()))
             .collect(Collectors.toCollection(ArrayList::new));
 
-    return new User(astroAppUser.getEmail(), astroAppUser.getPasswordHash(),
+    return new User(astroAppUser.getEmail(), astroAppUser.getPassword(),
         astroAppUser.isEnabled(), astroAppUser.isUserNonExpired(),
         astroAppUser.isPasswordNonExpired(), astroAppUser.isUserNonLocked(), authorities);
   }
