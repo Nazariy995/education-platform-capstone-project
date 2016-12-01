@@ -41,11 +41,13 @@ public class Course extends AbstractGeneratedId {
   @NotNull
   @Size(min = 1, max = 60)
   private String courseTitle;
-
+  
+  @NotNull
   @Temporal(TemporalType.TIMESTAMP)
   @JsonFormat(pattern = ISO_DATE_FORMAT, locale = "UTC")
   private Date openTimestamp;
 
+  @NotNull
   @Future
   @Temporal(TemporalType.TIMESTAMP)
   @JsonFormat(pattern = ISO_DATE_FORMAT, locale = "UTC")

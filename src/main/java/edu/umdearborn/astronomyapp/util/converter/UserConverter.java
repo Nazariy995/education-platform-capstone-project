@@ -1,4 +1,4 @@
-package edu.umdearborn.astronomyapp.service;
+package edu.umdearborn.astronomyapp.util.converter;
 
 import java.util.ArrayList;
 import java.util.Collection;

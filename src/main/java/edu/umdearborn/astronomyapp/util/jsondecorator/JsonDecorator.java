@@ -1,4 +1,4 @@
-package edu.umdearborn.astronomyapp.util.json.decorator;
+package edu.umdearborn.astronomyapp.util.jsondecorator;
 
 import java.util.HashMap;
 import java.util.Map;

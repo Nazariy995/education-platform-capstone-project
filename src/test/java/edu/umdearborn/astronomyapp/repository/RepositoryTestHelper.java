@@ -35,11 +35,11 @@ public abstract class RepositoryTestHelper {
   protected TestEntityManager testEntityManager;
 
   protected PersistenceUnitUtil persistenceUnitUtil;
-  
+
   protected Map<String, AstroAppUser> users = new HashMap<>();
-  
+
   protected Map<String, Course> courses = new HashMap<>();
-  
+
   protected Map<String, CourseUser> courseUsers = new HashMap<>();
 
   @PostConstruct
@@ -216,7 +216,7 @@ public abstract class RepositoryTestHelper {
     user10.setRoles(Arrays.asList(AstroAppUser.Role.USER).stream().collect(Collectors.toSet()));
     testEntityManager.persist(user10);
     users.put("user10", user10);
-    
+
   }
 
   private void setupCourse() throws InterruptedException {
@@ -251,10 +251,8 @@ public abstract class RepositoryTestHelper {
     closeCourse1.setCourseTitle(randomAscii(10));
     closeCourse1.setCourseCode(randomAscii(3));
     closeCourse1.setSubjectCode(randomAscii(3));
-    closeCourse1
-        .setOpenTimestamp(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 7)));
-    closeCourse1
-        .setCloseTimestamp(new Date(System.currentTimeMillis() + 1000));
+    closeCourse1.setOpenTimestamp(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 7)));
+    closeCourse1.setCloseTimestamp(new Date(System.currentTimeMillis() + 1000));
     testEntityManager.persist(closeCourse1);
     courses.put("closeCourse1", closeCourse1);
 
@@ -262,10 +260,8 @@ public abstract class RepositoryTestHelper {
     closeCourse2.setCourseTitle(randomAscii(10));
     closeCourse2.setCourseCode(randomAscii(3));
     closeCourse2.setSubjectCode(randomAscii(3));
-    closeCourse2
-        .setOpenTimestamp(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 7)));
-    closeCourse2
-        .setCloseTimestamp(new Date(System.currentTimeMillis() + 1000));
+    closeCourse2.setOpenTimestamp(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 7)));
+    closeCourse2.setCloseTimestamp(new Date(System.currentTimeMillis() + 1000));
     testEntityManager.persist(closeCourse2);
     courses.put("closeCourse2", closeCourse2);
 
@@ -273,10 +269,8 @@ public abstract class RepositoryTestHelper {
     closeCourse3.setCourseTitle(randomAscii(10));
     closeCourse3.setCourseCode(randomAscii(3));
     closeCourse3.setSubjectCode(randomAscii(3));
-    closeCourse3
-        .setOpenTimestamp(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 7)));
-    closeCourse3
-        .setCloseTimestamp(new Date(System.currentTimeMillis() + 1000));
+    closeCourse3.setOpenTimestamp(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 7)));
+    closeCourse3.setCloseTimestamp(new Date(System.currentTimeMillis() + 1000));
     testEntityManager.persist(closeCourse3);
     courses.put("closeCourse3", closeCourse3);
 
@@ -284,15 +278,13 @@ public abstract class RepositoryTestHelper {
     closeCourse4.setCourseTitle(randomAscii(10));
     closeCourse4.setCourseCode(randomAscii(3));
     closeCourse4.setSubjectCode(randomAscii(3));
-    closeCourse4
-        .setOpenTimestamp(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 7)));
-    closeCourse4
-        .setCloseTimestamp(new Date(System.currentTimeMillis() + 1000));
+    closeCourse4.setOpenTimestamp(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 7)));
+    closeCourse4.setCloseTimestamp(new Date(System.currentTimeMillis() + 1000));
     testEntityManager.persist(closeCourse4);
     courses.put("closeCourse4", closeCourse4);
-    
+
   }
-  
+
   private void setupCourseUsers() {
     CourseUser student1_1 = new CourseUser();
     student1_1.setCourse(courses.get("openCourse1"));
@@ -300,35 +292,35 @@ public abstract class RepositoryTestHelper {
     student1_1.setRole(CourseRole.STUDENT);
     testEntityManager.persist(student1_1);
     courseUsers.put("student1_1", student1_1);
-    
+
     CourseUser student2_1 = new CourseUser();
     student2_1.setCourse(courses.get("openCourse1"));
     student2_1.setUser(users.get("user2"));
     student2_1.setRole(CourseRole.STUDENT);
     testEntityManager.persist(student2_1);
     courseUsers.put("student2_1", student2_1);
-    
+
     CourseUser student3_1 = new CourseUser();
     student3_1.setCourse(courses.get("openCourse1"));
     student3_1.setUser(users.get("user3"));
     student3_1.setRole(CourseRole.STUDENT);
     testEntityManager.persist(student3_1);
     courseUsers.put("student3_1", student3_1);
-    
+
     CourseUser student1_2 = new CourseUser();
     student1_2.setCourse(courses.get("openCourse2"));
     student1_2.setUser(users.get("user1"));
     student1_2.setRole(CourseRole.STUDENT);
     testEntityManager.persist(student1_2);
     courseUsers.put("student1_2", student1_2);
-    
+
     CourseUser inst1_1 = new CourseUser();
     inst1_1.setCourse(courses.get("openCourse1"));
     inst1_1.setUser(users.get("inst1"));
     inst1_1.setRole(CourseRole.INSTRUCTOR);
     testEntityManager.persist(inst1_1);
     courseUsers.put("inst1_1", inst1_1);
-    
+
   }
 
 }

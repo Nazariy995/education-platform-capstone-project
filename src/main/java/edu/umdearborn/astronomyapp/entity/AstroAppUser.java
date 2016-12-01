@@ -79,6 +79,7 @@ public class AstroAppUser extends AbstractGeneratedId {
       joinColumns = @JoinColumn(name = "userId"), indexes = @Index(columnList = "userId"))
   @Column(name = "role", length = 10)
   @Enumerated(EnumType.STRING)
+  @JsonProperty("appRoles")
   private Set<Role> roles = new HashSet<>();
 
   public String getFirstName() {
@@ -159,12 +160,12 @@ public class AstroAppUser extends AbstractGeneratedId {
 
   @Override
   public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj, "passwordHash");
+    return EqualsBuilder.reflectionEquals(this, obj, "password");
   }
 
   @Override
   public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this, "passwordHash");
+    return HashCodeBuilder.reflectionHashCode(this, "password");
   }
 
   @Override
@@ -174,7 +175,7 @@ public class AstroAppUser extends AbstractGeneratedId {
       @Override
       protected Object getValue(Field field)
           throws IllegalArgumentException, IllegalAccessException {
-        if ("passwordHash".equalsIgnoreCase(field.getName()) && super.getValue(field) != null) {
+        if ("password".equalsIgnoreCase(field.getName()) && super.getValue(field) != null) {
           return "******";
         }
         return super.getValue(field);

@@ -24,6 +24,10 @@ public interface UserRepository extends JpaRepository<AstroAppUser, String> {
       + "lower(u.email) = lower(:email)")
   public AstroAppUser findByEmail(@Param(value = "email") String email);
 
-  @Query("select count(r) > 0 from AstroAppUser aau join aau.roles r where r = 'ADMIN'")
+  @Query("select count(r) > 0 from AstroAppUser u join u.roles r where r = 'ADMIN'")
   public boolean adminExists();
+
+  @Query("select count(u) > 0 from AstroAppUser u where lower(u.email) = lower(:email)")
+  public boolean emailExists(@Param(value = "email") String email);
+
 }

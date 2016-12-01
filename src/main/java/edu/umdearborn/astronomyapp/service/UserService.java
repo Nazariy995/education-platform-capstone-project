@@ -14,6 +14,7 @@ import org.springframework.util.Assert;
 
 import edu.umdearborn.astronomyapp.entity.AstroAppUser;
 import edu.umdearborn.astronomyapp.repository.UserRepository;
+import edu.umdearborn.astronomyapp.util.converter.UserConverter;
 
 @Service
 @Transactional
@@ -35,7 +36,7 @@ public class UserService implements UserDetailsService {
   }
 
   @PostConstruct
-  public void onInit() {
+  public void postConstruct() {
     Assert.notNull(userRepository);
     Assert.notNull(userConverter);
   }

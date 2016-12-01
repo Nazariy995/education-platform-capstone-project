@@ -6,7 +6,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import edu.umdearborn.astronomyapp.config.annotation.Dev;
+import edu.umdearborn.astronomyapp.config.annotation.Prod;
 
 @Configuration
 @EnableWebSecurity
@@ -16,19 +20,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     // @formatter:off
     http
-//      Uncomment when running locally with H2 database and web console
-//      !!  When running H2, ensure you uncomment <scope>test<scope> from   !!
-//      !!  the H2 dependency in pom.xml                                    !!
-      .headers()
-        .frameOptions().disable().and()
-      .cors()
-        .and()
-      .csrf()
-        .disable()
-      .requiresChannel()
-        .anyRequest()
-        .requiresInsecure() // TODO: Setup HTTPS
-        .and()
       .formLogin()
         .defaultSuccessUrl("/home", false)
         .usernameParameter("email")
@@ -43,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .invalidateHttpSession(true)
         .and()
       .authorizeRequests()
-        .antMatchers("/", "/home", "/static/**", "/public/**", "/h2-console/**").permitAll()
+        .antMatchers("/", "/home", "/static/**", "/public/**").permitAll()
         .antMatchers("/admin/**").hasRole("ADMIN")
         .antMatchers("/instructor/**").hasRole("INSTRUCTOR")
         .anyRequest().fullyAuthenticated()
@@ -57,8 +48,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // @formatter:on
   }
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
+  @Prod
+  @Bean("passwordEncoder")
+  public PasswordEncoder bCryptPasswordEncoder() {
     return new BCryptPasswordEncoder();
   }
+
+  @Dev
+  @Bean("passwordEncoder")
+  public PasswordEncoder noOpPasswordEncoder() {
+    return NoOpPasswordEncoder.getInstance();
+  }
+
 }

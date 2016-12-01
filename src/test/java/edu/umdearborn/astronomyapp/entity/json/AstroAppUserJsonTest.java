@@ -2,6 +2,8 @@ package edu.umdearborn.astronomyapp.entity.json;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.UUID;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,12 +13,13 @@ import edu.umdearborn.astronomyapp.entity.AstroAppUser;
 import edu.umdearborn.astronomyapp.entity.AstroAppUser.Role;
 
 public class AstroAppUserJsonTest extends JsonTestHelper<AstroAppUser> {
-  
+
   private static final Logger logger = LoggerFactory.getLogger(AstroAppUserJsonTest.class);
-  
+
   @Test
   public void jsonTest() {
     AstroAppUser user = new AstroAppUser();
+    user.setId(UUID.randomUUID().toString());
     user.setEmail("test@email.com");
     user.setFirstName("Fname");
     user.setLastName("Lname");

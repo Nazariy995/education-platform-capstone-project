@@ -17,10 +17,10 @@ public class AstroAppUserTest {
     user.setEmail("test@email.com");
     user.setFirstName("Fname");
     user.setLastName("Lname");
-    assertThat(user.toString(), containsString("passwordHash=<null>"));
+    assertThat(user.toString(), containsString("password=<null>"));
     logger.trace(user.toString());
     user.setPassword("dkljhfdkljhEKJHASjkhfdlah7qett");
-    assertThat(user.toString(), containsString("passwordHash=******"));
+    assertThat(user.toString(), containsString("password=******"));
     logger.trace(user.toString());
   }
 
