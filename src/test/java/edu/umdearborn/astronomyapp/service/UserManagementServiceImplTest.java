@@ -25,6 +25,8 @@ import edu.umdearborn.astronomyapp.entity.CourseUser;
 import edu.umdearborn.astronomyapp.repository.CourseRepository;
 import edu.umdearborn.astronomyapp.repository.CourseUserRepository;
 import edu.umdearborn.astronomyapp.repository.UserRepository;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserManagementServiceImplTest {
@@ -46,6 +48,13 @@ public class UserManagementServiceImplTest {
 
   @InjectMocks
   private UserManagementServiceImpl service;
+
+  @Test
+  public void persistNewUserTest() {
+    when(userRepository.save(any(AstroAppUser.class))).then(returnsFirstArg());
+    AstroAppUser actual = service.persistNewUser(new AstroAppUser());
+    assertThat("Did not expire password", actual.isPasswordNonExpired(), equalTo(false));
+  }
 
   @SuppressWarnings("unchecked")
   @Test
