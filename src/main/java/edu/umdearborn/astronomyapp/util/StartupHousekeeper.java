@@ -40,7 +40,7 @@ public class StartupHousekeeper {
       if (user == null) {
         logger.warn("Creating admin user");
         user = new AstroAppUser();
-        user.setEmail("admin");
+        user.setEmail("admin@email.com");
         user.setFirstName("admin");
         user.setLastName("admin");
         user.setPassword(passwordEncoder.encode("admin"));

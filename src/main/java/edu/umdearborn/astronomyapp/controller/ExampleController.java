@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ExampleController {
 
-  @RequestMapping("/admin")
-  public String helloAdmin(Principal principal) {
-    return "Hello, " + principal.getName();
-  }
+//  @RequestMapping("/admin")
+//  public String helloAdmin(Principal principal) {
+//    return "Hello, " + principal.getName();
+//  }
 
   @RequestMapping({"/", "/home"})
   public String hello() {

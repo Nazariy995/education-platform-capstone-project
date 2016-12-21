@@ -21,11 +21,14 @@ import javax.validation.constraints.Size;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.hibernate.validator.constraints.Email;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
+import edu.umdearborn.astronomyapp.validation.annotation.LogicalAppRoles;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "userId"))
@@ -36,13 +39,14 @@ public class AstroAppUser extends AbstractGeneratedId {
   private static final long serialVersionUID = -7245103766854987243L;
 
   public static enum Role {
-    USER, INSTRUCTOR, ADMIN, NUL;
+    USER, INSTRUCTOR, ADMIN;
 
     public String roleValue() {
       return "ROLE_" + toString();
     }
   }
 
+  @Email
   @NotNull
   @Column(updatable = false)
   @Size(min = 5, max = 255)
@@ -55,25 +59,29 @@ public class AstroAppUser extends AbstractGeneratedId {
   @NotNull
   @Size(min = 1, max = 35)
   private String lastName;
-
-  @NotNull
+  
+  
   @JsonProperty(access = Access.WRITE_ONLY)
-  @Column(length = 62)
+  @Column(length = 62, nullable = false)
   private String password;
 
   @NotNull
+  @JsonProperty(access = Access.READ_ONLY)
   private boolean isUserNonExpired = true;
 
   @NotNull
+  @JsonProperty(access = Access.READ_ONLY)
   private boolean isPasswordNonExpired = true;
 
   @NotNull
+  @JsonProperty(access = Access.READ_ONLY)
   private boolean isUserNonLocked = true;
 
   @NotNull
+  @JsonProperty(access = Access.READ_ONLY)
   private boolean isEnabled = true;
 
-  @NotNull
+  @LogicalAppRoles
   @ElementCollection(targetClass = Role.class)
   @JoinTable(name = "ROLE", uniqueConstraints = @UniqueConstraint(columnNames = {"role", "userId"}),
       joinColumns = @JoinColumn(name = "userId"), indexes = @Index(columnList = "userId"))

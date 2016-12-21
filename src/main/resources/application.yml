@@ -8,12 +8,7 @@ logging:
     root: info
 server:
   session:
-    tracking-modes: COOKIE
     timeout: 1800 #(30 minutes)
-    persistent: true
-    cookie:
-      name: SESSIONID
-      http-only: true
   use-forward-headers: true
 ---
 spring:
@@ -24,15 +19,11 @@ spring:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:h2:mem:umdastro
+    url: jdbc:h2:~/umdastro
     username: sa
     password: 
     schema: classpath:org/springframework/session/jdbc/schema-h2.sql
   h2:
     console:
-      enabled: true
-      path: /public/h2
-security:
-  headers:
-    frame: false
-  enable-csrf: false
+      enabled: false
+  

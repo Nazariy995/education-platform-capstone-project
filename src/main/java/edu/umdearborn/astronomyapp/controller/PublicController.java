@@ -26,6 +26,7 @@ public class PublicController {
 
   @RequestMapping("/self")
   public AstroAppUser getSelf(Principal principal) {
+    logger.trace("Getting self details");
     if (null == principal) {
       return null;
     }

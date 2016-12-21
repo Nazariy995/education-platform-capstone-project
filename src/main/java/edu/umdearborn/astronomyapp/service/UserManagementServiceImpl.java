@@ -71,7 +71,8 @@ public class UserManagementServiceImpl implements UserManagementService {
   @Override
   public AstroAppUser persistNewUser(AstroAppUser user) {
     Assert.isNull(user.getId(), "Attempting to persist existing user as new user");
-
+    Assert.isTrue(!userRepository.emailExists(user.getEmail()), "Email already exists");
+    
     user.setPasswordNonExpired(false);
     user.setPassword(RandomStringUtils.randomAlphanumeric(12));
 
