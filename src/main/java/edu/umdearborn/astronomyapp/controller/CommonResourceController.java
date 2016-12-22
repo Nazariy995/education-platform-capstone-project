@@ -11,13 +11,13 @@ import edu.umdearborn.astronomyapp.repository.CourseUserRepository;
 
 @RestController
 public class CommonResourceController {
-  
+
   private CourseUserRepository courseUserRepository;
-  
+
   public CommonResourceController(CourseUserRepository courseUserRepository) {
     this.courseUserRepository = courseUserRepository;
   }
-  
+
   @RequestMapping("/course/current")
   public Set<Course> getCourses(Principal principal) {
     return courseUserRepository.getCurrentCourses(principal.getName());

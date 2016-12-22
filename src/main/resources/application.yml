@@ -16,10 +16,13 @@ spring:
   datasource:
     schema: classpath:org/springframework/session/jdbc/schema-postgresql.sql
 ---
+logging:
+  level:
+    edu.umdearborn.astronomyapp: debug
 spring:
   profiles: dev
   datasource:
-    url: jdbc:h2:~/umdastro
+    url: jdbc:h2:mem:umdastro
     username: sa
     password: 
     schema: classpath:org/springframework/session/jdbc/schema-h2.sql
