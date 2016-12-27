@@ -7,7 +7,9 @@ app.controller('LoginCtrl', function($rootScope, $scope,$state, AuthService){
     };
 
     self.login = function(credentials){
+        console.log(credentials);
         AuthService.login(credentials).then(function(res){
+//            console.log(headers);
             //Hack for role switching
             if(self.credentials.username == "student"){
                 $rootScope.role="student";
@@ -25,6 +27,7 @@ app.controller('LoginCtrl', function($rootScope, $scope,$state, AuthService){
                 console.log("Login Failed");
             }
         },function(){
+            console.log("failed");  
             $rootScope.authenticated = false;
                 console.log("Login Failed");
         });
@@ -32,3 +35,4 @@ app.controller('LoginCtrl', function($rootScope, $scope,$state, AuthService){
 
 
 });
+
