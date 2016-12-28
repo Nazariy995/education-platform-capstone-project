@@ -1,11 +1,11 @@
-# astronomy-app
+# Astronomy App
+## University of Michigan Dearborn Senior Design Fall 2016 - Winter 2017
 
-To run:
+[![Build Status](https://travis-ci.org/pbremer/astronomy-app.svg?branch=master)](https://travis-ci.org/pbremer/astronomy-app)
 
-1. download spring tool suite (https://spring.io/tools)
-2. right click > run as > run configurations
-3. create a new spring boot run configuration
-4. in override properties:
-  * datasource.password -> the password
-  * datasource.username -> the username
-  * datasource.url -> the url
+Contributors:
+* Patrick Bremer
+* Nazariy Dumanskyy
+* Nicholas Ibrahim
+* Rodney Lewis
+* Harrison Telfer
