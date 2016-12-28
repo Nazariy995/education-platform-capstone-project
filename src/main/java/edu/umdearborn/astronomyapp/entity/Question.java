@@ -23,10 +23,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @DiscriminatorColumn(name = "questionType")
 public class Question extends PageItem {
 
-  private static final long serialVersionUID = -3801803453986972162L;
-
   public static enum QuestionType {
-    NUMERIC(true), MULTIPLE_CHOICE(true), IMAGE(false), FREE_RESPONSE(false), NUL(false);
+    FREE_RESPONSE(false), IMAGE(false), MULTIPLE_CHOICE(true), NUL(false), NUMERIC(true);
 
     private boolean isMachineGradeable;
 
@@ -39,6 +37,13 @@ public class Question extends PageItem {
     }
   }
 
+  private static final long serialVersionUID = -3801803453986972162L;
+
+  private String defaultComment;
+
+  @NotNull
+  private boolean isGatekeeper = false;
+
   @NotNull
   @DecimalMin("0")
   @Column(precision = 8, scale = 4)
@@ -49,55 +54,50 @@ public class Question extends PageItem {
   @Column(length = 15)
   private QuestionType questionType = QuestionType.NUL;
 
-  @NotNull
-  private boolean isGatekeeper = false;
-
-  private String defaultComment;
-
-  public BigDecimal getPoints() {
-    return points;
-  }
-
-  public void setPoints(BigDecimal points) {
-    this.points = points;
-  }
-
-  public QuestionType getQuestionType() {
-    return questionType;
-  }
-
-  public void setQuestionType(QuestionType questionType) {
-    this.questionType = questionType;
-  }
-
-  public boolean isGatekeeper() {
-    return isGatekeeper;
-  }
-
-  public void setGatekeeper(boolean isGatekeeper) {
-    this.isGatekeeper = isGatekeeper;
+  @Override
+  public boolean equals(Object obj) {
+    return EqualsBuilder.reflectionEquals(this, obj);
   }
 
   public String getDefaultComment() {
     return defaultComment;
   }
 
-  public void setDefaultComment(String defaultComment) {
-    this.defaultComment = defaultComment;
+  public BigDecimal getPoints() {
+    return points;
+  }
+
+  public QuestionType getQuestionType() {
+    return questionType;
+  }
+
+  @Override
+  public int hashCode() {
+    return HashCodeBuilder.reflectionHashCode(this);
+  }
+
+  public boolean isGatekeeper() {
+    return isGatekeeper;
   }
 
   public boolean isMachineGradeable() {
     return questionType.isMachineGradeable;
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj);
+  public void setDefaultComment(String defaultComment) {
+    this.defaultComment = defaultComment;
   }
 
-  @Override
-  public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this);
+  public void setGatekeeper(boolean isGatekeeper) {
+    this.isGatekeeper = isGatekeeper;
+  }
+
+  public void setPoints(BigDecimal points) {
+    this.points = points;
+  }
+
+  public void setQuestionType(QuestionType questionType) {
+    this.questionType = questionType;
   }
 
   @Override

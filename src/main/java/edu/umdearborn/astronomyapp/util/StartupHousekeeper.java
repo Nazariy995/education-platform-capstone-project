@@ -22,9 +22,9 @@ public class StartupHousekeeper {
 
   private static final Logger logger = LoggerFactory.getLogger(StartupHousekeeper.class);
 
-  private UserRepository userRepository;
-
   private PasswordEncoder passwordEncoder;
+
+  private UserRepository userRepository;
 
   @Autowired
   public StartupHousekeeper(UserRepository userRepository, PasswordEncoder passwordEncoder) {

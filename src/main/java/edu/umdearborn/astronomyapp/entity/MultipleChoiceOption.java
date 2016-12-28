@@ -26,22 +26,22 @@ public class MultipleChoiceOption extends AbstractOption {
   @Size(min = 1)
   private String humanReadableText;
 
-  public String getHumanReadableText() {
-    return humanReadableText;
-  }
-
-  public void setHumanReadableText(String humanReadableText) {
-    this.humanReadableText = humanReadableText;
-  }
-
   @Override
   public boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj);
   }
 
+  public String getHumanReadableText() {
+    return humanReadableText;
+  }
+
   @Override
   public int hashCode() {
     return HashCodeBuilder.reflectionHashCode(this);
+  }
+
+  public void setHumanReadableText(String humanReadableText) {
+    this.humanReadableText = humanReadableText;
   }
 
   @Override

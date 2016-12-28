@@ -15,14 +15,6 @@ public abstract class AbstractOption extends AbstractGeneratedId {
   @NotNull
   private boolean isCorrectOption = false;
 
-  public boolean isCorrectOption() {
-    return isCorrectOption;
-  }
-
-  public void setCorrectOption(boolean isCorrectOption) {
-    this.isCorrectOption = isCorrectOption;
-  }
-
   @Override
   public boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj);
@@ -31,6 +23,14 @@ public abstract class AbstractOption extends AbstractGeneratedId {
   @Override
   public int hashCode() {
     return HashCodeBuilder.reflectionHashCode(this);
+  }
+
+  public boolean isCorrectOption() {
+    return isCorrectOption;
+  }
+
+  public void setCorrectOption(boolean isCorrectOption) {
+    this.isCorrectOption = isCorrectOption;
   }
 
   @Override

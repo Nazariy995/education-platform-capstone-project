@@ -12,13 +12,12 @@ server:
   use-forward-headers: true
 ---
 spring:
-  profiles: prod
+  profiles: prod-init
   datasource:
     schema: classpath:org/springframework/session/jdbc/schema-postgresql.sql
+  jpa:
+    generate-ddl: true
 ---
-logging:
-  level:
-    edu.umdearborn.astronomyapp: debug
 spring:
   profiles: dev
   datasource:
@@ -29,4 +28,7 @@ spring:
   h2:
     console:
       enabled: false
+logging:
+  level:
+    edu.umdearborn.astronomyapp: debug
   

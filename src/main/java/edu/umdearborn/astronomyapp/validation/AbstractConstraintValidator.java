@@ -6,7 +6,7 @@ import javax.validation.ConstraintValidator;
 
 public abstract class AbstractConstraintValidator<A extends Annotation, T>
     implements ConstraintValidator<A, T> {
-  
+
   @Override
   public void initialize(A constraintAnnotation) {
     // Intentionally left blank

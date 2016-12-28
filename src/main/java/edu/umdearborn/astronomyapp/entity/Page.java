@@ -27,6 +27,10 @@ public class Page extends AbstractGeneratedId {
 
   private static final long serialVersionUID = 3881270380048176L;
 
+  @Lob
+  @Basic(fetch = FetchType.LAZY)
+  private String humanReadableText;
+
   @Valid
   @NotNull
   @ManyToOne
@@ -38,42 +42,38 @@ public class Page extends AbstractGeneratedId {
   @Column(name = "pageOrder")
   private int order = 0;
 
-  @Lob
-  @Basic(fetch = FetchType.LAZY)
-  private String humanReadableText;
-
-  public Module getModule() {
-    return module;
-  }
-
-  public void setModule(Module module) {
-    this.module = module;
-  }
-
-  public int getOrder() {
-    return order;
-  }
-
-  public void setOrder(int order) {
-    this.order = order;
+  @Override
+  public boolean equals(Object obj) {
+    return EqualsBuilder.reflectionEquals(this, obj);
   }
 
   public String getHumanReadableText() {
     return humanReadableText;
   }
 
-  public void setHumanReadableText(String humanReadableText) {
-    this.humanReadableText = humanReadableText;
+  public Module getModule() {
+    return module;
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj);
+  public int getOrder() {
+    return order;
   }
 
   @Override
   public int hashCode() {
     return HashCodeBuilder.reflectionHashCode(this);
+  }
+
+  public void setHumanReadableText(String humanReadableText) {
+    this.humanReadableText = humanReadableText;
+  }
+
+  public void setModule(Module module) {
+    this.module = module;
+  }
+
+  public void setOrder(int order) {
+    this.order = order;
   }
 
   @Override

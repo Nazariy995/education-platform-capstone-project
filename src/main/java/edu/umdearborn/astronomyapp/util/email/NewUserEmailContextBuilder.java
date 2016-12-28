@@ -10,17 +10,17 @@ import org.springframework.util.Assert;
 import edu.umdearborn.astronomyapp.entity.AstroAppUser;
 
 public class NewUserEmailContextBuilder implements EmailContextBuilder {
-  
-  public static final String TEMPLATE = "/email/new-user-email-template.htm";
-  
+
   public static final String EMAIL_SUBJECT = "Welcome to UMD Astronomy Learning Module Application";
-  
+
+  public static final String TEMPLATE = "/email/new-user-email-template.htm";
+
   private AstroAppUser user;
-  
+
   public NewUserEmailContextBuilder(AstroAppUser user) {
     this.user = user;
   }
-  
+
   @Override
   public Map<String, String> buildContext() {
     Map<String, String> context = new HashMap<>();
@@ -32,7 +32,7 @@ public class NewUserEmailContextBuilder implements EmailContextBuilder {
     context.put("user.temppass", user.getPassword());
     return context;
   }
-  
+
   @PostConstruct
   public void postConstruct() {
     Assert.notNull(user);

@@ -26,11 +26,7 @@ public class Grade extends AbstractGeneratedId {
 
   private static final long serialVersionUID = -6636738045828148302L;
 
-  @Valid
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "courseUserId", updatable = false)
-  private CourseUser user;
+  private String comment;
 
   @Valid
   @NotNull
@@ -43,48 +39,52 @@ public class Grade extends AbstractGeneratedId {
   @Column(precision = 8, scale = 4)
   private BigDecimal totalPointsEarned = new BigDecimal(0);
 
-  private String comment;
-
-  public CourseUser getUser() {
-    return user;
-  }
-
-  public void setUser(CourseUser user) {
-    this.user = user;
-  }
-
-  public Module getModule() {
-    return module;
-  }
-
-  public void setModule(Module module) {
-    this.module = module;
-  }
-
-  public BigDecimal getTotalPointsEarned() {
-    return totalPointsEarned;
-  }
-
-  public void setTotalPointsEarned(BigDecimal totalPointsEarned) {
-    this.totalPointsEarned = totalPointsEarned;
-  }
-
-  public String getComment() {
-    return comment;
-  }
-
-  public void setComment(String comment) {
-    this.comment = comment;
-  }
+  @Valid
+  @NotNull
+  @ManyToOne
+  @JoinColumn(name = "courseUserId", updatable = false)
+  private CourseUser user;
 
   @Override
   public boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj);
   }
 
+  public String getComment() {
+    return comment;
+  }
+
+  public Module getModule() {
+    return module;
+  }
+
+  public BigDecimal getTotalPointsEarned() {
+    return totalPointsEarned;
+  }
+
+  public CourseUser getUser() {
+    return user;
+  }
+
   @Override
   public int hashCode() {
     return HashCodeBuilder.reflectionHashCode(this);
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
+  }
+
+  public void setModule(Module module) {
+    this.module = module;
+  }
+
+  public void setTotalPointsEarned(BigDecimal totalPointsEarned) {
+    this.totalPointsEarned = totalPointsEarned;
+  }
+
+  public void setUser(CourseUser user) {
+    this.user = user;
   }
 
   @Override

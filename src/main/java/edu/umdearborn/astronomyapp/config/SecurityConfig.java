@@ -27,6 +27,12 @@ import edu.umdearborn.astronomyapp.config.annotation.Prod;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+  @Prod
+  @Bean("passwordEncoder")
+  public PasswordEncoder bCryptPasswordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     // @formatter:off
@@ -58,12 +64,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .maximumSessions(1)
         .expiredUrl(SESSION_EXPIRED_PATH);
     // @formatter:on
-  }
-
-  @Prod
-  @Bean("passwordEncoder")
-  public PasswordEncoder bCryptPasswordEncoder() {
-    return new BCryptPasswordEncoder();
   }
 
   @Dev

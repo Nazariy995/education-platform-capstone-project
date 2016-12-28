@@ -29,9 +29,10 @@ public class Course extends AbstractGeneratedId {
   private static final long serialVersionUID = 2442282448974230234L;
 
   @NotNull
-  @Column(updatable = false)
-  @Size(min = 1, max = 6)
-  private String subjectCode;
+  @Future
+  @Temporal(TemporalType.TIMESTAMP)
+  @JsonFormat(pattern = ISO_DATE_FORMAT, locale = "UTC")
+  private Date closeTimestamp;
 
   @NotNull
   @Column(updatable = false)
@@ -41,66 +42,65 @@ public class Course extends AbstractGeneratedId {
   @NotNull
   @Size(min = 1, max = 60)
   private String courseTitle;
-  
+
   @NotNull
   @Temporal(TemporalType.TIMESTAMP)
   @JsonFormat(pattern = ISO_DATE_FORMAT, locale = "UTC")
   private Date openTimestamp;
 
   @NotNull
-  @Future
-  @Temporal(TemporalType.TIMESTAMP)
-  @JsonFormat(pattern = ISO_DATE_FORMAT, locale = "UTC")
-  private Date closeTimestamp;
-
-  public String getSubjectCode() {
-    return subjectCode;
-  }
-
-  public void setSubjectCode(String subjectCode) {
-    this.subjectCode = subjectCode;
-  }
-
-  public String getCourseCode() {
-    return courseCode;
-  }
-
-  public void setCourseCode(String courseCode) {
-    this.courseCode = courseCode;
-  }
-
-  public String getCourseTitle() {
-    return courseTitle;
-  }
-
-  public void setCourseTitle(String courseTitle) {
-    this.courseTitle = courseTitle;
-  }
-
-  public Date getOpenTimestamp() {
-    return openTimestamp;
-  }
-
-  public void setOpenTimestamp(Date openTimestamp) {
-    this.openTimestamp = openTimestamp;
-  }
-
-  public Date getCloseTimestamp() {
-    return closeTimestamp;
-  }
-
-  public void setCloseTimestamp(Date closeTimestamp) {
-    this.closeTimestamp = closeTimestamp;
-  }
+  @Column(updatable = false)
+  @Size(min = 1, max = 6)
+  private String subjectCode;
 
   @Override
   public boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj);
   }
 
+  public Date getCloseTimestamp() {
+    return closeTimestamp;
+  }
+
+  public String getCourseCode() {
+    return courseCode;
+  }
+
+  public String getCourseTitle() {
+    return courseTitle;
+  }
+
+  public Date getOpenTimestamp() {
+    return openTimestamp;
+  }
+
+  public String getSubjectCode() {
+    return subjectCode;
+  }
+
   @Override
   public int hashCode() {
     return HashCodeBuilder.reflectionHashCode(this);
+  }
+
+  public void setCloseTimestamp(Date closeTimestamp) {
+    this.closeTimestamp = closeTimestamp;
+  }
+
+  public void setCourseCode(String courseCode) {
+    this.courseCode = courseCode;
+  }
+
+  public void setCourseTitle(String courseTitle) {
+    this.courseTitle = courseTitle;
+  }
+
+  public void setOpenTimestamp(Date openTimestamp) {
+    this.openTimestamp = openTimestamp;
+  }
+
+  public void setSubjectCode(String subjectCode) {
+    this.subjectCode = subjectCode;
   }
 
   @Override

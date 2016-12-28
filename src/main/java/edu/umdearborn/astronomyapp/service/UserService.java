@@ -20,14 +20,19 @@ import edu.umdearborn.astronomyapp.util.converter.UserConverter;
 @Transactional
 public class UserService implements UserDetailsService {
 
-  private UserRepository userRepository;
-
   private UserConverter userConverter;
+
+  private UserRepository userRepository;
 
   @Autowired
   public UserService(UserRepository userRepository, UserConverter userConverter) {
     this.userRepository = userRepository;
     this.userConverter = userConverter;
+  }
+
+  private AstroAppUser getUser(String username) {
+    Optional<AstroAppUser> user = Optional.of(userRepository.findByEmail(username));
+    return user.orElseThrow(() -> new UsernameNotFoundException("Cannot find: " + username));
   }
 
   @Override
@@ -39,11 +44,6 @@ public class UserService implements UserDetailsService {
   public void postConstruct() {
     Assert.notNull(userRepository);
     Assert.notNull(userConverter);
-  }
-
-  private AstroAppUser getUser(String username) {
-    Optional<AstroAppUser> user = Optional.of(userRepository.findByEmail(username));
-    return user.orElseThrow(() -> new UsernameNotFoundException("Cannot find: " + username));
   }
 
 }

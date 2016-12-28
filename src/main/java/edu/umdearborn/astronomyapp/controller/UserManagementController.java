@@ -28,8 +28,7 @@ public class UserManagementController {
   }
 
   @RequestMapping(path = ADMIN_PATH + "/createuser", method = POST)
-  public AstroAppUser createUser(@Valid @RequestBody AstroAppUser newUser,
-      Errors errors) {
+  public AstroAppUser createUser(@Valid @RequestBody AstroAppUser newUser, Errors errors) {
     if (errors.hasErrors()) {
       throw new ValidationErrorsException(errors);
     }

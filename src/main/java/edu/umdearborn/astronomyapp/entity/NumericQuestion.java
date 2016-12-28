@@ -25,10 +25,14 @@ public class NumericQuestion extends AbstractOptionsQuestion<UnitOption> {
 
   // private static final String DECIMAL_FORMAT = "0.0E0";
 
+  @NotNull
+  @Column(precision = 11, scale = 10)
+  private BigDecimal allowedCoefficientSpread = new BigDecimal(0);
+
+  @NotNull
   @Min(0)
   @Max(10)
-  @NotNull
-  private int requiresScale = 0;
+  private int allowedExponenetSpread = 0;
 
   @NotNull
   @Column(precision = 11, scale = 10)
@@ -39,37 +43,34 @@ public class NumericQuestion extends AbstractOptionsQuestion<UnitOption> {
   @Max(10)
   private int correctExponenet = 0;
 
-  @NotNull
-  @Column(precision = 11, scale = 10)
-  private BigDecimal allowedCoefficientSpread = new BigDecimal(0);
-
-  @NotNull
   @Min(0)
   @Max(10)
-  private int allowedExponenetSpread = 0;
+  @NotNull
+  private int requiresScale = 0;
 
-  public int getRequiresScale() {
-    return requiresScale;
+  @Override
+  public boolean equals(Object obj) {
+    return EqualsBuilder.reflectionEquals(this, obj);
   }
 
-  public void setRequiresScale(int requiresScale) {
-    this.requiresScale = requiresScale;
+  public BigDecimal getAllowedCoefficientSpread() {
+    return allowedCoefficientSpread;
+  }
+
+  public int getAllowedExponenetSpread() {
+    return allowedExponenetSpread;
   }
 
   public BigDecimal getCorrectCoefficient() {
     return correctCoefficient;
   }
 
-  public void setCorrectCoefficient(BigDecimal correctCoefficient) {
-    this.correctCoefficient = correctCoefficient;
-  }
-
   public int getCorrectExponenet() {
     return correctExponenet;
   }
 
-  public void setCorrectExponenet(int correctExponenet) {
-    this.correctExponenet = correctExponenet;
+  public int getRequiresScale() {
+    return requiresScale;
   }
 
   // TODO: (Patrick) move this logic to a grading service
@@ -92,30 +93,29 @@ public class NumericQuestion extends AbstractOptionsQuestion<UnitOption> {
   // .map(x -> x.getUnit().getHumanReadableText()).findFirst().orElse("");
   // }
 
-  public BigDecimal getAllowedCoefficientSpread() {
-    return allowedCoefficientSpread;
+  @Override
+  public int hashCode() {
+    return HashCodeBuilder.reflectionHashCode(this);
   }
 
   public void setAllowedCoefficientSpread(BigDecimal allowedCoefficientSpread) {
     this.allowedCoefficientSpread = allowedCoefficientSpread;
   }
 
-  public int getAllowedExponenetSpread() {
-    return allowedExponenetSpread;
-  }
-
   public void setAllowedExponenetSpread(int allowedExponenetSpread) {
     this.allowedExponenetSpread = allowedExponenetSpread;
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj);
+  public void setCorrectCoefficient(BigDecimal correctCoefficient) {
+    this.correctCoefficient = correctCoefficient;
   }
 
-  @Override
-  public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this);
+  public void setCorrectExponenet(int correctExponenet) {
+    this.correctExponenet = correctExponenet;
+  }
+
+  public void setRequiresScale(int requiresScale) {
+    this.requiresScale = requiresScale;
   }
 
   @Override

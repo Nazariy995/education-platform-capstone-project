@@ -25,6 +25,16 @@ public class ModuleLock extends AbstractGeneratedId {
 
   private static final long serialVersionUID = 5772684472161202294L;
 
+  @NotNull
+  @Future
+  private Date expirationTimestamp;
+
+  @Valid
+  @NotNull
+  @ManyToOne
+  @JoinColumn(name = "moduleGroupId", updatable = false)
+  private ModuleGroup group;
+
   @Valid
   @NotNull
   @ManyToOne
@@ -37,56 +47,46 @@ public class ModuleLock extends AbstractGeneratedId {
   @JoinColumn(name = "courseUserId", updatable = false)
   private CourseUser user;
 
-  @Valid
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "moduleGroupId", updatable = false)
-  private ModuleGroup group;
-
-  @NotNull
-  @Future
-  private Date expirationTimestamp;
-
-  public Module getModule() {
-    return module;
-  }
-
-  public void setModule(Module module) {
-    this.module = module;
-  }
-
-  public CourseUser getUser() {
-    return user;
-  }
-
-  public void setUser(CourseUser user) {
-    this.user = user;
-  }
-
-  public ModuleGroup getGroup() {
-    return group;
-  }
-
-  public void setGroup(ModuleGroup group) {
-    this.group = group;
+  @Override
+  public boolean equals(Object obj) {
+    return EqualsBuilder.reflectionEquals(this, obj);
   }
 
   public Date getExpirationTimestamp() {
     return expirationTimestamp;
   }
 
-  public void setExpirationTimestamp(Date expirationTimestamp) {
-    this.expirationTimestamp = expirationTimestamp;
+  public ModuleGroup getGroup() {
+    return group;
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj);
+  public Module getModule() {
+    return module;
+  }
+
+  public CourseUser getUser() {
+    return user;
   }
 
   @Override
   public int hashCode() {
     return HashCodeBuilder.reflectionHashCode(this);
+  }
+
+  public void setExpirationTimestamp(Date expirationTimestamp) {
+    this.expirationTimestamp = expirationTimestamp;
+  }
+
+  public void setGroup(ModuleGroup group) {
+    this.group = group;
+  }
+
+  public void setModule(Module module) {
+    this.module = module;
+  }
+
+  public void setUser(CourseUser user) {
+    this.user = user;
   }
 
   @Override

@@ -21,11 +21,11 @@ import edu.umdearborn.astronomyapp.validation.LogicalAppRoleConstraintValidator;
 @Size(min = 1, max = 2)
 @Constraint(validatedBy = LogicalAppRoleConstraintValidator.class)
 public @interface LogicalAppRoles {
-  
-  public abstract String message() default "{edu.umdearborn.astronomyapp.util.validator.Role.message}";
 
   public abstract Class<?>[] groups() default {};
 
+  public abstract String message() default "{edu.umdearborn.astronomyapp.util.validator.Role.message}";
+
   public abstract Class<? extends Payload>[] payload() default {};
-  
+
 }

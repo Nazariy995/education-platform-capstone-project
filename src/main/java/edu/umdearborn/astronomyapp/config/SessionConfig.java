@@ -9,10 +9,10 @@ import org.springframework.session.web.http.HttpSessionStrategy;
 @Configuration
 @EnableJdbcHttpSession
 public class SessionConfig {
-  
+
   @Bean
   public HttpSessionStrategy httpSessionStrategy() {
     return new HeaderHttpSessionStrategy();
   }
-  
+
 }

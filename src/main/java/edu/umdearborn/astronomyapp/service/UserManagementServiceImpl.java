@@ -26,8 +26,6 @@ import edu.umdearborn.astronomyapp.util.email.NewUserEmailContextBuilder;
 @Transactional
 public class UserManagementServiceImpl implements UserManagementService {
 
-  private UserRepository userRepository;
-
   private CourseRepository courseRepository;
 
   private CourseUserRepository courseUserRepository;
@@ -35,6 +33,8 @@ public class UserManagementServiceImpl implements UserManagementService {
   private EmailService emailService;
 
   private PasswordEncoder passwordEncoder;
+
+  private UserRepository userRepository;
 
   public UserManagementServiceImpl(UserRepository userRepository, CourseRepository courseRepository,
       CourseUserRepository courseUserRepository, EmailService emailService,
@@ -44,12 +44,6 @@ public class UserManagementServiceImpl implements UserManagementService {
     this.courseUserRepository = courseUserRepository;
     this.emailService = emailService;
     this.passwordEncoder = passwordEncoder;
-  }
-
-  @Override
-  public AstroAppUser updateUser(AstroAppUser user) {
-    Assert.notNull(user.getId(), "Attempting to update non-existant user");
-    return userRepository.save(user);
   }
 
   @Override
@@ -72,7 +66,7 @@ public class UserManagementServiceImpl implements UserManagementService {
   public AstroAppUser persistNewUser(AstroAppUser user) {
     Assert.isNull(user.getId(), "Attempting to persist existing user as new user");
     Assert.isTrue(!userRepository.emailExists(user.getEmail()), "Email already exists");
-    
+
     user.setPasswordNonExpired(false);
     user.setPassword(RandomStringUtils.randomAlphanumeric(12));
 
@@ -91,6 +85,12 @@ public class UserManagementServiceImpl implements UserManagementService {
     Assert.notNull(courseUserRepository);
     Assert.notNull(emailService);
     Assert.notNull(passwordEncoder);
+  }
+
+  @Override
+  public AstroAppUser updateUser(AstroAppUser user) {
+    Assert.notNull(user.getId(), "Attempting to update non-existant user");
+    return userRepository.save(user);
   }
 
 }

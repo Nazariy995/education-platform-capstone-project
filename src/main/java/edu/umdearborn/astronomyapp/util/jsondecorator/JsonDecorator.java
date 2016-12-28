@@ -20,24 +20,24 @@ public class JsonDecorator {
   @JsonUnwrapped
   private Map<Object, Object> properties = new HashMap<>();
 
-  public Object getPayload() {
-    return payload;
+  public Object addProperty(Object key, Object value) {
+    return properties.put(key, value);
   }
 
-  public void setPayload(Object payload) {
-    this.payload = payload;
+  public Object getPayload() {
+    return payload;
   }
 
   public Map<Object, Object> getProperties() {
     return properties;
   }
 
-  public void setProperties(Map<Object, Object> properties) {
-    this.properties = properties;
+  public void setPayload(Object payload) {
+    this.payload = payload;
   }
 
-  public Object addProperty(Object key, Object value) {
-    return properties.put(key, value);
+  public void setProperties(Map<Object, Object> properties) {
+    this.properties = properties;
   }
 
 }

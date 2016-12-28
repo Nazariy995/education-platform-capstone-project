@@ -1,6 +1,6 @@
 /**
  * Utility classes
- * 
+ *
  * @author Patrick Bremer
  *
  */

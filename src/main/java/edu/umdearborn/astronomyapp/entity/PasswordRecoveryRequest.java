@@ -26,42 +26,42 @@ public class PasswordRecoveryRequest extends AbstractGeneratedId {
 
   private static final long serialVersionUID = -834154778189285366L;
 
-  @Valid
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "userId", updatable = false)
-  private AstroAppUser user;
-
   @NotNull
   @Future
   @Temporal(TemporalType.TIMESTAMP)
   @Column(updatable = false)
   private Date expirationTimestamp;
 
-  public AstroAppUser getUser() {
-    return user;
-  }
-
-  public void setUser(AstroAppUser user) {
-    this.user = user;
-  }
-
-  public Date getExpirationTimestamp() {
-    return expirationTimestamp;
-  }
-
-  public void setExpirationTimestamp(Date expirationTimestamp) {
-    this.expirationTimestamp = expirationTimestamp;
-  }
+  @Valid
+  @NotNull
+  @ManyToOne
+  @JoinColumn(name = "userId", updatable = false)
+  private AstroAppUser user;
 
   @Override
   public boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj);
   }
 
+  public Date getExpirationTimestamp() {
+    return expirationTimestamp;
+  }
+
+  public AstroAppUser getUser() {
+    return user;
+  }
+
   @Override
   public int hashCode() {
     return HashCodeBuilder.reflectionHashCode(this);
+  }
+
+  public void setExpirationTimestamp(Date expirationTimestamp) {
+    this.expirationTimestamp = expirationTimestamp;
+  }
+
+  public void setUser(AstroAppUser user) {
+    this.user = user;
   }
 
   @Override

@@ -2,7 +2,7 @@ package edu.umdearborn.astronomyapp.util.constants;
 
 public final class UrlConstants {
 
-  public static final String[] PUBLIC_PATH_PATTERNS = {"/", "/home", "/index", "/*.*", "**/*.*", "/public/**"};
+  public static final String[] PUBLIC_PATH_PATTERNS = {"/", "/home", "/index", "**/*.*", "/public/**"};
 
   public static final String ADMIN_PATH         = "/admin";
   public static final String ADMIN_PATH_PATTERN = ADMIN_PATH + "/**";

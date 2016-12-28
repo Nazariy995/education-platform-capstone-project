@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ViewController {
 
   private static final Logger logger = LoggerFactory.getLogger(ViewController.class);
-  
+
   @RequestMapping(value = "/{[path:[^\\.]*}")
   public String redirect() {
     logger.debug("Forewarding to static resource...");
