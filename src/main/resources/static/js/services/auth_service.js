@@ -3,10 +3,15 @@ app.factory('AuthService', function($http){
     var auth_service = {};
 
     auth_service.login = function(credentials){
+        var headers = credentials ? {authorization : "Basic "
+                             + btoa(credentials.username + ":" + credentials.password)
+                            } : {};
+        
         return $http
-              .get('./test/login.json', credentials)
-              .then(function (res) {
-                return res.data;
+              .get('http://localhost:8080/', {headers : headers})
+              .then(function (resposnse) {
+                console.log(resposnse.headers("x-auth-token"));   
+                return resposnse;
               });
     };
 
