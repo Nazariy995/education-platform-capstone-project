@@ -10,6 +10,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
@@ -21,6 +22,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @DiscriminatorValue("QUESTION")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "questionType")
+@PrimaryKeyJoinColumn(name = "QUESTION_ID")
 public class Question extends PageItem {
 
   public static enum QuestionType {

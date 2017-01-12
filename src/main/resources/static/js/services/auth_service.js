@@ -8,7 +8,7 @@ app.factory('AuthService', function($http){
                             } : {};
         
         return $http
-              .get('http://localhost:8080/', {headers : headers})
+              .get('/home', {headers : headers})
               .then(function (resposnse) {
                 console.log(resposnse.headers("x-auth-token"));   
                 return resposnse;

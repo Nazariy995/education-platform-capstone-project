@@ -2,10 +2,10 @@ package edu.umdearborn.astronomyapp.entity;
 
 import java.math.BigDecimal;
 
-import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -16,7 +16,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
 @DiscriminatorValue("NUMERIC")
-@AttributeOverride(name = "optionQuestionId", column = @Column(name = "numericQuestionOptionId"))
+@PrimaryKeyJoinColumn(name = "NUMERIC_QUESTION_ID")
 public class NumericQuestion extends AbstractOptionsQuestion<UnitOption> {
 
   private static final long serialVersionUID = -4122369698440997963L;
