@@ -13,7 +13,10 @@ gulp.task('js', function () {
 //  gulp.src(['app/**/module.js'])
 //    .pipe(concat('app.js'))
 //    .pipe(gulp.dest('.'))
-    browserify("./static/app.js")
+    browserify({
+        entries : ['./static/app.js'],
+        paths : ['./static/']
+    })
         .bundle()
         .on('error', function(e){
             gutil.log(e);

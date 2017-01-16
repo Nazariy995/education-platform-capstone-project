@@ -1,9 +1,12 @@
 
-function AuthService($http, $window){
+var appSettings = require('app_settings');
+
+function AuthService($http, $window, appSettings){
     "ngInject";
 
     this._$http = $http;
     this._$window = $window;
+    this._appSettings = appSettings;
 }
 
 AuthService.prototype.login = function(credentials){
@@ -12,7 +15,7 @@ AuthService.prototype.login = function(credentials){
                     } : {};
 
     return this._$http
-              .get('http://localhost:8080', {headers : headers})
+              .get(this._appSettings.API.basePath, {headers : headers})
               .then(function (headers) {
 //                console.log(resposnse.headers("x-auth-token"));  
                 return headers;
@@ -21,5 +24,5 @@ AuthService.prototype.login = function(credentials){
 
 }
 
-module.exports = angular.module('app.components.services.auth_service', [])
+module.exports = angular.module('app.components.services.auth_service', [appSettings])
     .service('AuthService', AuthService);

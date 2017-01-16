@@ -12,12 +12,14 @@ var models = require('./models/module');
 var components = require('./components/module');
 var appController = require('./app_controller');
 var appRouter = require('./app_router');
+var appSettings = require('./app_settings');
 
 angular.module("app", [
     //External
     'ui.router',
 
     //Internal
+    appSettings.name,
     models.name,
     components.name,
     views.name
@@ -25,7 +27,7 @@ angular.module("app", [
 .controller('AppController', appController)
 .config(appRouter);
 
-},{"./app_controller":2,"./app_router":3,"./components/module":4,"./models/module":8,"./views/module":13}],2:[function(require,module,exports){
+},{"./app_controller":2,"./app_router":3,"./app_settings":4,"./components/module":5,"./models/module":9,"./views/module":14}],2:[function(require,module,exports){
 
 
 function AppController($scope, $rootScope){
@@ -89,6 +91,13 @@ function Router($stateProvider, $httpProvider, $locationProvider){
 module.exports = Router;
 
 },{}],4:[function(require,module,exports){
+module.exports = angular.module('app.settings', [])
+.constant("appSettings", {
+    "API" : {
+        "basePath" : "http://localhost:8080"
+    }
+})
+},{}],5:[function(require,module,exports){
 
 var services = require('./services/module');
 
@@ -96,13 +105,16 @@ module.exports = angular.module('app.components', [
     services.name
 ]);
 
-},{"./services/module":6}],5:[function(require,module,exports){
+},{"./services/module":7}],6:[function(require,module,exports){
 
-function AuthService($http, $window){
+var appSettings = require('app_settings');
+
+function AuthService($http, $window, appSettings){
     "ngInject";
 
     this._$http = $http;
     this._$window = $window;
+    this._appSettings = appSettings;
 }
 
 AuthService.prototype.login = function(credentials){
@@ -111,7 +123,7 @@ AuthService.prototype.login = function(credentials){
                     } : {};
 
     return this._$http
-              .get('http://localhost:8080', {headers : headers})
+              .get(this._appSettings.API.basePath, {headers : headers})
               .then(function (headers) {
 //                console.log(resposnse.headers("x-auth-token"));  
                 return headers;
@@ -120,10 +132,10 @@ AuthService.prototype.login = function(credentials){
 
 }
 
-module.exports = angular.module('app.components.services.auth_service', [])
+module.exports = angular.module('app.components.services.auth_service', [appSettings])
     .service('AuthService', AuthService);
 
-},{}],6:[function(require,module,exports){
+},{"app_settings":4}],7:[function(require,module,exports){
 
 
 var authService = require('./auth_service');
@@ -132,7 +144,7 @@ module.exports = angular.module('app.components.services', [
     authService.name
 ]);
 
-},{"./auth_service":5}],7:[function(require,module,exports){
+},{"./auth_service":6}],8:[function(require,module,exports){
 /*
 Description: Add, Get, Set, Delete Courses
 */
@@ -159,7 +171,7 @@ module.exports = angular.module('app.models.course', [])
 
 
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 
 
 var courseModel = require('./course');
@@ -170,7 +182,7 @@ module.exports = angular.module('app.models', [
     navigationLinksModel.name
 ])
 
-},{"./course":7,"./navigation_link":9}],9:[function(require,module,exports){
+},{"./course":8,"./navigation_link":10}],10:[function(require,module,exports){
 /*
 Description: Get Navigation Links
 */
@@ -193,7 +205,7 @@ NavigationLinksService.prototype.getLinks = function(){
 module.exports = angular.module('app.models.navigationLinks', [])
     .service('NavigationLinksService', NavigationLinksService);
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 
 function Controller($scope,$state) {
     "ngInject";
@@ -207,7 +219,7 @@ function Controller($scope,$state) {
 module.exports = angular.module('app.views.app.controller', [])
 .controller('AppHomeCtrl', Controller);
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 
 
 function Controller($scope, $state, AuthService){
@@ -254,7 +266,7 @@ module.exports = angular.module('app.views.app.login.controller', [])
 .controller('AppLoginController', Controller);
 
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 
 var homeController = require("./home/controller");
 var loginController = require("./login/controller");
@@ -265,7 +277,7 @@ module.exports = angular.module('app.views.app', [
     loginController.name
 ]);
 
-},{"./home/controller":10,"./login/controller":11}],13:[function(require,module,exports){
+},{"./home/controller":11,"./login/controller":12}],14:[function(require,module,exports){
 var viewsApp = require('./app/module');
 
 module.exports = angular.module('app.views', [
@@ -273,4 +285,4 @@ module.exports = angular.module('app.views', [
 ]);
 
 
-},{"./app/module":12}]},{},[1]);
+},{"./app/module":13}]},{},[1]);
