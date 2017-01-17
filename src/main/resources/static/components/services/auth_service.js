@@ -1,28 +1,37 @@
+var appSettings = require("app_settings");
+var sessionService = require("./session_service");
 
-var appSettings = require('app_settings');
-
-function AuthService($http, $window, appSettings){
+function AuthService($http, $window, appSettings, SessionService){
     "ngInject";
 
     this._$http = $http;
     this._$window = $window;
     this._appSettings = appSettings;
+    this._SessionService = SessionService;
 }
 
 AuthService.prototype.login = function(credentials){
+    var self = this;
     var headers = credentials ? {authorization : "Basic "
                      + btoa(credentials.username + ":" + credentials.password)
                     } : {};
 
     return this._$http
-              .get(this._appSettings.API.basePath, {headers : headers})
-              .then(function (headers) {
-//                console.log(resposnse.headers("x-auth-token"));  
-                return headers;
+              .get(this._appSettings.API.basePath+"/home", {headers : headers})
+              .then(function (response) {
+                    var user = {"name":"cool"};
+                    var accessToken = response.headers("x-auth-token");
+                    self._SessionService.create(user, accessToken);
+                return user;
               });
-
-
 }
 
-module.exports = angular.module('app.components.services.auth_service', [appSettings])
-    .service('AuthService', AuthService);
+AuthService.prototype.logout = function(){
+    this._SessionService.destroy();
+}
+
+module.exports = angular.module('app.components.services.auth_service', [
+    appSettings.name, 
+    sessionService.name
+])
+.service('AuthService', AuthService);

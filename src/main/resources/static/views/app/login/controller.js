@@ -33,8 +33,8 @@ Controller.prototype.login = function(credentials){
 //            }
     },function(){
         console.log("failed");  
-        $rootScope.authenticated = false;
-            console.log("Login Failed");
+//        $rootScope.authenticated = false;
+//            console.log("Login Failed");
     });
     
 }

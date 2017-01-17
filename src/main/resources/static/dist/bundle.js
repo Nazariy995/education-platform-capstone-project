@@ -27,16 +27,14 @@ angular.module("app", [
 .controller('AppController', appController)
 .config(appRouter);
 
-},{"./app_controller":2,"./app_router":3,"./app_settings":4,"./components/module":5,"./models/module":9,"./views/module":14}],2:[function(require,module,exports){
+},{"./app_controller":2,"./app_router":3,"./app_settings":4,"./components/module":5,"./models/module":10,"./views/module":15}],2:[function(require,module,exports){
 
-
-function AppController($scope, $rootScope){
+function AppController($scope, $rootScope, AuthService, SessionService){
     "ngInject";
-
-    var controller= this;
-    controller._$rootScope = $rootScope;
-    controller._$rootScope.user = null;
     
+    this._$rootScope = $rootScope;
+    this._$rootScope.auth = AuthService;
+    this._$rootScope.session = SessionService;
 }
 
 module.exports = AppController;
@@ -106,45 +104,103 @@ module.exports = angular.module('app.components', [
 ]);
 
 },{"./services/module":7}],6:[function(require,module,exports){
+var appSettings = require("app_settings");
+var sessionService = require("./session_service");
 
-var appSettings = require('app_settings');
-
-function AuthService($http, $window, appSettings){
+function AuthService($http, $window, appSettings, SessionService){
     "ngInject";
 
     this._$http = $http;
     this._$window = $window;
     this._appSettings = appSettings;
+    this._SessionService = SessionService;
 }
 
 AuthService.prototype.login = function(credentials){
+    var self = this;
     var headers = credentials ? {authorization : "Basic "
                      + btoa(credentials.username + ":" + credentials.password)
                     } : {};
 
     return this._$http
-              .get(this._appSettings.API.basePath, {headers : headers})
-              .then(function (headers) {
-//                console.log(resposnse.headers("x-auth-token"));  
-                return headers;
+              .get(this._appSettings.API.basePath+"/home", {headers : headers})
+              .then(function (response) {
+                    var user = {"name":"cool"};
+                    var accessToken = response.headers("x-auth-token");
+                    self._SessionService.create(user, accessToken);
+                return user;
               });
-
-
 }
 
-module.exports = angular.module('app.components.services.auth_service', [appSettings])
-    .service('AuthService', AuthService);
+AuthService.prototype.logout = function(){
+    this._SessionService.destroy();
+}
 
-},{"app_settings":4}],7:[function(require,module,exports){
+module.exports = angular.module('app.components.services.auth_service', [
+    appSettings.name, 
+    sessionService.name
+])
+.service('AuthService', AuthService);
+
+},{"./session_service":8,"app_settings":4}],7:[function(require,module,exports){
 
 
 var authService = require('./auth_service');
+var sessionService = require("./session_service");
 
 module.exports = angular.module('app.components.services', [
-    authService.name
+    authService.name, 
+    sessionService.name
 ]);
 
-},{"./auth_service":6}],8:[function(require,module,exports){
+},{"./auth_service":6,"./session_service":8}],8:[function(require,module,exports){
+
+
+function SessionService($window){
+    "ngInject";
+    
+    this._$window = $window;
+    this._user = JSON.parse(localStorage.getItem('session.user'));
+    this._accessToken = JSON.parse(localStorage.getItem('session.accessToken'));
+}
+
+SessionService.prototype.getUser = function(){
+    return this._user;
+}
+
+SessionService.prototype.setUser = function(user){
+    this._user = user;
+    this._$window.localStorage.setItem('session.user', JSON.stringify(user));
+    return this;
+}
+
+SessionService.prototype.getAccessToken = function(){
+    return this._accessToken;
+}
+
+SessionService.prototype.setAccessToken = function(accessToken){
+    this._accessToken = accessToken;
+    this._$window.localStorage.setItem('serssion.accessToken', accessToken);
+    return this;
+}
+
+SessionService.prototype.destroy = function(){
+    this.setUser(null);
+    this.setAccessToken(null);
+}
+
+SessionService.prototype.create = function(user, accessToken){
+    this.setUser(user);
+    this.setAccessToken = accessToken;
+}
+
+module.exports = angular.module('app.components.services.session_service', [])
+    .service('SessionService', SessionService);
+
+
+
+
+},{}],9:[function(require,module,exports){
 /*
 Description: Add, Get, Set, Delete Courses
 */
@@ -171,7 +227,7 @@ module.exports = angular.module('app.models.course', [])
 
 
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 
 
 var courseModel = require('./course');
@@ -182,7 +238,7 @@ module.exports = angular.module('app.models', [
     navigationLinksModel.name
 ])
 
-},{"./course":8,"./navigation_link":10}],10:[function(require,module,exports){
+},{"./course":9,"./navigation_link":11}],11:[function(require,module,exports){
 /*
 Description: Get Navigation Links
 */
@@ -205,7 +261,7 @@ NavigationLinksService.prototype.getLinks = function(){
 module.exports = angular.module('app.models.navigationLinks', [])
     .service('NavigationLinksService', NavigationLinksService);
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 
 function Controller($scope,$state) {
     "ngInject";
@@ -219,7 +275,7 @@ function Controller($scope,$state) {
 module.exports = angular.module('app.views.app.controller', [])
 .controller('AppHomeCtrl', Controller);
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 
 
 function Controller($scope, $state, AuthService){
@@ -255,8 +311,8 @@ Controller.prototype.login = function(credentials){
 //            }
     },function(){
         console.log("failed");  
-        $rootScope.authenticated = false;
-            console.log("Login Failed");
+//        $rootScope.authenticated = false;
+//            console.log("Login Failed");
     });
     
 }
@@ -266,7 +322,7 @@ module.exports = angular.module('app.views.app.login.controller', [])
 .controller('AppLoginController', Controller);
 
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 
 var homeController = require("./home/controller");
 var loginController = require("./login/controller");
@@ -277,7 +333,7 @@ module.exports = angular.module('app.views.app', [
     loginController.name
 ]);
 
-},{"./home/controller":11,"./login/controller":12}],14:[function(require,module,exports){
+},{"./home/controller":12,"./login/controller":13}],15:[function(require,module,exports){
 var viewsApp = require('./app/module');
 
 module.exports = angular.module('app.views', [
@@ -285,4 +341,4 @@ module.exports = angular.module('app.views', [
 ]);
 
 
-},{"./app/module":13}]},{},[1]);
+},{"./app/module":14}]},{},[1]);
