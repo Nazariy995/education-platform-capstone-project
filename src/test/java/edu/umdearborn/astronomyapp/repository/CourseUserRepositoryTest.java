@@ -13,7 +13,19 @@ public class CourseUserRepositoryTest extends RepositoryTestHelper {
 
   @Test
   public void getCurrentCoursesTest() {
-    assertThat("Did not get all open courses", repository.getCurrentCourses("user1@email.com"),
-        hasSize(2));
+    assertThat("Did not get all open courses",
+        repository.getCurrentCourses("adminstructor1@gmail.com"), hasSize(3));
+    assertThat("Did not get all open courses",
+        repository.getCurrentCourses("adminstructor2@gmail.com"), hasSize(1));
+    assertThat("Did not get all open courses",
+        repository.getCurrentCourses("instructor3@gmail.com"), hasSize(1));
+    assertThat("Did not get all open courses",
+        repository.getCurrentCourses("user1@gmail.com"), hasSize(2));
+  }
+  
+  @Test
+  public void isInCourseTest() {
+    assertThat("Should have access", repository.isInCourse("user11@gmail.com", "course1B"));
+    assertThat("Should not have access", !repository.isInCourse("user11@gmail.com", "course1A"));
   }
 }

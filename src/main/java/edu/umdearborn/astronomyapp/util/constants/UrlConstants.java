@@ -3,7 +3,7 @@ package edu.umdearborn.astronomyapp.util.constants;
 public final class UrlConstants {
 
   public static final String[] PUBLIC_PATH_PATTERNS =
-      {"/", "**/*.*", "/index.html", "/app.js", "/app.css", "/js/**", "/views/**"};
+      {"/", "/index.html", "/app.js", "/app.css", "/js/**", "/views/**"};
 
   public static final String REST_PATH_PREFIX = "/rest";
 

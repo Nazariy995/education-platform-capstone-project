@@ -1,9 +1,9 @@
 package edu.umdearborn.astronomyapp.controller;
 
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.REST_PATH_PREFIX;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import java.security.Principal;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.umdearborn.astronomyapp.entity.AstroAppUser;
-import edu.umdearborn.astronomyapp.entity.Course;
-import edu.umdearborn.astronomyapp.repository.CourseUserRepository;
 import edu.umdearborn.astronomyapp.repository.UserRepository;
 
 @RestController
@@ -23,30 +21,21 @@ import edu.umdearborn.astronomyapp.repository.UserRepository;
 public class CommonResourceController {
 
   private static final Logger logger = LoggerFactory.getLogger(CommonResourceController.class);
-  
-  private CourseUserRepository courseUserRepository;
-  
+
   private UserRepository userRepository;
 
-  public CommonResourceController(CourseUserRepository courseUserRepository, UserRepository userRepository) {
-    this.courseUserRepository = courseUserRepository;
+  public CommonResourceController(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
 
-  @RequestMapping("/course/current")
-  public Set<Course> getCourses(Principal principal) {
-    return courseUserRepository.getCurrentCourses(principal.getName());
-  }
-  
-  @RequestMapping("/self")
+  @RequestMapping(value = "/self", method = GET)
   public AstroAppUser getSelf(Principal principal) {
     logger.debug("Getting self");
     return userRepository.findByEmail(principal.getName());
   }
-  
+
   @PostConstruct
   public void postConstruct() {
-    Assert.notNull(courseUserRepository);
     Assert.notNull(userRepository);
   }
 }
