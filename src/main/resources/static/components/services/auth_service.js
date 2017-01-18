@@ -19,9 +19,15 @@ AuthService.prototype.login = function(credentials){
     return this._$http
               .get(this._appSettings.API.basePath+"/home", {headers : headers})
               .then(function (response) {
-                    var user = {"name":"cool"};
+                    console.log(response);
+                    var user = {
+                        "first-name" : "Nazariy",
+                        "last-name" : "Dumanskyy",
+                        "roles" : [ "USER" ]
+                               };
                     var accessToken = response.headers("x-auth-token");
                     self._SessionService.create(user, accessToken);
+                    self._$http.defaults.headers.common['X-Auth-Token'] = accessToken;
                 return user;
               });
 }
@@ -31,7 +37,7 @@ AuthService.prototype.logout = function(){
 }
 
 module.exports = angular.module('app.components.services.auth_service', [
-    appSettings.name, 
+    appSettings.name,
     sessionService.name
 ])
 .service('AuthService', AuthService);

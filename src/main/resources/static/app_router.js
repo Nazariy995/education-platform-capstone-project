@@ -8,29 +8,29 @@ function Router($stateProvider, $httpProvider, $locationProvider){
             name:'login',
             url:'/',
             templateUrl:'views/app/login/login.html',
-            controller: 'AppLoginController',
-            controllerAs: 'ctrl'
+            controller: 'LoginCtrl',
+            controllerAs: 'login'
         },
         {
             name:'home',
             url:'/home',
             templateUrl:'views/app/home/home.html',
             controller: 'HomeCtrl',
-            controllerAs: 'ctrl'
+            controllerAs: 'home'
         },
         {
             name:'home.teacher',
             url:'/teacher',
             templateUrl:'views/teacher/home/home.html',
             controller: 'Teacher.HomeCtrl',
-            controllerAs: 'TeacherHomeCtrl'
+            controllerAs: 'teacherHome'
         },
         {
             name:'home.student',
             url:'/student',
             templateUrl:'views/student/home/home.html',
             controller: 'Student.HomeCtrl',
-            controllerAs: 'StudentHomeCtrl'
+            controllerAs: 'studentHome'
         }
     ]
 

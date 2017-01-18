@@ -31,10 +31,8 @@ angular.module("app", [
 
 function AppController($scope, $rootScope, AuthService, SessionService){
     "ngInject";
-    
-    this._$rootScope = $rootScope;
-    this._$rootScope.auth = AuthService;
-    this._$rootScope.session = SessionService;
+    this.auth = AuthService;
+    this.session = SessionService;
 }
 
 module.exports = AppController;
@@ -50,29 +48,29 @@ function Router($stateProvider, $httpProvider, $locationProvider){
             name:'login',
             url:'/',
             templateUrl:'views/app/login/login.html',
-            controller: 'AppLoginController',
-            controllerAs: 'ctrl'
+            controller: 'LoginCtrl',
+            controllerAs: 'login'
         },
         {
             name:'home',
             url:'/home',
             templateUrl:'views/app/home/home.html',
             controller: 'HomeCtrl',
-            controllerAs: 'ctrl'
+            controllerAs: 'home'
         },
         {
             name:'home.teacher',
             url:'/teacher',
             templateUrl:'views/teacher/home/home.html',
             controller: 'Teacher.HomeCtrl',
-            controllerAs: 'TeacherHomeCtrl'
+            controllerAs: 'teacherHome'
         },
         {
             name:'home.student',
             url:'/student',
             templateUrl:'views/student/home/home.html',
             controller: 'Student.HomeCtrl',
-            controllerAs: 'StudentHomeCtrl'
+            controllerAs: 'studentHome'
         }
     ]
 
@@ -95,6 +93,7 @@ module.exports = angular.module('app.settings', [])
         "basePath" : "http://localhost:8080"
     }
 })
+
 },{}],5:[function(require,module,exports){
 
 var services = require('./services/module');
@@ -125,9 +124,15 @@ AuthService.prototype.login = function(credentials){
     return this._$http
               .get(this._appSettings.API.basePath+"/home", {headers : headers})
               .then(function (response) {
-                    var user = {"name":"cool"};
+                    console.log(response);
+                    var user = {
+                        "first-name" : "Nazariy",
+                        "last-name" : "Dumanskyy",
+                        "roles" : [ "USER" ]
+                               };
                     var accessToken = response.headers("x-auth-token");
                     self._SessionService.create(user, accessToken);
+                    self._$http.defaults.headers.common['X-Auth-Token'] = accessToken;
                 return user;
               });
 }
@@ -137,7 +142,7 @@ AuthService.prototype.logout = function(){
 }
 
 module.exports = angular.module('app.components.services.auth_service', [
-    appSettings.name, 
+    appSettings.name,
     sessionService.name
 ])
 .service('AuthService', AuthService);
@@ -146,10 +151,10 @@ module.exports = angular.module('app.components.services.auth_service', [
 
 
 var authService = require('./auth_service');
-var sessionService = require("./session_service");
+var sessionService = require('./session_service');
 
 module.exports = angular.module('app.components.services', [
-    authService.name, 
+    authService.name,
     sessionService.name
 ]);
 
@@ -158,7 +163,7 @@ module.exports = angular.module('app.components.services', [
 
 function SessionService($window){
     "ngInject";
-    
+
     this._$window = $window;
     this._user = JSON.parse(localStorage.getItem('session.user'));
     this._accessToken = JSON.parse(localStorage.getItem('session.accessToken'));
@@ -263,25 +268,36 @@ module.exports = angular.module('app.models.navigationLinks', [])
 
 },{}],12:[function(require,module,exports){
 
-function Controller($scope,$state) {
+function Controller($scope, $state, SessionService) {
     "ngInject";
 
-    this._$scope = $scope;
-    this._$scope.navigation_links = [];
+    var self = this;
+    self._$scope = $scope;
+    self._$scope.navigation_links = [];
+    self.user_roles = SessionService.getUser().roles;
 
+    if(self.user_roles.indexOf("USER") != -1){
+        console.log("yes");
+        $state.go("home.teacher");
+    }
 
 }
 
-module.exports = angular.module('app.views.app.controller', [])
-.controller('AppHomeCtrl', Controller);
+module.exports = angular.module('app.views.app.controller', [
+    "app.components.services.session_service"
+])
+.controller('HomeCtrl', Controller);
 
 },{}],13:[function(require,module,exports){
 
 
 function Controller($scope, $state, AuthService){
     "ngInject";
-    
+
     this._AuthService = AuthService;
+    this._$state = $state;
+    this._$scope = $scope;
+    this._$scope.error = null;
 
     this.credentials = {
         username: '',
@@ -290,36 +306,20 @@ function Controller($scope, $state, AuthService){
 };
 
 Controller.prototype.login = function(credentials){
-    console.log(credentials);
-    this._AuthService.login(credentials).then(function(res){
-        console.log(res);
-        //Hack for role switching
-//            if(self.credentials.username == "student"){
-//                $rootScope.role="student";
-//            }else{
-//                $rootScope.role="teacher";
-//            }
-//            //end of hack
-//            if(res.authenticated){
-//                $rootScope.authenticated = true;
-//                $state.go("home");
-//                console.log("Login Succeeded ")
-//            }else{
-//                $rootScope.authenticated = false;
-//                $state.go("/");
-//                console.log("Login Failed");
-//            }
-    },function(){
-        console.log("failed");  
-//        $rootScope.authenticated = false;
-//            console.log("Login Failed");
+    var self = this;
+    self._AuthService.login(credentials).then(function(response){
+        console.log(response);
+        self._$state.go("home");
+    },function(err){
+        console.log("failed");
+        self._$scope.error = err;
     });
-    
+
 }
 
 
 module.exports = angular.module('app.views.app.login.controller', [])
-.controller('AppLoginController', Controller);
+.controller('LoginCtrl', Controller);
 
 
 },{}],14:[function(require,module,exports){

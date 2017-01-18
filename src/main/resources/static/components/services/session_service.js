@@ -2,7 +2,7 @@
 
 function SessionService($window){
     "ngInject";
-    
+
     this._$window = $window;
     this._user = JSON.parse(localStorage.getItem('session.user'));
     this._accessToken = JSON.parse(localStorage.getItem('session.accessToken'));

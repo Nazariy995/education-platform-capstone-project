@@ -2,8 +2,11 @@
 
 function Controller($scope, $state, AuthService){
     "ngInject";
-    
+
     this._AuthService = AuthService;
+    this._$state = $state;
+    this._$scope = $scope;
+    this._$scope.error = null;
 
     this.credentials = {
         username: '',
@@ -12,34 +15,18 @@ function Controller($scope, $state, AuthService){
 };
 
 Controller.prototype.login = function(credentials){
-    console.log(credentials);
-    this._AuthService.login(credentials).then(function(res){
-        console.log(res);
-        //Hack for role switching
-//            if(self.credentials.username == "student"){
-//                $rootScope.role="student";
-//            }else{
-//                $rootScope.role="teacher";
-//            }
-//            //end of hack
-//            if(res.authenticated){
-//                $rootScope.authenticated = true;
-//                $state.go("home");
-//                console.log("Login Succeeded ")
-//            }else{
-//                $rootScope.authenticated = false;
-//                $state.go("/");
-//                console.log("Login Failed");
-//            }
-    },function(){
-        console.log("failed");  
-//        $rootScope.authenticated = false;
-//            console.log("Login Failed");
+    var self = this;
+    self._AuthService.login(credentials).then(function(response){
+        console.log(response);
+        self._$state.go("home");
+    },function(err){
+        console.log("failed");
+        self._$scope.error = err;
     });
-    
+
 }
 
 
 module.exports = angular.module('app.views.app.login.controller', [])
-.controller('AppLoginController', Controller);
+.controller('LoginCtrl', Controller);
 
