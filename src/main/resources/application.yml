@@ -4,6 +4,7 @@ spring:
     username: ${datasource.username}
     password: ${datasource.password}
 logging:
+#  file: astro-app.log
   level:
     root: info
 server:
@@ -17,6 +18,7 @@ spring:
   datasource:
     schema: classpath:org/springframework/session/jdbc/schema-drop-postgresql.sql,
       classpath:org/springframework/session/jdbc/schema-postgresql.sql
+#    data: classpath:test-data-init/test-users.sql
   jpa:
     generate-ddl: true
 ---
@@ -26,6 +28,7 @@ spring:
     include: db-init
   datasource:
     url: jdbc:h2:mem:umdastro;MODE=PostgreSQL
+#    url: jdbc:h2:~/umdastro;MODE=PostgreSQL
     username: sa
     password: 
   h2:
