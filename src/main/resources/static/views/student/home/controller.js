@@ -1,8 +1,11 @@
-var app = angular.module('hello');
-app.controller('Student.HomeCtrl', function($rootScope, $scope, CourseService){
-    $scope.courses = [];
-    CourseService.get().then(function(res){
-        $scope.courses = res;
-    })
 
-});
+function Controller($scope, $state){
+    "ngInject";
+    this._$state = $state;
+    this._$scope = $scope;
+    this._$scope.courses = [];
+};
+
+module.exports = angular.module('app.views.student.home.controller', [])
+.controller('Student.HomeCtrl', Controller);
+
