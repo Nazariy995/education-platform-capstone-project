@@ -14,11 +14,15 @@ function Controller($scope, $state, AuthService){
     };
 };
 
-Controller.prototype.login = function(credentials){
+Controller.prototype.login = function(){
     var self = this;
-    self._AuthService.login(credentials).then(function(response){
-        console.log(response);
-        self._$state.go("home");
+    self._AuthService.login(self.credentials).then(function(user){
+
+        if(user.roles.indexOf("USER") != -1){
+            self._$state.go("home.student");
+        } else if(user.roles.indexOf("INSTRUCTOR") != -1) {
+            self._$state.go("home.teacher");
+        }
     },function(err){
         console.log("failed");
         self._$scope.error = err;
