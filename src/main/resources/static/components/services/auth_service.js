@@ -16,18 +16,15 @@ AuthService.prototype.login = function(credentials){
                      + btoa(credentials.username + ":" + credentials.password)
                     } : {};
 
+    console.log(headers);
     return this._$http
-              .get(this._appSettings.API.basePath+"/home", {headers : headers})
+              .get(this._appSettings.API.basePath+"/self", {headers : headers})
               .then(function (response) {
                     console.log(response);
-                    var user = {
-                        "first-name" : "Nazariy",
-                        "last-name" : "Dumanskyy",
-                        "roles" : [ "USER" ]
-                               };
+                    var user = response.data;
                     var accessToken = response.headers("x-auth-token");
-                    self._SessionService.create(user, accessToken);
-                    self._$http.defaults.headers.common['X-Auth-Token'] = accessToken;
+                    user = self._SessionService.create(user, accessToken);
+//                    self._$http.defaults.headers.common['X-Auth-Token'] = accessToken;
                 return user;
               });
 }

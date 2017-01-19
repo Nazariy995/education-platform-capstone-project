@@ -34,8 +34,15 @@ SessionService.prototype.destroy = function(){
 }
 
 SessionService.prototype.create = function(user, accessToken){
-    this.setUser(user);
+    var tempUser = {
+        "email" : user.email,
+        "firstName" : user.firstName,
+        "lastName" : user.lastName,
+        "roles" : user.appRoles
+    }
+    this.setUser(tempUser);
     this.setAccessToken = accessToken;
+    return tempUser;
 }
 
 module.exports = angular.module('app.components.services.session_service', [])
