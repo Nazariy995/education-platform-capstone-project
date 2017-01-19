@@ -36,15 +36,15 @@ import edu.umdearborn.astronomyapp.validation.annotation.LogicalAppRoles;
 @JsonIgnoreProperties("id")
 public class AstroAppUser extends AbstractGeneratedId {
 
-  private static final long serialVersionUID = -7245103766854987243L;
-
   public static enum Role {
-    USER, INSTRUCTOR, ADMIN;
+    ADMIN, INSTRUCTOR, USER;
 
     public String roleValue() {
       return "ROLE_" + toString();
     }
   }
+
+  private static final long serialVersionUID = -7245103766854987243L;
 
   @Email
   @NotNull
@@ -57,17 +57,9 @@ public class AstroAppUser extends AbstractGeneratedId {
   private String firstName;
 
   @NotNull
-  @Size(min = 1, max = 35)
-  private String lastName;
-  
-  
-  @JsonProperty(access = Access.WRITE_ONLY)
-  @Column(length = 62, nullable = false)
-  private String password;
-
-  @NotNull
   @JsonProperty(access = Access.READ_ONLY)
-  private boolean isUserNonExpired = true;
+  private boolean isEnabled = true;
+
 
   @NotNull
   @JsonProperty(access = Access.READ_ONLY)
@@ -75,11 +67,19 @@ public class AstroAppUser extends AbstractGeneratedId {
 
   @NotNull
   @JsonProperty(access = Access.READ_ONLY)
-  private boolean isUserNonLocked = true;
+  private boolean isUserNonExpired = true;
 
   @NotNull
   @JsonProperty(access = Access.READ_ONLY)
-  private boolean isEnabled = true;
+  private boolean isUserNonLocked = true;
+
+  @NotNull
+  @Size(min = 1, max = 35)
+  private String lastName;
+
+  @JsonProperty(access = Access.WRITE_ONLY)
+  @Column(length = 62, nullable = false)
+  private String password;
 
   @LogicalAppRoles
   @ElementCollection(targetClass = Role.class)
@@ -90,63 +90,34 @@ public class AstroAppUser extends AbstractGeneratedId {
   @JsonProperty("appRoles")
   private Set<Role> roles = new HashSet<>();
 
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
+  @Override
+  public boolean equals(Object obj) {
+    return EqualsBuilder.reflectionEquals(this, obj, "password");
   }
 
   public String getEmail() {
     return email;
   }
 
-  public void setEmail(String email) {
-    this.email = email;
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
   }
 
   public String getPassword() {
     return password;
   }
 
-  public void setPassword(String password) {
-    this.password = password;
+  public Set<Role> getRoles() {
+    return roles;
   }
 
-  @JsonIgnore
-  public boolean isUserNonExpired() {
-    return isUserNonExpired;
-  }
-
-  public void setUserNonExpired(boolean isUserNonExpired) {
-    this.isUserNonExpired = isUserNonExpired;
-  }
-
-  @JsonIgnore
-  public boolean isPasswordNonExpired() {
-    return isPasswordNonExpired;
-  }
-
-  public void setPasswordNonExpired(boolean isPasswordNonExpired) {
-    this.isPasswordNonExpired = isPasswordNonExpired;
-  }
-
-  @JsonIgnore
-  public boolean isUserNonLocked() {
-    return isUserNonLocked;
-  }
-
-  public void setUserNonLocked(boolean isUserNonLocked) {
-    this.isUserNonLocked = isUserNonLocked;
+  @Override
+  public int hashCode() {
+    return HashCodeBuilder.reflectionHashCode(this, "password");
   }
 
   @JsonIgnore
@@ -154,26 +125,55 @@ public class AstroAppUser extends AbstractGeneratedId {
     return isEnabled;
   }
 
+  @JsonIgnore
+  public boolean isPasswordNonExpired() {
+    return isPasswordNonExpired;
+  }
+
+  @JsonIgnore
+  public boolean isUserNonExpired() {
+    return isUserNonExpired;
+  }
+
+  @JsonIgnore
+  public boolean isUserNonLocked() {
+    return isUserNonLocked;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
   public void setEnabled(boolean isEnabled) {
     this.isEnabled = isEnabled;
   }
 
-  public Set<Role> getRoles() {
-    return roles;
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public void setPasswordNonExpired(boolean isPasswordNonExpired) {
+    this.isPasswordNonExpired = isPasswordNonExpired;
   }
 
   public void setRoles(Set<Role> roles) {
     this.roles = roles;
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj, "password");
+  public void setUserNonExpired(boolean isUserNonExpired) {
+    this.isUserNonExpired = isUserNonExpired;
   }
 
-  @Override
-  public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this, "password");
+  public void setUserNonLocked(boolean isUserNonLocked) {
+    this.isUserNonLocked = isUserNonLocked;
   }
 
   @Override

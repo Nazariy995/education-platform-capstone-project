@@ -1,13 +1,13 @@
 package edu.umdearborn.astronomyapp.config;
 
-import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.ADMIN_PATH_PATTERN;
-import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.INSTRUCTOR_PATH_PATTERN;
+import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.ADMIN_PATH_PATTERNS;
+import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.INSTRUCTOR_PATH_PATTERNS;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.LOGOUT_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.LOGOUT_SUCCESS_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.PUBLIC_PATH_PATTERNS;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.SESSION_EXPIRED_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.SESSION_INVALID_PATH;
-import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.STUDENT_PATH_PATTERN;
+import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.STUDENT_PATH_PATTERNS;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +26,12 @@ import edu.umdearborn.astronomyapp.config.annotation.Prod;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+  @Prod
+  @Bean("passwordEncoder")
+  public PasswordEncoder bCryptPasswordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -46,9 +52,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .authorizeRequests()
         .filterSecurityInterceptorOncePerRequest(false)
         .antMatchers(PUBLIC_PATH_PATTERNS).permitAll()
-        .antMatchers(ADMIN_PATH_PATTERN).hasRole("ADMIN")
-        .antMatchers(INSTRUCTOR_PATH_PATTERN).hasRole("INSTRUCTOR")
-        .antMatchers(STUDENT_PATH_PATTERN).hasRole("USER")
+        .antMatchers(ADMIN_PATH_PATTERNS).hasRole("ADMIN")
+        .antMatchers(INSTRUCTOR_PATH_PATTERNS).hasRole("INSTRUCTOR")
+        .antMatchers(STUDENT_PATH_PATTERNS).hasRole("USER")
         .anyRequest().fullyAuthenticated()
         .and()
       .sessionManagement()
@@ -58,12 +64,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .maximumSessions(1)
         .expiredUrl(SESSION_EXPIRED_PATH);
     // @formatter:on
-  }
-
-  @Prod
-  @Bean("passwordEncoder")
-  public PasswordEncoder bCryptPasswordEncoder() {
-    return new BCryptPasswordEncoder();
   }
 
   @Dev

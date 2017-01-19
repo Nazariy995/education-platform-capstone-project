@@ -30,109 +30,109 @@ public class Module extends AbstractGeneratedId {
 
   private static final long serialVersionUID = -8759136244090977612L;
 
+  @Future
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date closeTimestamp;
+
   @Valid
   @NotNull
   @ManyToOne
   @JoinColumn(name = "courseId", updatable = false)
   private Course course;
 
-  @NotNull
-  private String moduleTitle;
-
-  @NotNull
-  @Min(1)
-  private int maxStudents = 1;
+  @Future
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date dueDate;
 
   @Lob
   @Basic(fetch = FetchType.LAZY)
   private String humanReadableText;
 
+  @NotNull
+  @Min(1)
+  private int maxStudents = 1;
+
+  @NotNull
+  private String moduleTitle;
+
   @Temporal(TemporalType.TIMESTAMP)
   private Date openTimestamp;
 
-  @Future
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date closeTimestamp;
-
-  @Future
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date dueDate;
-
   @Temporal(TemporalType.TIMESTAMP)
   private Date visibleTimestamp;
-
-  public Course getCourse() {
-    return course;
-  }
-
-  public void setCourse(Course course) {
-    this.course = course;
-  }
-
-  public String getModuleTitle() {
-    return moduleTitle;
-  }
-
-  public void setModuleTitle(String moduleTitle) {
-    this.moduleTitle = moduleTitle;
-  }
-
-  public int getMaxStudents() {
-    return maxStudents;
-  }
-
-  public void setMaxStudents(int maxStudents) {
-    this.maxStudents = maxStudents;
-  }
-
-  public String getHumanReadableText() {
-    return humanReadableText;
-  }
-
-  public void setHumanReadableText(String humanReadableText) {
-    this.humanReadableText = humanReadableText;
-  }
-
-  public Date getOpenTimestamp() {
-    return openTimestamp;
-  }
-
-  public void setOpenTimestamp(Date openTimestamp) {
-    this.openTimestamp = openTimestamp;
-  }
-
-  public Date getCloseTimestamp() {
-    return closeTimestamp;
-  }
-
-  public void setCloseTimestamp(Date closeTimestamp) {
-    this.closeTimestamp = closeTimestamp;
-  }
-
-  public Date getDueDate() {
-    return dueDate;
-  }
-
-  public void setDueDate(Date dueDate) {
-    this.dueDate = dueDate;
-  }
-
-  public Date getVisibleTimestamp() {
-    return visibleTimestamp;
-  }
-
-  public void setVisibleTimestamp(Date visibleTimestamp) {
-    this.visibleTimestamp = visibleTimestamp;
-  }
 
   @Override
   public boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj);
   }
 
+  public Date getCloseTimestamp() {
+    return closeTimestamp;
+  }
+
+  public Course getCourse() {
+    return course;
+  }
+
+  public Date getDueDate() {
+    return dueDate;
+  }
+
+  public String getHumanReadableText() {
+    return humanReadableText;
+  }
+
+  public int getMaxStudents() {
+    return maxStudents;
+  }
+
+  public String getModuleTitle() {
+    return moduleTitle;
+  }
+
+  public Date getOpenTimestamp() {
+    return openTimestamp;
+  }
+
+  public Date getVisibleTimestamp() {
+    return visibleTimestamp;
+  }
+
   @Override
   public int hashCode() {
     return HashCodeBuilder.reflectionHashCode(this);
+  }
+
+  public void setCloseTimestamp(Date closeTimestamp) {
+    this.closeTimestamp = closeTimestamp;
+  }
+
+  public void setCourse(Course course) {
+    this.course = course;
+  }
+
+  public void setDueDate(Date dueDate) {
+    this.dueDate = dueDate;
+  }
+
+  public void setHumanReadableText(String humanReadableText) {
+    this.humanReadableText = humanReadableText;
+  }
+
+  public void setMaxStudents(int maxStudents) {
+    this.maxStudents = maxStudents;
+  }
+
+  public void setModuleTitle(String moduleTitle) {
+    this.moduleTitle = moduleTitle;
+  }
+
+  public void setOpenTimestamp(Date openTimestamp) {
+    this.openTimestamp = openTimestamp;
+  }
+
+  public void setVisibleTimestamp(Date visibleTimestamp) {
+    this.visibleTimestamp = visibleTimestamp;
   }
 
   @Override

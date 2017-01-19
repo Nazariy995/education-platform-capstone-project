@@ -21,28 +21,38 @@ public class ModuleGroup extends AbstractGeneratedId {
 
   private static final long serialVersionUID = -5650773937729046598L;
 
+  private boolean isLocked = false;
+
   @Valid
   @NotNull
   @ManyToOne
   @JoinColumn(name = "moduleId", updatable = false)
   private Module module;
 
-  public Module getModule() {
-    return module;
-  }
-
-  public void setModule(Module module) {
-    this.module = module;
-  }
-
   @Override
   public boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj);
   }
 
+  public Module getModule() {
+    return module;
+  }
+
   @Override
   public int hashCode() {
     return HashCodeBuilder.reflectionHashCode(this);
+  }
+
+  public boolean isLocked() {
+    return isLocked;
+  }
+
+  public void setLocked(boolean isLocked) {
+    this.isLocked = isLocked;
+  }
+
+  public void setModule(Module module) {
+    this.module = module;
   }
 
   @Override

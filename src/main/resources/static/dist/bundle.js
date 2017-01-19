@@ -90,7 +90,7 @@ module.exports = Router;
 module.exports = angular.module('app.settings', [])
 .constant("appSettings", {
     "API" : {
-        "basePath" : "http://localhost:8080"
+        "basePath" : "http://localhost:8080/rest"
     }
 })
 
@@ -121,18 +121,15 @@ AuthService.prototype.login = function(credentials){
                      + btoa(credentials.username + ":" + credentials.password)
                     } : {};
 
+    console.log(headers);
     return this._$http
-              .get(this._appSettings.API.basePath+"/home", {headers : headers})
+              .get(this._appSettings.API.basePath+"/self", {headers : headers})
               .then(function (response) {
                     console.log(response);
-                    var user = {
-                        "first-name" : "Nazariy",
-                        "last-name" : "Dumanskyy",
-                        "roles" : [ "USER" ]
-                               };
+                    var user = response.data;
                     var accessToken = response.headers("x-auth-token");
-                    self._SessionService.create(user, accessToken);
-                    self._$http.defaults.headers.common['X-Auth-Token'] = accessToken;
+                    user = self._SessionService.create(user, accessToken);
+//                    self._$http.defaults.headers.common['X-Auth-Token'] = accessToken;
                 return user;
               });
 }
@@ -195,8 +192,15 @@ SessionService.prototype.destroy = function(){
 }
 
 SessionService.prototype.create = function(user, accessToken){
-    this.setUser(user);
+    var tempUser = {
+        "email" : user.email,
+        "firstName" : user.firstName,
+        "lastName" : user.lastName,
+        "roles" : user.appRoles
+    }
+    this.setUser(tempUser);
     this.setAccessToken = accessToken;
+    return tempUser;
 }
 
 module.exports = angular.module('app.components.services.session_service', [])
@@ -275,11 +279,11 @@ function Controller($scope, $state, SessionService) {
     self._$scope = $scope;
     self._$scope.navigation_links = [];
     self.user_roles = SessionService.getUser().roles;
-
-    if(self.user_roles.indexOf("USER") != -1){
-        console.log("yes");
-        $state.go("home.teacher");
-    }
+//
+//    if(self.user_roles.indexOf("USER") != -1){
+//        console.log("yes");
+//        $state.go("home.teacher");
+//    }
 
 }
 
@@ -305,11 +309,15 @@ function Controller($scope, $state, AuthService){
     };
 };
 
-Controller.prototype.login = function(credentials){
+Controller.prototype.login = function(){
     var self = this;
-    self._AuthService.login(credentials).then(function(response){
-        console.log(response);
-        self._$state.go("home");
+    self._AuthService.login(self.credentials).then(function(user){
+
+        if(user.roles.indexOf("USER") != -1){
+            self._$state.go("home.student");
+        } else if(user.roles.indexOf("INSTRUCTOR") != -1) {
+            self._$state.go("home.teacher");
+        }
     },function(err){
         console.log("failed");
         self._$scope.error = err;
@@ -335,10 +343,33 @@ module.exports = angular.module('app.views.app', [
 
 },{"./home/controller":12,"./login/controller":13}],15:[function(require,module,exports){
 var viewsApp = require('./app/module');
+var studentViews = require('./student/module');
 
 module.exports = angular.module('app.views', [
-    viewsApp.name
+    viewsApp.name,
+    studentViews.name
 ]);
 
 
-},{"./app/module":14}]},{},[1]);
+},{"./app/module":14,"./student/module":17}],16:[function(require,module,exports){
+
+function Controller($scope, $state){
+    "ngInject";
+    this._$state = $state;
+    this._$scope = $scope;
+    this._$scope.courses = [];
+};
+
+module.exports = angular.module('app.views.student.home.controller', [])
+.controller('Student.HomeCtrl', Controller);
+
+
+},{}],17:[function(require,module,exports){
+
+var homeController = require("./home/controller");
+
+module.exports = angular.module('app.views.student', [
+    homeController.name
+]);
+
+},{"./home/controller":16}]},{},[1]);

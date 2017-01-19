@@ -26,22 +26,22 @@ public class AbstractOptionsQuestion<T extends AbstractOption> extends Question
   @JoinColumn(name = "optionQuestionId")
   private Set<T> options = new HashSet<>();
 
-  public Set<T> getOptions() {
-    return options;
-  }
-
-  public void setOptions(Set<T> options) {
-    this.options = options;
-  }
-
   @Override
   public boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj);
   }
 
+  public Set<T> getOptions() {
+    return options;
+  }
+
   @Override
   public int hashCode() {
     return HashCodeBuilder.reflectionHashCode(this);
+  }
+
+  public void setOptions(Set<T> options) {
+    this.options = options;
   }
 
   @Override

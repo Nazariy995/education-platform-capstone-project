@@ -30,37 +30,35 @@ public class Unit extends AbstractGeneratedId {
   @JoinColumn(name = "courseId", updatable = false)
   private Course courseId;
 
+  private String helpText;
+
   @NotNull
   @Size(min = 1, max = 10)
   private String humanReadableText;
 
-  private String helpText;
-
   @NotNull
   private boolean isActive = true;
 
+  @Override
+  public boolean equals(Object obj) {
+    return EqualsBuilder.reflectionEquals(this, obj);
+  }
+
   public Course getCourseId() {
     return courseId;
-  }
-
-  public void setCourseId(Course courseId) {
-    this.courseId = courseId;
-  }
-
-  public String getHumanReadableText() {
-    return humanReadableText;
-  }
-
-  public void setHumanReadableText(String humanReadableText) {
-    this.humanReadableText = humanReadableText;
   }
 
   public String getHelpText() {
     return helpText;
   }
 
-  public void setHelpText(String helpText) {
-    this.helpText = helpText;
+  public String getHumanReadableText() {
+    return humanReadableText;
+  }
+
+  @Override
+  public int hashCode() {
+    return HashCodeBuilder.reflectionHashCode(this);
   }
 
   public boolean isActive() {
@@ -71,14 +69,16 @@ public class Unit extends AbstractGeneratedId {
     this.isActive = isActive;
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj);
+  public void setCourseId(Course courseId) {
+    this.courseId = courseId;
   }
 
-  @Override
-  public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this);
+  public void setHelpText(String helpText) {
+    this.helpText = helpText;
+  }
+
+  public void setHumanReadableText(String humanReadableText) {
+    this.humanReadableText = humanReadableText;
   }
 
   @Override

@@ -29,22 +29,22 @@ public class UnitOption extends AbstractOption {
   @JoinColumn(name = "unitId")
   private Unit unit;
 
-  public Unit getUnit() {
-    return unit;
-  }
-
-  public void setUnit(Unit unit) {
-    this.unit = unit;
-  }
-
   @Override
   public boolean equals(Object obj) {
     return EqualsBuilder.reflectionEquals(this, obj);
   }
 
+  public Unit getUnit() {
+    return unit;
+  }
+
   @Override
   public int hashCode() {
     return HashCodeBuilder.reflectionHashCode(this);
+  }
+
+  public void setUnit(Unit unit) {
+    this.unit = unit;
   }
 
   @Override

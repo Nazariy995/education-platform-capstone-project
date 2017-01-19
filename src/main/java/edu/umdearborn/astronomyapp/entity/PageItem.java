@@ -32,11 +32,20 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @DiscriminatorValue("TEXT")
 public class PageItem extends AbstractGeneratedId {
 
+  public static enum PageItemType {
+    NUL, QUESTION, TEXT;
+  }
+
   private static final long serialVersionUID = 2553850340823580376L;
 
-  public static enum PageItemType {
-    TEXT, QUESTION, NUL;
-  }
+  @NotNull
+  @Size(min = 1)
+  private String humanReadableText;
+
+  @NotNull
+  @Min(0)
+  @Column(name = "itemOrder")
+  private int order = 0;
 
   @Valid
   @NotNull
@@ -50,55 +59,46 @@ public class PageItem extends AbstractGeneratedId {
   @Column(length = 8)
   private PageItemType pageItemType = PageItemType.NUL;
 
-  @NotNull
-  @Min(0)
-  @Column(name = "itemOrder")
-  private int order = 0;
-
-  @NotNull
-  @Size(min = 1)
-  private String humanReadableText;
-
-  public Page getPage() {
-    return page;
-  }
-
-  public void setPage(Page page) {
-    this.page = page;
-  }
-
-  public PageItemType getPageItemType() {
-    return pageItemType;
-  }
-
-  public void setPageItemType(PageItemType pageItemType) {
-    this.pageItemType = pageItemType;
-  }
-
-  public int getOrder() {
-    return order;
-  }
-
-  public void setOrder(int order) {
-    this.order = order;
+  @Override
+  public boolean equals(Object obj) {
+    return EqualsBuilder.reflectionEquals(this, obj);
   }
 
   public String getHumanReadableText() {
     return humanReadableText;
   }
 
-  public void setHumanReadableText(String humanReadableText) {
-    this.humanReadableText = humanReadableText;
+  public int getOrder() {
+    return order;
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj);
+  public Page getPage() {
+    return page;
+  }
+
+  public PageItemType getPageItemType() {
+    return pageItemType;
   }
 
   @Override
   public int hashCode() {
     return HashCodeBuilder.reflectionHashCode(this);
+  }
+
+  public void setHumanReadableText(String humanReadableText) {
+    this.humanReadableText = humanReadableText;
+  }
+
+  public void setOrder(int order) {
+    this.order = order;
+  }
+
+  public void setPage(Page page) {
+    this.page = page;
+  }
+
+  public void setPageItemType(PageItemType pageItemType) {
+    this.pageItemType = pageItemType;
   }
 
   @Override

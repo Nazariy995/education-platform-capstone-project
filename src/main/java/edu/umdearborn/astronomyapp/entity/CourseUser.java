@@ -29,18 +29,11 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
     indexes = @Index(columnList = "userId"))
 public class CourseUser extends AbstractGeneratedId {
 
-  private static final long serialVersionUID = 453757782768837852L;
-
   public static enum CourseRole {
-    STUDENT, TA, INSTRUCTOR, NUL;
+    INSTRUCTOR, NUL, STUDENT, TA;
   }
 
-  @JsonUnwrapped
-  @Valid
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "userId", updatable = false)
-  private AstroAppUser user;
+  private static final long serialVersionUID = 453757782768837852L;
 
   @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
   @JsonIdentityReference(alwaysAsId = true)
@@ -51,36 +44,41 @@ public class CourseUser extends AbstractGeneratedId {
   @JoinColumn(name = "courseId", updatable = false)
   private Course course;
 
+  @NotNull
+  private boolean isActive = true;
+
   @JsonProperty("courseRole")
   @NotNull
   @Enumerated(EnumType.STRING)
   private CourseRole role = CourseRole.NUL;
 
+  @JsonUnwrapped
+  @Valid
   @NotNull
-  private boolean isActive = true;
+  @ManyToOne
+  @JoinColumn(name = "userId", updatable = false)
+  private AstroAppUser user;
 
-  public AstroAppUser getUser() {
-    return user;
-  }
-
-  public void setUser(AstroAppUser user) {
-    this.user = user;
+  @Override
+  public boolean equals(Object obj) {
+    return EqualsBuilder.reflectionEquals(this, obj);
   }
 
   public Course getCourse() {
     return course;
   }
 
-  public void setCourse(Course course) {
-    this.course = course;
-  }
-
   public CourseRole getRole() {
     return role;
   }
 
-  public void setRole(CourseRole role) {
-    this.role = role;
+  public AstroAppUser getUser() {
+    return user;
+  }
+
+  @Override
+  public int hashCode() {
+    return HashCodeBuilder.reflectionHashCode(this);
   }
 
   public boolean isActive() {
@@ -91,14 +89,16 @@ public class CourseUser extends AbstractGeneratedId {
     this.isActive = isActive;
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj);
+  public void setCourse(Course course) {
+    this.course = course;
   }
 
-  @Override
-  public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this);
+  public void setRole(CourseRole role) {
+    this.role = role;
+  }
+
+  public void setUser(AstroAppUser user) {
+    this.user = user;
   }
 
   @Override

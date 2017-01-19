@@ -7,25 +7,32 @@ logging:
   level:
     root: info
 server:
+  port: ${port:8080}
   session:
     timeout: 1800 #(30 minutes)
   use-forward-headers: true
 ---
 spring:
-  profiles: prod
+  profiles: db-init
   datasource:
-    schema: classpath:org/springframework/session/jdbc/schema-postgresql.sql
+    schema: classpath:org/springframework/session/jdbc/schema-drop-postgresql.sql,
+      classpath:org/springframework/session/jdbc/schema-postgresql.sql
+#    data: classpath:test-data-init/test-users.sql
+  jpa:
+    generate-ddl: true
 ---
-logging:
-  level:
-    edu.umdearborn.astronomyapp: debug
+spring.profiles: dev
 spring:
-  profiles: dev
+  profiles:
+    include: db-init
   datasource:
-    url: jdbc:h2:mem:umdastro
+    url: jdbc:h2:mem:umdastro;MODE=PostgreSQL
+#    url: jdbc:h2:~/umdastro;MODE=PostgreSQL
     username: sa
     password:
-    schema: classpath:org/springframework/session/jdbc/schema-h2.sql
   h2:
     console:
       enabled: false
+logging:
+  level:
+    edu.umdearborn.astronomyapp: debug

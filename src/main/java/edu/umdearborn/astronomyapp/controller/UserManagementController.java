@@ -1,6 +1,7 @@
 package edu.umdearborn.astronomyapp.controller;
 
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.ADMIN_PATH;
+import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.REST_PATH_PREFIX;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import javax.validation.Valid;
@@ -14,9 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.umdearborn.astronomyapp.controller.exception.ValidationErrorsException;
 import edu.umdearborn.astronomyapp.entity.AstroAppUser;
-import edu.umdearborn.astronomyapp.service.UserManagementService;
+import edu.umdearborn.astronomyapp.service.UserManagementService;;
 
 @RestController
+@RequestMapping(REST_PATH_PREFIX)
 public class UserManagementController {
 
   private static final Logger logger = LoggerFactory.getLogger(UserManagementController.class);
@@ -27,9 +29,8 @@ public class UserManagementController {
     this.userManagementService = userManagementService;
   }
 
-  @RequestMapping(path = ADMIN_PATH + "/createuser", method = POST)
-  public AstroAppUser createUser(@Valid @RequestBody AstroAppUser newUser,
-      Errors errors) {
+  @RequestMapping(value = ADMIN_PATH + "/createuser", method = POST)
+  public AstroAppUser createUser(@Valid @RequestBody AstroAppUser newUser, Errors errors) {
     if (errors.hasErrors()) {
       throw new ValidationErrorsException(errors);
     }

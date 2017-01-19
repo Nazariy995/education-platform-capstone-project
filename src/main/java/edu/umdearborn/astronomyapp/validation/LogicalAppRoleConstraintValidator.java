@@ -15,7 +15,7 @@ public class LogicalAppRoleConstraintValidator
 
   @Override
   public boolean isValid(Set<AstroAppUser.Role> value, ConstraintValidatorContext context) {
-    
+
     if (value.contains(AstroAppUser.Role.USER)) {
       return !(CollectionUtils.containsAny(value,
           Arrays.asList(AstroAppUser.Role.ADMIN, AstroAppUser.Role.INSTRUCTOR)));

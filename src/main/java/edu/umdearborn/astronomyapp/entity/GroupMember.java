@@ -35,30 +35,30 @@ public class GroupMember extends AbstractGeneratedId {
   @JoinColumn(name = "moduleGroupId", updatable = false)
   private ModuleGroup module;
 
-  public CourseUser getCourseUser() {
-    return courseUser;
+  @Override
+  public boolean equals(Object obj) {
+    return EqualsBuilder.reflectionEquals(this, obj);
   }
 
-  public void setCourseUser(CourseUser courseUser) {
-    this.courseUser = courseUser;
+  public CourseUser getCourseUser() {
+    return courseUser;
   }
 
   public ModuleGroup getModule() {
     return module;
   }
 
-  public void setModule(ModuleGroup module) {
-    this.module = module;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj);
-  }
-
   @Override
   public int hashCode() {
     return HashCodeBuilder.reflectionHashCode(this);
+  }
+
+  public void setCourseUser(CourseUser courseUser) {
+    this.courseUser = courseUser;
+  }
+
+  public void setModule(ModuleGroup module) {
+    this.module = module;
   }
 
   @Override

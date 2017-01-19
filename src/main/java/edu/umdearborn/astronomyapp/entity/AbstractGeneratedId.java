@@ -21,12 +21,18 @@ public abstract class AbstractGeneratedId implements Serializable {
   @Size(min = 34, max = 38)
   protected String id;
 
+  @Override
+  public boolean equals(Object obj) {
+    return EqualsBuilder.reflectionEquals(this, obj);
+  }
+
   public String getId() {
     return id;
   }
 
-  public void setId(String id) {
-    this.id = id;
+  @Override
+  public int hashCode() {
+    return HashCodeBuilder.reflectionHashCode(this);
   }
 
   @PrePersist
@@ -34,14 +40,8 @@ public abstract class AbstractGeneratedId implements Serializable {
     id = UUID.randomUUID().toString();
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj);
-  }
-
-  @Override
-  public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this);
+  public void setId(String id) {
+    this.id = id;
   }
 
   @Override

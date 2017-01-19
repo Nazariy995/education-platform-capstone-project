@@ -12,22 +12,22 @@ import edu.umdearborn.astronomyapp.entity.AstroAppUser;
 /**
  * Interface to persist {@link AstroAppUser} to the database. There is no implementation because
  * Spring automatically generates and injects logic
- * 
+ *
  * @author Patrick Bremer
  *
  */
 @Repository
 public interface UserRepository extends JpaRepository<AstroAppUser, String> {
 
-  @EntityGraph(attributePaths = "roles", type = EntityGraphType.LOAD)
-  @Query("select u from AstroAppUser u join fetch u.roles r where "
-      + "lower(u.email) = lower(:email)")
-  public AstroAppUser findByEmail(@Param(value = "email") String email);
-
   @Query("select count(r) > 0 from AstroAppUser u join u.roles r where r = 'ADMIN'")
   public boolean adminExists();
 
   @Query("select count(u) > 0 from AstroAppUser u where lower(u.email) = lower(:email)")
   public boolean emailExists(@Param(value = "email") String email);
+
+  @EntityGraph(attributePaths = "roles", type = EntityGraphType.LOAD)
+  @Query("select u from AstroAppUser u join fetch u.roles r where "
+      + "lower(u.email) = lower(:email)")
+  public AstroAppUser findByEmail(@Param(value = "email") String email);
 
 }
