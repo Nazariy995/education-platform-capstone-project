@@ -24,7 +24,7 @@ AuthService.prototype.login = function(credentials){
                     var user = response.data;
                     var accessToken = response.headers("x-auth-token");
                     user = self._SessionService.create(user, accessToken);
-//                    self._$http.defaults.headers.common['X-Auth-Token'] = accessToken;
+                    self._$http.defaults.headers.common['X-Auth-Token'] = accessToken;
                 return user;
               });
 }
