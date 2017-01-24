@@ -113,6 +113,7 @@ function ChildNavigationDirective( ){
 }
 
 module.exports =  ChildNavigationDirective;
+
 },{}],6:[function(require,module,exports){
 
 var childNavigationDirective = require('./child_navigation.js');
@@ -389,7 +390,7 @@ module.exports = angular.module('app.views', [
 
 },{"./app/module":16,"./student/module":19}],18:[function(require,module,exports){
 
-function Controller($scope, $state){
+function Controller($scope, $state, SessionService){
     "ngInject";
     this._$state = $state;
     this._$scope = $scope;

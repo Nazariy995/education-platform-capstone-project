@@ -15,6 +15,8 @@ import org.springframework.util.Assert;
 public class StartupHousekeeper {
   // private static final Logger logger = LoggerFactory.getLogger(StartupHousekeeper.class);
 
+  // private static final Logger logger = LoggerFactory.getLogger(StartupHousekeeper.class);
+
   private EntityManager em;
 
   @Autowired

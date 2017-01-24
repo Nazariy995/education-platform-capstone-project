@@ -23,9 +23,8 @@ import edu.umdearborn.astronomyapp.repository.UserRepository;
 public class CommonResourceController {
 
   private static final Logger logger = LoggerFactory.getLogger(CommonResourceController.class);
-
   private CourseUserRepository courseUserRepository;
-
+  
   private UserRepository userRepository;
 
   public CommonResourceController(CourseUserRepository courseUserRepository, UserRepository userRepository) {
@@ -37,7 +36,6 @@ public class CommonResourceController {
   public Set<Course> getCourses(Principal principal) {
     return courseUserRepository.getCurrentCourses(principal.getName());
   }
-
   @RequestMapping("/self")
   public AstroAppUser getSelf(Principal principal) {
     logger.debug("Getting self");

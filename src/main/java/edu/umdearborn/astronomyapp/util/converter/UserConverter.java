@@ -18,12 +18,12 @@ import edu.umdearborn.astronomyapp.entity.AstroAppUser;
 public class UserConverter implements Converter<AstroAppUser, User> {
 
   private static final Logger logger = LoggerFactory.getLogger(UserConverter.class);
-
+  
   @Override
   public User convert(AstroAppUser astroAppUser) {
-
+    
     logger.debug("Converting {} to {}", astroAppUser.toString(), UserConverter.class.getName());
-
+    
     Collection<GrantedAuthority> authorities =
         astroAppUser.getRoles().parallelStream().map(r -> new SimpleGrantedAuthority(r.roleValue()))
             .collect(Collectors.toCollection(ArrayList::new));
