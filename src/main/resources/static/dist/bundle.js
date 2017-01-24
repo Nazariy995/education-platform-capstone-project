@@ -27,7 +27,7 @@ angular.module("app", [
 .controller('AppController', appController)
 .config(appRouter);
 
-},{"./app_controller":2,"./app_router":3,"./app_settings":4,"./components/module":5,"./models/module":10,"./views/module":15}],2:[function(require,module,exports){
+},{"./app_controller":2,"./app_router":3,"./app_settings":4,"./components/module":7,"./models/module":12,"./views/module":17}],2:[function(require,module,exports){
 
 function AppController($scope, $rootScope, AuthService, SessionService){
     "ngInject";
@@ -81,7 +81,7 @@ function Router($stateProvider, $httpProvider, $locationProvider){
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 
     //Removing # from the urls
-    $locationProvider.html5Mode(true);
+//    $locationProvider.html5Mode(true);
 }
 
 module.exports = Router;
@@ -96,13 +96,45 @@ module.exports = angular.module('app.settings', [])
 
 },{}],5:[function(require,module,exports){
 
+
+function ChildNavigationDirective( ){
+
+
+
+
+
+
+    var directive = {
+        restrict: 'A',
+        templateUrl: 'components/child_navigation/child_navigation.html'
+    }
+
+    return directive;
+}
+
+module.exports =  ChildNavigationDirective;
+},{}],6:[function(require,module,exports){
+
+var childNavigationDirective = require('./child_navigation.js');
+
+module.exports = angular.module('app.components.child_navigation', [])
+.directive('childNavigation', function() {
+    return new childNavigationDirective();
+})
+
+
+
+},{"./child_navigation.js":5}],7:[function(require,module,exports){
+
 var services = require('./services/module');
+var childNavigation = require('./child_navigation/module');
 
 module.exports = angular.module('app.components', [
-    services.name
+    services.name,
+    childNavigation.name
 ]);
 
-},{"./services/module":7}],6:[function(require,module,exports){
+},{"./child_navigation/module":6,"./services/module":9}],8:[function(require,module,exports){
 var appSettings = require("app_settings");
 var sessionService = require("./session_service");
 
@@ -129,7 +161,7 @@ AuthService.prototype.login = function(credentials){
                     var user = response.data;
                     var accessToken = response.headers("x-auth-token");
                     user = self._SessionService.create(user, accessToken);
-//                    self._$http.defaults.headers.common['X-Auth-Token'] = accessToken;
+                    self._$http.defaults.headers.common['X-Auth-Token'] = accessToken;
                 return user;
               });
 }
@@ -144,7 +176,7 @@ module.exports = angular.module('app.components.services.auth_service', [
 ])
 .service('AuthService', AuthService);
 
-},{"./session_service":8,"app_settings":4}],7:[function(require,module,exports){
+},{"./session_service":10,"app_settings":4}],9:[function(require,module,exports){
 
 
 var authService = require('./auth_service');
@@ -155,7 +187,7 @@ module.exports = angular.module('app.components.services', [
     sessionService.name
 ]);
 
-},{"./auth_service":6,"./session_service":8}],8:[function(require,module,exports){
+},{"./auth_service":8,"./session_service":10}],10:[function(require,module,exports){
 
 
 function SessionService($window){
@@ -209,7 +241,7 @@ module.exports = angular.module('app.components.services.session_service', [])
 
 
 
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /*
 Description: Add, Get, Set, Delete Courses
 */
@@ -236,7 +268,7 @@ module.exports = angular.module('app.models.course', [])
 
 
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 
 
 var courseModel = require('./course');
@@ -247,7 +279,7 @@ module.exports = angular.module('app.models', [
     navigationLinksModel.name
 ])
 
-},{"./course":9,"./navigation_link":11}],11:[function(require,module,exports){
+},{"./course":11,"./navigation_link":13}],13:[function(require,module,exports){
 /*
 Description: Get Navigation Links
 */
@@ -270,7 +302,7 @@ NavigationLinksService.prototype.getLinks = function(){
 module.exports = angular.module('app.models.navigationLinks', [])
     .service('NavigationLinksService', NavigationLinksService);
 
-},{}],12:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 
 function Controller($scope, $state, SessionService) {
     "ngInject";
@@ -278,8 +310,12 @@ function Controller($scope, $state, SessionService) {
     var self = this;
     self._$scope = $scope;
     self._$scope.navigation_links = [];
-    self.user_roles = SessionService.getUser().roles;
+//    self.user_roles = SessionService.getUser().roles;
+    $state.go('home.student');
+
 //
+
+
 //    if(self.user_roles.indexOf("USER") != -1){
 //        console.log("yes");
 //        $state.go("home.teacher");
@@ -292,7 +328,7 @@ module.exports = angular.module('app.views.app.controller', [
 ])
 .controller('HomeCtrl', Controller);
 
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 
 
 function Controller($scope, $state, AuthService){
@@ -330,7 +366,7 @@ module.exports = angular.module('app.views.app.login.controller', [])
 .controller('LoginCtrl', Controller);
 
 
-},{}],14:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 
 var homeController = require("./home/controller");
 var loginController = require("./login/controller");
@@ -341,7 +377,7 @@ module.exports = angular.module('app.views.app', [
     loginController.name
 ]);
 
-},{"./home/controller":12,"./login/controller":13}],15:[function(require,module,exports){
+},{"./home/controller":14,"./login/controller":15}],17:[function(require,module,exports){
 var viewsApp = require('./app/module');
 var studentViews = require('./student/module');
 
@@ -351,7 +387,7 @@ module.exports = angular.module('app.views', [
 ]);
 
 
-},{"./app/module":14,"./student/module":17}],16:[function(require,module,exports){
+},{"./app/module":16,"./student/module":19}],18:[function(require,module,exports){
 
 function Controller($scope, $state){
     "ngInject";
@@ -364,7 +400,7 @@ module.exports = angular.module('app.views.student.home.controller', [])
 .controller('Student.HomeCtrl', Controller);
 
 
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 
 var homeController = require("./home/controller");
 
@@ -372,4 +408,4 @@ module.exports = angular.module('app.views.student', [
     homeController.name
 ]);
 
-},{"./home/controller":16}]},{},[1]);
+},{"./home/controller":18}]},{},[1]);
