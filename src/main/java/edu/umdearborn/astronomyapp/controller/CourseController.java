@@ -1,6 +1,7 @@
 package edu.umdearborn.astronomyapp.controller;
 
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.INSTRUCTOR_PATH;
+import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.STUDENT_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.REST_PATH_PREFIX;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -40,7 +41,8 @@ public class CourseController {
     this.courseUserRepository = courseUserRepository;
   }
 
-  @RequestMapping(value = "/courses/current", method = GET)
+  @RequestMapping(value = {INSTRUCTOR_PATH + "/courses/current", STUDENT_PATH + "/courses/current"},
+      method = GET)
   public Set<Course> getCurrentCourses(Principal principal) {
     return courseUserRepository.getCurrentCourses(principal.getName());
   }
