@@ -13,7 +13,7 @@ public class UserRepositoryTest extends RepositoryTestHelper {
 
   @Test
   public void persistAndSelectTest() {
-    assertEntityLoaded(repository.findByEmail("instructor4@gmail.com"));
+    assertEntityLoaded(repository.findByEmail("instructor4@umich.edu"));
     assertThat(repository.findByEmail("will-not-show-up@email.com"), nullValue());
 
   }

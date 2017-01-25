@@ -518,3 +518,106 @@ VALUES ('stud6-course3B', true, 'STUDENT', 'course3B', 'User24');
 INSERT INTO course_user(
 course_user_id, is_active, role, course_id, user_id)
 VALUES ('stud6-course4B', true, 'STUDENT', 'course4B', 'User24');
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod1-course1A', dateadd('week', 2, current_timestamp),dateadd('week', 1, current_timestamp) , 'readable_text', 10, 'mod1-course1Atitle',dateadd('week', -1, current_timestamp) ,dateadd('week', -2, current_timestamp) , 'course1A');
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod2-course1A', dateadd('week', 2, current_timestamp),dateadd('week', 1, current_timestamp) , 'readable_text', 10, 'mod2-course1Atitle',dateadd('week', -1, current_timestamp),dateadd('week', -2, current_timestamp), 'course1A');
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod3-course1A',dateadd('week', 3, current_timestamp),dateadd('week', 2, current_timestamp), 'readable_text', 10, 'mod3-course1Atitle',dateadd('week', 1, current_timestamp),dateadd('day', 3, current_timestamp) , 'course1A');
+
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod1-course1B', dateadd('week', 2, current_timestamp),dateadd('week', 1, current_timestamp) , 'readable_text', 10, 'mod1-course1Btitle', dateadd('week', -1, current_timestamp),dateadd('week', -2, current_timestamp) , 'course1B');
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod2-course1B', dateadd('week', 2, current_timestamp),dateadd('week', 1, current_timestamp) , 'readable_text', 10, 'mod2-course1Btitle', dateadd('week', -1, current_timestamp),dateadd('week', -2, current_timestamp), 'course1B');
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod3-course1B', dateadd('week', 3, current_timestamp),dateadd('week', 2, current_timestamp) , 'readable_text', 10, 'mod3-course1Btitle', dateadd('week', 1, current_timestamp),dateadd('week', 1, current_timestamp) , 'course1B');
+
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod1-course2A', dateadd('week', 2, current_timestamp),dateadd('week', 1, current_timestamp), 'readable_text', 10, 'mod1-course2Atitle', date_trunc('day', current_timestamp - interval '1 week') ,date_trunc('day', current_timestamp - interval '2 week') , 'course2A');
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod2-course2A', dateadd('week', 2, current_timestamp),dateadd('week', 1, current_timestamp) , 'readable_text', 10, 'mod2-course2Atitle', date_trunc('day', current_timestamp - interval '1 week') ,date_trunc('day', current_timestamp - interval '2 week'), 'course2A');
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod3-course2A', dateadd('week', 3, current_timestamp),dateadd('week', 2, current_timestamp) , 'readable_text', 10, 'mod3-course2Atitle',date_trunc('day', current_timestamp + interval '1 week') ,date_trunc('day', current_timestamp + interval '3 days'), 'course2A');
+
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod1-course2B',dateadd('day', -2, current_timestamp),dateadd('day', -4, current_timestamp) , 'readable_text', 10, 'mod1-course2Btitle', date_trunc('day', current_timestamp - interval '1 week'),date_trunc('day', current_timestamp - interval '2 week') , 'course2B');
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod2-course2B',dateadd('day', -2, current_timestamp),dateadd('day', -4, current_timestamp) , 'readable_text', 10, 'mod2-course2Btitle', date_trunc('day', current_timestamp - interval '1 week'),date_trunc('day', current_timestamp - interval '2 week') , 'course2B');
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod3-course2B',dateadd('week', 2, current_timestamp),dateadd('week', 1, current_timestamp) , 'readable_text', 10, 'mod3-course2Btitle', date_trunc('day', current_timestamp - interval '1 week'),date_trunc('day', current_timestamp - interval '2 week') , 'course2B');
+
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod1-course3A',date_trunc('day', current_timestamp + interval '2 week'),date_trunc('day', current_timestamp + interval '1 week')  , 'readable_text', 10, 'mod1-course3Atitle', date_trunc('day', current_timestamp - interval '1 week') ,date_trunc('day', current_timestamp - interval '2 week')  , 'course3A');
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod2-course3A',date_trunc('day', current_timestamp + interval '2 week'),date_trunc('day', current_timestamp + interval '1 week')  , 'readable_text', 10, 'mod2-course3Atitle',date_trunc('day', current_timestamp - interval '1 week') ,date_trunc('day', current_timestamp - interval '2 week')  , 'course3A');
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod3-course3A', date_trunc('day', current_timestamp - interval '2 days') ,date_trunc('day', current_timestamp - interval '4 days') , 'readable_text', 10, 'mod3-course3Atitle', date_trunc('day', current_timestamp - interval '1 week'),date_trunc('day', current_timestamp - interval '2 week') , 'course3A');
+
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod1-course3B',date_trunc('day', current_timestamp + interval '3 week') , date_trunc('day', current_timestamp + interval '2 week' + interval '3 days')  , 'readable_text', 10, 'mod1-course3Btitle', date_trunc('day', current_timestamp + interval '1 week') ,date_trunc('day', current_timestamp + interval '3 days') , 'course3B');
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod2-course3B', date_trunc('day', current_timestamp + interval '3 week') , date_trunc('day', current_timestamp + interval '2 week' + interval '3 days')  , 'readable_text', 10, 'mod2-course3Btitle',date_trunc('day', current_timestamp + interval '1 week') ,date_trunc('day', current_timestamp + interval '3 days') , 'course3B');
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod3-course3B',date_trunc('day', current_timestamp + interval '3 week') , date_trunc('day', current_timestamp + interval '2 week' + interval '3 days')  , 'readable_text', 10, 'mod3-course3Btitle', date_trunc('day', current_timestamp + interval '1 week') ,date_trunc('day', current_timestamp + interval '3 days') , 'course3B');
+
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod1-course4A',date_trunc('day', current_timestamp + interval '2 week'),date_trunc('day', current_timestamp + interval '1 week')  , 'readable_text', 10, 'mod1-course4Atitle',  date_trunc('day', current_timestamp - interval '1 week') ,date_trunc('day', current_timestamp - interval '2 week')  , 'course4A');
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod2-course4A', date_trunc('day', current_timestamp + interval '2 week'),date_trunc('day', current_timestamp + interval '1 week')  , 'readable_text', 10, 'mod2-course4Atitle', date_trunc('day', current_timestamp - interval '1 week') ,date_trunc('day', current_timestamp - interval '2 week')  , 'course4A');
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod3-course4A', date_trunc('day', current_timestamp - interval '2 days') ,date_trunc('day', current_timestamp - interval '4 days')  , 'readable_text', 10, 'mod3-course4Atitle',date_trunc('day', current_timestamp - interval '1 week'),date_trunc('day', current_timestamp - interval '2 week') , 'course4A');
+
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod1-course4B',date_trunc('day', current_timestamp + interval '2 week'),date_trunc('day', current_timestamp + interval '1 week')  , 'readable_text', 10, 'mod1-course4Btitle', date_trunc('day', current_timestamp - interval '1 week') ,date_trunc('day', current_timestamp - interval '2 week') , 'course4B');
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod2-course4B', date_trunc('day', current_timestamp + interval '2 week'),date_trunc('day', current_timestamp + interval '1 week')  , 'readable_text', 10, 'mod2-course4Btitle', date_trunc('day', current_timestamp - interval '1 week') ,date_trunc('day', current_timestamp - interval '2 week') , 'course4B');
+
+INSERT INTO module(
+module_id, close_timestamp, due_date, human_readable_text, max_students, module_title, open_timestamp, visible_timestamp, course_id)
+VALUES ('mod3-course4B', date_trunc('day', current_timestamp - interval '2 days') ,date_trunc('day', current_timestamp - interval '4 days')   , 'readable_text', 10, 'mod3-course4Btitle', date_trunc('day', current_timestamp - interval '1 week') ,date_trunc('day', current_timestamp - interval '2 week')  , 'course4B');

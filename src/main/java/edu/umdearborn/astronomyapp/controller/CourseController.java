@@ -1,13 +1,14 @@
 package edu.umdearborn.astronomyapp.controller;
 
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.INSTRUCTOR_PATH;
-import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.STUDENT_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.REST_PATH_PREFIX;
+import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.STUDENT_PATH;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.umdearborn.astronomyapp.entity.Course;
+import edu.umdearborn.astronomyapp.entity.Module;
 import edu.umdearborn.astronomyapp.repository.CourseRepository;
 import edu.umdearborn.astronomyapp.repository.CourseUserRepository;
 import edu.umdearborn.astronomyapp.service.AclService;
@@ -60,6 +62,19 @@ public class CourseController {
     ValidAssert.isValid(errors);
     course.setId(courseId);
     return courseRepository.saveAndFlush(course);
+  }
+
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/modules", method = GET)
+  public List<Module> getModules(@PathVariable("courseId") String courseId, Principal principal) {
+    acl.enforceCourse(principal.getName(), courseId);
+    return courseRepository.getAllModules(courseId);
+  }
+
+  @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/modules", method = GET)
+  public List<Module> getVisibleModules(@PathVariable("courseId") String courseId,
+      Principal principal) {
+    acl.enforceCourse(principal.getName(), courseId);
+    return courseRepository.getAllModules(courseId);
   }
 
 }
