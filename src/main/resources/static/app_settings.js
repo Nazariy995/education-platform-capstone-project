@@ -3,7 +3,7 @@ module.exports = angular.module('app.settings', [])
     "API" : {
         "basePath" : "http://localhost:8080/rest"
     },
-    "STUDENT" : {
+    "USER" : {
         "mainNavigationLinks" : [
             {
                 "name" : "Courses",
