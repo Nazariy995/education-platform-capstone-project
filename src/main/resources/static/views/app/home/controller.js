@@ -6,7 +6,7 @@ function Controller($scope, $state, SessionService) {
     self._$scope = $scope;
     self._$scope.navigation_links = [];
 //    self.user_roles = SessionService.getUser().roles;
-    $state.go('home.student');
+//    $state.go('home.student');
 
 //
 
@@ -17,6 +17,7 @@ function Controller($scope, $state, SessionService) {
 //    }
 
 }
+
 
 module.exports = angular.module('app.views.app.controller', [
     "app.components.services.session_service"

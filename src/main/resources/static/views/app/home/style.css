@@ -11,6 +11,11 @@
     flex-grow: 0;
     flex-shrink: 0;
     flex-basis: 6em;
+    padding: 5px;
+}
+
+#logo, #logo img {
+    width: 100%;
 }
 
 #homeBody {
