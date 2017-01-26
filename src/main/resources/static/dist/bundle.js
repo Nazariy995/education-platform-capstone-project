@@ -80,8 +80,8 @@ function Router($stateProvider, $httpProvider, $locationProvider){
 
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 
-    //Removing # from the urls
-//    $locationProvider.html5Mode(true);
+//    Removing # from the urls
+    $locationProvider.html5Mode(true);
 }
 
 module.exports = Router;
@@ -91,6 +91,20 @@ module.exports = angular.module('app.settings', [])
 .constant("appSettings", {
     "API" : {
         "basePath" : "http://localhost:8080/rest"
+    },
+    "STUDENT" : {
+        "mainNavigationLinks" : [
+            {
+                "name" : "Courses",
+                "url" : "home/student",
+                "state" : "home.student"
+            },
+            {
+                "name" : "Account",
+                "url" : "home/account",
+                "state" : "home.account"
+            }
+        ]
     }
 })
 
@@ -256,7 +270,7 @@ function CourseService($http){
 
 CourseService.prototype.getCourses = function(){
     return this._$http
-          .get('./test/courses.json')
+          .get('test/courses.json')
           .then(function (res) {
             return res.data;
           });
@@ -312,7 +326,7 @@ function Controller($scope, $state, SessionService) {
     self._$scope = $scope;
     self._$scope.navigation_links = [];
 //    self.user_roles = SessionService.getUser().roles;
-    $state.go('home.student');
+//    $state.go('home.student');
 
 //
 
@@ -323,6 +337,7 @@ function Controller($scope, $state, SessionService) {
 //    }
 
 }
+
 
 module.exports = angular.module('app.views.app.controller', [
     "app.components.services.session_service"
@@ -390,14 +405,25 @@ module.exports = angular.module('app.views', [
 
 },{"./app/module":16,"./student/module":19}],18:[function(require,module,exports){
 
-function Controller($scope, $state, SessionService){
+function Controller($scope, $state, CourseService){
     "ngInject";
-    this._$state = $state;
     this._$scope = $scope;
-    this._$scope.courses = [];
+    this._$state = $state;
+    this._$scope.pageName = "Courses";
+    this._CourseService = CourseService;
+    this.init();
 };
 
-module.exports = angular.module('app.views.student.home.controller', [])
+Controller.prototype.init = function(){
+    var self = this;
+    var courses = self._CourseService.getCourses().then(function(courses){
+        self._$scope.courses = courses;
+    }, function(err){
+        self._$scope.error = err;
+    });
+}
+
+module.exports = angular.module('app.views.student.home.controller', [ ])
 .controller('Student.HomeCtrl', Controller);
 
 

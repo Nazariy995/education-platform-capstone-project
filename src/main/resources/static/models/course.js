@@ -11,7 +11,7 @@ function CourseService($http){
 
 CourseService.prototype.getCourses = function(){
     return this._$http
-          .get('./test/courses.json')
+          .get('test/courses.json')
           .then(function (res) {
             return res.data;
           });
