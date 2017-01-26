@@ -9,6 +9,7 @@ import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.SESSION_EX
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.SESSION_INVALID_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.STUDENT_PATH_PATTERNS;
 
+import org.springframework.boot.autoconfigure.security.Http401AuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -38,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // @formatter:off
     http
       .httpBasic()
+        .authenticationEntryPoint(new Http401AuthenticationEntryPoint("Newauth realm=\"astro-app\""))
         .and()
       .csrf()
         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
@@ -45,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .logout()
         .logoutUrl(LOGOUT_PATH)
         .logoutSuccessUrl(LOGOUT_SUCCESS_PATH)
-        .deleteCookies("SESSION")
+        .deleteCookies("XSRF-TOKEN")
         .clearAuthentication(true)
         .invalidateHttpSession(true)
         .and()

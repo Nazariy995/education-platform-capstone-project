@@ -2,10 +2,11 @@
 Description: Add, Get, Set, Delete Courses
 */
 
-function CourseService($http){
+function CourseService($http, appSettings){
     "ngInject";
 
     this._$http = $http;
+    console.log(appSettings.API.basePath);
 
 }
 
@@ -17,7 +18,9 @@ CourseService.prototype.getCourses = function(){
           });
 }
 
-module.exports = angular.module('app.models.course', [])
+module.exports = angular.module('app.models.course', [
+    'app.settings'
+])
     .service('CourseService', CourseService);
 
 
