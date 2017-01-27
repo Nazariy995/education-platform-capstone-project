@@ -16,6 +16,7 @@ import edu.umdearborn.astronomyapp.config.annotation.Dev;
 @Configuration
 @Transactional
 public class StartupHousekeeper {
+  // private static final Logger logger = LoggerFactory.getLogger(StartupHousekeeper.class);
 
   // private static final Logger logger = LoggerFactory.getLogger(StartupHousekeeper.class);
 

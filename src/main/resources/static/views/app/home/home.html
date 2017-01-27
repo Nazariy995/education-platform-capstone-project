@@ -1,17 +1,18 @@
-<nav class="navbar navbar-static-top">
-      <ul class="nav navbar-nav">
-        <li><a ui-sref="home" ui-sref-opts="{reload:true}"><span class="glyphicon glyphicon-home" aria-hidden="true" ></span></a></li>
-        <li ng-repeat="link in navigation_links">
-        <a href="#">{{link.short_name}} {{link.course_number}}</a>
-        </li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <p class="navbar-text">Hi,{{$root.user.first_name}}</p>
-        <li><a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true" ></span></a></li>
-      </ul>
-</nav>
-<main ui-view>
-</main>
-<footer class="row">
+<div id="appHome">
 
-</footer>
+    <nav id="homeNav">
+        <div id="logo">
+            <img src="assets/logo.png">
+        </div>
+        <ul>
+            <li ng-repeat="link in home.navigationLinks">
+                <a ui-sref="{{ link.state }}" >{{ link.name }}</a>
+            </li>
+        </ul>
+
+
+    </nav>
+    <main id="homeBody" ui-view>
+    </main>
+</div>
+

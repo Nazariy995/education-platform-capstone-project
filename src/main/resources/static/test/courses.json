@@ -1,20 +1,18 @@
 [
     {
-        "subject":"Astronomy",
-        "course_number":"130",
-        "crn":"28094",
-        "short_name":"ASTR"
+    "id": "course1A",
+    "closeTimestamp": "2017-02-24T01:16Z",
+    "courseCode": "1Acode",
+    "courseTitle": "course1Atitle",
+    "openTimestamp": "2016-12-24T01:16Z",
+    "subjectCode": "subj1A"
     },
     {
-        "subject":"Astronomy",
-        "course_number":"421",
-        "crn":"30054",
-        "short_name":"ASTR"
-    },
-    {
-        "subject":"Astronomy",
-        "course_number":"498",
-        "crn":"29854",
-        "short_name":"ASTR"
+    "id": "course2A",
+    "closeTimestamp": "2017-02-24T01:16Z",
+    "courseCode": "2Acode",
+    "courseTitle": "course2Atitle",
+    "openTimestamp": "2016-12-24T01:16Z",
+    "subjectCode": "subj2A"
     }
 ]

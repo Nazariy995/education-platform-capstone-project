@@ -1,36 +1,28 @@
-var app = angular.module('hello');
-app.controller('HomeCtrl', function($scope, $rootScope,$state, UserService, NavigationLinksService){
-    $scope.navigation_links = [];
-    UserService.get().then(function(res){
-        //Hack to test the user role
-        res.role = $rootScope.role;
-        //end of a hack
-        $rootScope.user = res;
-        if(res.role=="teacher"){
-            $state.go('home.teacher');
-        }else if(res.role =='student'){
-            $state.go('home.student');
-        }
-    });
 
-    NavigationLinksService.get().then(function(res){
-        $scope.navigation_links = res;
-    });
+function Controller($scope, $state, SessionService, appSettings) {
+    "ngInject";
 
+    this._$scope = $scope;
+    this.navigationLinks = [];
+    this._appSettings = appSettings;
+    this._SessionService = SessionService;
+    this.init();
 
+}
 
-
+Controller.prototype.init = function(){
+    var self = this;
+    var roles = self._SessionService.getUser().roles;
+    if (roles.indexOf("USER") != -1){
+        var role = "USER";
+        self.navigationLinks = self._appSettings[role]["mainNavigationLinks"];
+    }
+}
 
 
 
-
-
-
-
-
-
-
-
-
-
-});
+module.exports = angular.module('app.views.app.controller', [
+    "app.components.services.session_service",
+    "app.settings"
+])
+.controller('HomeCtrl', Controller);

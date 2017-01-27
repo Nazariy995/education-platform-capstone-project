@@ -1,20 +1,27 @@
-<h2>Student</h2>
-<div class="row">
-    <div class="co-xs-6 col-sm-8">
-        <section ng-repeat="course in courses|limitTo:1">
-            <h2>{{course.subject}} {{course.course_number}}</h2>
-            <ul class="nav nav-pills nav-stacked">
-                <li><a href="#">View Grades</a></li>
-                <li><a href="#">Create Group</a></li>
-                <li><a href="#">View Assignments</a></li>
-            </ul>
-        </section>
-    </div>
-    <div class="col-xs-6 col-sm-4">
-        <h2>Updates</h2>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-9">
+            <h1 class="page-header">
+            Hello {{ app.session.getUser().firstName}}
+            </h1>
 
+            <h2>{{ pageName }}</h2>
+
+            <table class="table table-hover">
+            <thead>
+                <tr>
+                <th>Name</th>
+                <th>Term</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="course in courses">
+                    <td><a ui-sref=""> {{  course.courseTitle }} </a></td>
+                    <td> {{ course.subjectCode }} </td>
+                </tr>
+            </tbody>
+            </table>
+
+        </div>
     </div>
 </div>
-
-
-

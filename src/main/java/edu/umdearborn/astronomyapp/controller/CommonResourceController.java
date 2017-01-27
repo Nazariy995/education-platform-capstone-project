@@ -21,14 +21,13 @@ import edu.umdearborn.astronomyapp.repository.UserRepository;
 public class CommonResourceController {
 
   private static final Logger logger = LoggerFactory.getLogger(CommonResourceController.class);
-
+  
   private UserRepository userRepository;
 
   public CommonResourceController(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
 
-  @RequestMapping(value = "/self", method = GET)
   public AstroAppUser getSelf(Principal principal) {
     logger.debug("Getting self");
     return userRepository.findByEmail(principal.getName());

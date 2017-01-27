@@ -1,38 +1,36 @@
-var app = angular.module('hello');
-app.controller('LoginCtrl', function($rootScope, $scope,$state, AuthService){
+
+
+function Controller($scope, $state, AuthService){
+    "ngInject";
+
+    this._AuthService = AuthService;
+    this._$state = $state;
+    this._$scope = $scope;
+    this._$scope.error = null;
+
+    this.credentials = {
+        username: '',
+        password : ''
+    };
+};
+
+Controller.prototype.login = function(){
     var self = this;
-    self.credentials = {
-        username:'',
-        password:''
-    };
+    self._AuthService.login(self.credentials).then(function(user){
 
-    self.login = function(credentials){
-        console.log(credentials);
-        AuthService.login(credentials).then(function(res){
-            console.log(res);
-            //Hack for role switching
-//            if(self.credentials.username == "student"){
-//                $rootScope.role="student";
-//            }else{
-//                $rootScope.role="teacher";
-//            }
-//            //end of hack
-//            if(res.authenticated){
-//                $rootScope.authenticated = true;
-//                $state.go("home");
-//                console.log("Login Succeeded ")
-//            }else{
-//                $rootScope.authenticated = false;
-//                $state.go("/");
-//                console.log("Login Failed");
-//            }
-        },function(){
-            console.log("failed");  
-            $rootScope.authenticated = false;
-                console.log("Login Failed");
-        });
-    };
+        if(user.roles.indexOf("USER") != -1){
+            self._$state.go("home.student");
+        } else if(user.roles.indexOf("INSTRUCTOR") != -1) {
+            self._$state.go("home.teacher");
+        }
+    },function(err){
+        console.log("failed");
+        self._$scope.error = err;
+    });
+
+}
 
 
-});
+module.exports = angular.module('app.views.app.login.controller', [])
+.controller('LoginCtrl', Controller);
 
