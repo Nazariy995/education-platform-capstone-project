@@ -48,7 +48,6 @@ function Router($stateProvider, $httpProvider, $locationProvider){
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 
 //    Removing # from the urls
-    $locationProvider.html5Mode(true);
 }
 
 module.exports = Router;
