@@ -13,7 +13,19 @@ public class CourseUserRepositoryTest extends RepositoryTestHelper {
 
   @Test
   public void getCurrentCoursesTest() {
-    assertThat("Did not get all open courses", repository.getCurrentCourses("user1@email.com"),
-        hasSize(2));
+    assertThat("Did not get all open courses",
+        repository.getCurrentCourses("adminstructor1@umich.edu"), hasSize(3));
+    assertThat("Did not get all open courses",
+        repository.getCurrentCourses("adminstructor2@umich.edu"), hasSize(1));
+    assertThat("Did not get all open courses",
+        repository.getCurrentCourses("instructor3@umich.edu"), hasSize(1));
+    assertThat("Did not get all open courses",
+        repository.getCurrentCourses("user1@umich.edu"), hasSize(2));
+  }
+  
+  @Test
+  public void isInCourseTest() {
+    assertThat("Should have access", repository.isInCourse("user11@umich.edu", "course1B"));
+    assertThat("Should not have access", !repository.isInCourse("user11@umich.edu", "course1A"));
   }
 }

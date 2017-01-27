@@ -4,6 +4,7 @@ spring:
     username: ${datasource.username}
     password: ${datasource.password}
 logging:
+#  file: astro-app.log
   level:
     root: info
 server:

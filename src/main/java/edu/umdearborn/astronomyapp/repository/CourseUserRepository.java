@@ -17,4 +17,9 @@ public interface CourseUserRepository extends JpaRepository<CourseUser, String> 
       + "where lower(u.email) = lower(:email) and "
       + "c.openTimestamp <= current_timestamp() and c.closeTimestamp >= current_timestamp()")
   public Set<Course> getCurrentCourses(@Param("email") String email);
+
+  @Query("select count(cu) > 0 from CourseUser cu join cu.user u join cu.course c "
+      + "where lower(u.email) = lower(:email) and lower(c.id) = lower(:courseId) "
+      + "and cu.isActive = true")
+  public boolean isInCourse(@Param("email") String email, @Param("courseId") String courseId);
 }
