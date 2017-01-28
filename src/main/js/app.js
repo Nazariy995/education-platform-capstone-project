@@ -2,6 +2,7 @@
 
 
 //External
+//require('jquery');
 //require('angular');
 //require('angular-ui-router');
 
@@ -12,6 +13,7 @@ var components = require('./components/module');
 var appController = require('./app_controller');
 var appRouter = require('./app_router');
 var appSettings = require('./app_settings');
+var appAuthInterceptor = require('./app_auth_interceptor');
 
 angular.module("app", [
     //External
@@ -24,4 +26,8 @@ angular.module("app", [
     views.name
 ])
 .controller('AppController', appController)
-.config(appRouter);
+.factory('SessionInjector', appAuthInterceptor)
+.config(appRouter)
+.config(['$httpProvider', function($httpProvider) {
+    $httpProvider.interceptors.push('SessionInjector');
+}]);
