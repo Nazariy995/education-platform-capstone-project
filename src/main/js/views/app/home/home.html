@@ -1,0 +1,21 @@
+<div id="appHome">
+
+    <nav id="homeNav">
+        <div id="logo">
+            <img src="assets/logo.png">
+        </div>
+        <ul>
+            <li ng-repeat="link in home.navigationLinks">
+                <a ui-sref="{{ link.state }}" >{{ link.name }}</a>
+            </li>
+
+
+            <li ng-click="home.logout()">Logout</li>
+        </ul>
+
+
+    </nav>
+    <main id="homeBody" ui-view>
+    </main>
+</div>
+

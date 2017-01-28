@@ -21,6 +21,7 @@ import edu.umdearborn.astronomyapp.repository.UserRepository;
 public class CommonResourceController {
 
   private static final Logger logger = LoggerFactory.getLogger(CommonResourceController.class);
+
   private UserRepository userRepository;
 
   public CommonResourceController(UserRepository userRepository) {

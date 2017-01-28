@@ -1,0 +1,18 @@
+[
+    {
+    "id": "course1A",
+    "closeTimestamp": "2017-02-24T01:16Z",
+    "courseCode": "1Acode",
+    "courseTitle": "course1Atitle",
+    "openTimestamp": "2016-12-24T01:16Z",
+    "subjectCode": "subj1A"
+    },
+    {
+    "id": "course2A",
+    "closeTimestamp": "2017-02-24T01:16Z",
+    "courseCode": "2Acode",
+    "courseTitle": "course2Atitle",
+    "openTimestamp": "2016-12-24T01:16Z",
+    "subjectCode": "subj2A"
+    }
+]
