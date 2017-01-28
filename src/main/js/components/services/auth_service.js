@@ -18,7 +18,7 @@ AuthService.prototype.login = function(credentials){
 
     console.log(headers);
     return this._$http
-              .get(this._appSettings.API.basePath+"/self", {headers : headers})
+              .get("/rest/self", {headers : headers})
               .then(function (response) {
                     console.log(response);
                     var user = response.data;
