@@ -1,13 +1,14 @@
 package edu.umdearborn.astronomyapp.config;
 
-import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.ADMIN_PATH_PATTERNS;
-import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.INSTRUCTOR_PATH_PATTERNS;
+import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.ADMIN_PATH;
+import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.INSTRUCTOR_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.LOGOUT_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.LOGOUT_SUCCESS_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.PUBLIC_PATH_PATTERNS;
+import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.REST_PATH_PREFIX;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.SESSION_EXPIRED_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.SESSION_INVALID_PATH;
-import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.STUDENT_PATH_PATTERNS;
+import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.STUDENT_PATH;
 
 import org.springframework.boot.autoconfigure.security.Http401AuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
@@ -54,9 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .authorizeRequests()
         .filterSecurityInterceptorOncePerRequest(false)
         .antMatchers(PUBLIC_PATH_PATTERNS).permitAll()
-        .antMatchers(ADMIN_PATH_PATTERNS).hasRole("ADMIN")
-        .antMatchers(INSTRUCTOR_PATH_PATTERNS).hasRole("INSTRUCTOR")
-        .antMatchers(STUDENT_PATH_PATTERNS).hasRole("USER")
+        .antMatchers(REST_PATH_PREFIX + ADMIN_PATH + "/**").hasRole("ADMIN")
+        .antMatchers(REST_PATH_PREFIX + INSTRUCTOR_PATH + "/**").hasRole("INSTRUCTOR")
+        .antMatchers(REST_PATH_PREFIX + STUDENT_PATH + "/**").hasRole("USER")
         .anyRequest().fullyAuthenticated()
         .and()
       .sessionManagement()

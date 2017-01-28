@@ -4,6 +4,8 @@ import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -17,7 +19,7 @@ import edu.umdearborn.astronomyapp.config.annotation.Dev;
 @Transactional
 public class StartupHousekeeper {
 
-  // private static final Logger logger = LoggerFactory.getLogger(StartupHousekeeper.class);
+  private static final Logger logger = LoggerFactory.getLogger(StartupHousekeeper.class);
 
   private EntityManager em;
 
@@ -317,6 +319,7 @@ public class StartupHousekeeper {
 
   @EventListener
   public void handleContextRefresh(ContextRefreshedEvent event) {
+    logger.debug("Inserting test data");
     em.createNativeQuery(SQL).executeUpdate();
 
   }
