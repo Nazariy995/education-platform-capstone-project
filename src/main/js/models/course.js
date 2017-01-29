@@ -6,7 +6,6 @@ function CourseService($http, appSettings){
     "ngInject";
 
     this._$http = $http;
-    console.log(appSettings.API.basePath);
 
 }
 
