@@ -6,12 +6,14 @@ function CourseService($http, appSettings){
     "ngInject";
 
     this._$http = $http;
+    this._appSettings = appSettings;
+
 
 }
 
 CourseService.prototype.getCourses = function(){
     return this._$http
-          .get('/rest/student/courses/current')
+          .get(this._appSettings.API.basePath + '/rest/student/courses/current')
           .then(function (res) {
             return res.data;
           });
@@ -19,8 +21,7 @@ CourseService.prototype.getCourses = function(){
 
 module.exports = angular.module('app.models.course', [
     'app.settings'
-])
-    .service('CourseService', CourseService);
+]).service('CourseService', CourseService);
 
 
 
