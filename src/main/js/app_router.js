@@ -38,6 +38,14 @@ function Router($stateProvider, $httpProvider, $locationProvider){
             templateUrl : 'views/app/account/account.html',
             controller : 'AccountCtrl',
             controllerAs : 'account'
+        },
+        {
+            name : 'home.assignments',
+            url :  "/course/{courseId}/assignments",
+            templateUrl : 'views/student/assignment/home.html',
+            controller : 'Student.AssignmentCtrl',
+            controllerAs : 'courseAssignments'
+
         }
     ]
 
