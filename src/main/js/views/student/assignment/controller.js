@@ -11,7 +11,6 @@ function Controller($scope, $state, $stateParams, AssignmentService){
 
 Controller.prototype.init = function(){
     var self = this;
-    console.log("Yo Im in the init");
     self._AssignmentService.getAssignments(self.courseId).then(function(assignments){
         self.assignments = assignments;
     }, function(err){

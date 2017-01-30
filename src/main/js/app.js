@@ -3,8 +3,8 @@
 
 //External
 //require('jquery');
-//require('angular');
-//require('angular-ui-router');
+require('angular');
+require('angular-ui-router');
 
 //Internal
 var views = require('./views/module');
