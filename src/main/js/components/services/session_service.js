@@ -19,12 +19,13 @@ SessionService.prototype.setUser = function(user){
 }
 
 SessionService.prototype.getAccessToken = function(){
+    var self = this;
     return this._accessToken;
 }
 
 SessionService.prototype.setAccessToken = function(accessToken){
     this._accessToken = accessToken;
-    this._$window.localStorage.setItem('serssion.accessToken', accessToken);
+    this._$window.localStorage.setItem('session.accessToken', JSON.stringify(accessToken));
     return this;
 }
 
@@ -41,7 +42,7 @@ SessionService.prototype.create = function(user, accessToken){
         "roles" : user.appRoles
     }
     this.setUser(tempUser);
-    this.setAccessToken = accessToken;
+    this.setAccessToken(accessToken);
     return tempUser;
 }
 

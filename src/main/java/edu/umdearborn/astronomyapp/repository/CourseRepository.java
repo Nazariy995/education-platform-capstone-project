@@ -16,8 +16,8 @@ public interface CourseRepository extends JpaRepository<Course, String> {
   @Query("select m from Module m join m.course c where c.id = :courseId "
       + "and m.visibleTimestamp <= current_timestamp()")
   public List<Module> getVisibleModules(@Param(value = "courseId") String courseId);
-  
+
   @Query("select m from Module m join m.course c where c.id = :courseId")
   public List<Module> getAllModules(@Param(value = "courseId") String courseId);
-  
+
 }

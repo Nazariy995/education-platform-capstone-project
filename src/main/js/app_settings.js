@@ -1,5 +1,8 @@
 module.exports = angular.module('app.settings', [])
 .constant("appSettings", {
+    "API" : {
+        "basePath" : ""
+    },
     "USER" : {
         "mainNavigationLinks" : [
             {

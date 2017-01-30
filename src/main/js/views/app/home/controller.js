@@ -3,6 +3,7 @@ function Controller($scope, $state, SessionService, appSettings) {
     "ngInject";
 
     this._$scope = $scope;
+    this._$state = $state;
     this.navigationLinks = [];
     this._appSettings = appSettings;
     this._SessionService = SessionService;
@@ -17,6 +18,11 @@ Controller.prototype.init = function(){
         var role = "USER";
         self.navigationLinks = self._appSettings[role]["mainNavigationLinks"];
     }
+}
+
+Controller.prototype.logout = function(){
+    this._SessionService.destroy();
+    this._$state.go('login');
 }
 
 

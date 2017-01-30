@@ -22,7 +22,7 @@ public class CourseUserRepositoryTest extends RepositoryTestHelper {
     assertThat("Did not get all open courses",
         repository.getCurrentCourses("user1@umich.edu"), hasSize(2));
   }
-  
+
   @Test
   public void isInCourseTest() {
     assertThat("Should have access", repository.isInCourse("user11@umich.edu", "course1B"));
