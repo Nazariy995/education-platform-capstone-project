@@ -11,6 +11,7 @@ function AssignmentService($http, appSettings){
 }
 
 AssignmentService.prototype.getAssignments = function(courseId){
+    console.log(courseId);
     return this._$http
           .get(this._appSettings.API.basePath + '/rest/student/course/' + courseId + '/modules')
           .then(function (res) {
