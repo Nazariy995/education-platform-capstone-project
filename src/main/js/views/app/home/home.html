@@ -7,11 +7,29 @@
             </div>
             <ul>
                 <li ng-repeat="link in home.navigationLinks">
-                    <a ui-sref="{{ link.state }}" >{{ link.name }}</a>
+                    <a ui-sref="{{ link.state }}" >
+                        <div class="navLiWrapper">
+                            <div class="navIcon">
+                                <span class="{{ link.icon }}" aria-hidden="true"></span>
+                            </div>
+                            <div class="navText">
+                                {{ link.name }}
+                            </div>
+                        </div>
+                    </a>
                 </li>
 
 
-                <li ng-click="home.logout()">Logout</li>
+                <li ng-click="home.logout()">
+                    <div class="navLiWrapper">
+                        <div class="navIcon">
+                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                        </div>
+                        <div class="navText">
+                            Logout
+                        </div>
+                    </div>
+                </li>
             </ul>
         </div>
     </nav>
