@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import edu.umdearborn.astronomyapp.validation.annotation.LogicalAppRoles;
+import edu.umdearborn.astronomyapp.validation.group.ValidationGroup;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "userId"))
@@ -46,8 +47,8 @@ public class AstroAppUser extends AbstractGeneratedId {
 
   private static final long serialVersionUID = -7245103766854987243L;
 
-  @Email
-  @NotNull
+  @Email(groups = ValidationGroup.Checkin.class)
+  @NotNull(groups = ValidationGroup.Checkin.class)
   @Column(updatable = false)
   @Size(min = 5, max = 255)
   private String email;
@@ -76,7 +77,8 @@ public class AstroAppUser extends AbstractGeneratedId {
   @NotNull
   @Size(min = 1, max = 35)
   private String lastName;
-
+  
+  @NotNull(groups = ValidationGroup.Checkin.class)
   @JsonProperty(access = Access.WRITE_ONLY)
   @Column(length = 62, nullable = false)
   private String password;

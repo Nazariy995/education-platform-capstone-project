@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class CourseUser extends AbstractGeneratedId {
 
   public static enum CourseRole {
-    INSTRUCTOR, NUL, STUDENT, TA;
+    INSTRUCTOR, STUDENT, TA;
   }
 
   private static final long serialVersionUID = 453757782768837852L;
@@ -50,7 +50,7 @@ public class CourseUser extends AbstractGeneratedId {
   @JsonProperty("courseRole")
   @NotNull
   @Enumerated(EnumType.STRING)
-  private CourseRole role = CourseRole.NUL;
+  private CourseRole role;
 
   @JsonUnwrapped
   @Valid

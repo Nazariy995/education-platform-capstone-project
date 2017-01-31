@@ -26,7 +26,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class Question extends PageItem {
 
   public static enum QuestionType {
-    FREE_RESPONSE(false), IMAGE(false), MULTIPLE_CHOICE(true), NUL(false), NUMERIC(true);
+    FREE_RESPONSE(false), IMAGE(false), MULTIPLE_CHOICE(true), NUMERIC(true);
 
     private boolean isMachineGradeable;
 
@@ -54,7 +54,7 @@ public class Question extends PageItem {
   @NotNull
   @Enumerated(EnumType.STRING)
   @Column(length = 15)
-  private QuestionType questionType = QuestionType.NUL;
+  private QuestionType questionType;
 
   @Override
   public boolean equals(Object obj) {

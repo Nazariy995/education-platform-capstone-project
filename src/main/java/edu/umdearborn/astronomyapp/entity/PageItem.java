@@ -33,7 +33,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class PageItem extends AbstractGeneratedId {
 
   public static enum PageItemType {
-    NUL, QUESTION, TEXT;
+    QUESTION, TEXT;
   }
 
   private static final long serialVersionUID = 2553850340823580376L;
@@ -57,7 +57,7 @@ public class PageItem extends AbstractGeneratedId {
   @NotNull
   @Enumerated(EnumType.STRING)
   @Column(length = 8)
-  private PageItemType pageItemType = PageItemType.NUL;
+  private PageItemType pageItemType;
 
   @Override
   public boolean equals(Object obj) {
