@@ -8,12 +8,14 @@ module.exports = angular.module('app.settings', [])
             {
                 "name" : "Courses",
                 "url" : "home/student",
-                "state" : "home.student"
+                "state" : "home.student",
+                "icon" : "glyphicon glyphicon-book"
             },
             {
                 "name" : "Account",
                 "url" : "home/account",
-                "state" : "home.account"
+                "state" : "home.account",
+                "icon" : "glyphicon glyphicon-user"
             }
         ]
     }
