@@ -1,39 +1,5 @@
-<div id="appHome">
-
-    <nav id="homeNav">
-        <div class="navWrapper">
-            <div id="logo">
-                <img src="assets/logo.png">
-            </div>
-            <ul>
-                <li ng-repeat="link in home.navigationLinks">
-                    <a ui-sref="{{ link.state }}" >
-                        <div class="navLiWrapper">
-                            <div class="navIcon">
-                                <span class="{{ link.icon }}" aria-hidden="true"></span>
-                            </div>
-                            <div class="navText">
-                                {{ link.name }}
-                            </div>
-                        </div>
-                    </a>
-                </li>
-
-
-                <li ng-click="home.logout()">
-                    <div class="navLiWrapper">
-                        <div class="navIcon">
-                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-                        </div>
-                        <div class="navText">
-                            Logout
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    <main id="homeBody" ui-view>
-    </main>
+<div class="appHome">
+    <div ui-view="mainNavigation" class="homeNav"></div>
+    <div ui-view="mainContent" class="homeBody"></div>
 </div>
 
