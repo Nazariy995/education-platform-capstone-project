@@ -24,18 +24,8 @@ spring:
   jpa:
     generate-ddl: true
 ---
-spring.profiles: dev
 spring:
-  profiles:
-    include: db-init
-  datasource:
-    url: jdbc:h2:mem:umdastro;MODE=PostgreSQL
-#    url: jdbc:h2:~/umdastro;MODE=PostgreSQL
-    username: sa
-    password: 
-  h2:
-    console:
-      enabled: false
+  profiles: dev
 logging:
   level:
     edu.umdearborn.astronomyapp: debug

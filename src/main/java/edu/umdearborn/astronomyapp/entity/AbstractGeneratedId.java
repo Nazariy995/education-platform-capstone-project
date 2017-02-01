@@ -6,7 +6,6 @@ import java.util.UUID;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
-import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -18,7 +17,6 @@ public abstract class AbstractGeneratedId implements Serializable {
   private static final long serialVersionUID = -7979849207672422242L;
 
   @Id
-  @Size(min = 34, max = 38)
   protected String id;
 
   @Override

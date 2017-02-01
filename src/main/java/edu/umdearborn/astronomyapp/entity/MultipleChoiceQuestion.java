@@ -10,7 +10,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
 @DiscriminatorValue("MULTIPLE_CHOICE")
-@PrimaryKeyJoinColumn(name = "MULTIMPLE_CHOICE_QUESTION_ID")
+@PrimaryKeyJoinColumn(name = "MULTIPLE_CHOICE_QUESTION_ID")
 public class MultipleChoiceQuestion extends AbstractOptionsQuestion<MultipleChoiceOption> {
 
   private static final long serialVersionUID = -936973458962467475L;
