@@ -1,5 +1,6 @@
 package edu.umdearborn.astronomyapp.controller;
 
+import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.GRADER_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.INSTRUCTOR_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.REST_PATH_PREFIX;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.STUDENT_PATH;
@@ -13,6 +14,7 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
+import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.umdearborn.astronomyapp.entity.Course;
+import edu.umdearborn.astronomyapp.entity.CourseUser;
 import edu.umdearborn.astronomyapp.entity.Module;
 import edu.umdearborn.astronomyapp.repository.CourseRepository;
 import edu.umdearborn.astronomyapp.repository.CourseUserRepository;
@@ -74,7 +77,19 @@ public class CourseController {
   public List<Module> getVisibleModules(@PathVariable("courseId") String courseId,
       Principal principal) {
     acl.enforceCourse(principal.getName(), courseId);
-    return courseRepository.getAllModules(courseId);
+    return courseRepository.getVisibleModules(courseId);
+  }
+
+  @RequestMapping(
+      value = {STUDENT_PATH + "/course/{courseId}/role", STUDENT_PATH + "/course/{courseId}/role",
+          GRADER_PATH + "/course/{courseId}/role"},
+      method = GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public CourseUser getCourseRole(@PathVariable("courseId") String courseId,
+      Principal principal) {
+    acl.enforceCourse(principal.getName(), courseId);
+    CourseUser cu = new CourseUser();
+    cu.setRole(courseUserRepository.getRole(courseId, principal.getName()));
+    return cu;
   }
 
 }
