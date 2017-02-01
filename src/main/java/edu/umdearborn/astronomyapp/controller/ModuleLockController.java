@@ -25,9 +25,9 @@ import edu.umdearborn.astronomyapp.service.AclService;
 @RequestMapping(REST_PATH_PREFIX + STUDENT_PATH)
 @SessionAttributes("checkin")
 public class ModuleLockController {
-  
+
   private static final Logger logger = LoggerFactory.getLogger(ModuleLockController.class);
-  
+
   private AclService acl;
 
   public ModuleLockController(AclService acl) {
@@ -49,10 +49,12 @@ public class ModuleLockController {
     List<String> checkinStatus =
         Optional.ofNullable(checkin.get(courseId + "/" + moduleId)).orElse(new ArrayList<String>());
 
-    if (checkinStatus.isEmpty()) {
+    if (!checkinStatus.contains(principal.getName().toLowerCase())) {
       checkinStatus.add(principal.getName().toLowerCase());
       logger.info("Creating new entry for {}/{} checkin", courseId, moduleId);
     }
+
+    checkin.put(courseId + "/" + moduleId, checkinStatus);
 
     return checkinStatus;
   }
