@@ -3,6 +3,8 @@ spring:
     url: ${datasource.url}
     username: ${datasource.username}
     password: ${datasource.password}
+  jpa:
+    database-platform: edu.umdearborn.astronomyapp.config.jpa.PostgreSql94RemapClobDialect
 logging:
 #  file: astro-app.log
   level:

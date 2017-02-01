@@ -22,7 +22,6 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.hibernate.annotations.Type;
 
 @Entity
 @Table(indexes = @Index(columnList = "courseId"))
@@ -46,7 +45,6 @@ public class Module extends AbstractGeneratedId {
   private Date dueDate;
 
   @Lob
-  @Type(type = "org.hibernate.type.TextType")
   @Basic(fetch = FetchType.LAZY)
   private String humanReadableText;
 
