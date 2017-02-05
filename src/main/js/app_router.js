@@ -10,11 +10,7 @@ function Router($stateProvider, $httpProvider, $locationProvider){
             views : {
                 'app' : {
                     templateUrl : 'views/app/home/home.html'
-                },
-                'mainNavigation@app' : {
-                    templateUrl : 'views/app/mainNavigation/home.html'
                 }
-                
             }
         },
         {
@@ -56,50 +52,18 @@ function Router($stateProvider, $httpProvider, $locationProvider){
             views : {
                 'mainContent@app' : {
                     templateUrl : 'views/student/course/home.html'
-                },
-                'childNavigation@app.course' : {
-                    templateUrl : 'views/student/child_navigation/home.html'
                 }
             }
-            
+        },
+        {
+            name : 'app.course.assignments',
+            url : 'assignments',
+            views : {
+                'mainContent@app.course' : {
+                    templateUrl : 'views/student/assignment/home.html'
+                }
+            }
         }
-        
-//        {
-//            name:'home',
-//            url:'/home',
-//            templateUrl:'views/app/home/home.html',
-//            controller: 'HomeCtrl',
-//            controllerAs: 'home'
-//        },
-//        {
-//            name:'home.teacher',
-//            url:'/teacher',
-//            templateUrl:'views/teacher/home/home.html',
-//            controller: 'Teacher.HomeCtrl',
-//            controllerAs: 'teacherHome'
-//        },
-//        {
-//            name:'home.student',
-//            url:'/student',
-//            templateUrl:'views/student/home/home.html',
-//            controller: 'Student.HomeCtrl',
-//            controllerAs: 'studentHome'
-//        },
-//        {
-//            name : 'home.account',
-//            url : '/account',
-//            templateUrl : 'views/app/account/account.html',
-//            controller : 'AccountCtrl',
-//            controllerAs : 'account'
-//        },
-//        {
-//            name : 'home.assignments',
-//            url :  "/course/{courseId}/assignments",
-//            templateUrl : 'views/student/assignment/home.html',
-//            controller : 'Student.AssignmentCtrl',
-//            controllerAs : 'courseAssignments'
-//
-//        }
     ]
 
     states.forEach(function(state) {
