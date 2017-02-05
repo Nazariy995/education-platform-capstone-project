@@ -23,14 +23,7 @@ body {
     flex-basis: 80px;
 }
 
-.navWrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 80px;
-  background-color: rgb(0, 39, 76);
-  height: 100%;
-}
+
 
 .homeNav li {
   display: block;
@@ -46,7 +39,7 @@ body {
 }
 
 .navLiWrapper {
-  padding: 10px;
+  padding: 10px 0;
 }
 
 .homeNav li:hover {

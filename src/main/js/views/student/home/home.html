@@ -13,7 +13,7 @@
             </thead>
             <tbody>
                 <tr ng-repeat="course in courses">
-                    <td><a ui-sref="home.assignments({courseId:'{{course.id}}'})"> {{  course.courseTitle }} </a></td>
+                    <td><a ui-sref="app.assignments({courseId:'{{course.id}}'})"> {{  course.courseTitle }} </a></td>
                     <td> {{ course.subjectCode }} </td>
                 </tr>
             </tbody>
