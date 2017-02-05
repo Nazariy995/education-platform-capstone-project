@@ -1,4 +1,3 @@
-
 function Directive($state, appSettings, SessionService){
     "ngInject";
 
@@ -7,14 +6,20 @@ function Directive($state, appSettings, SessionService){
 //        var roles = SessionService.getUser().roles;
 //        if (roles.indexOf("USER") != -1){
 //            var role = "USER";
-        scope.navigationLinks = appSettings["USER"]["childNavigationLinks"];
+        scope.navigationLinks = appSettings["USER"]["mainNavigationLinks"];
 //        }
+
+
+        scope.logout = function(){
+            SessionService.destroy();
+            $state.go('app.login');
+        }
 
     }
 
     var directive = {
         restrict: 'E',
-        templateUrl: 'components/child_navigation/child_navigation.html',
+        templateUrl: 'components/main_navigation/main_navigation.html',
         link: link
     }
 

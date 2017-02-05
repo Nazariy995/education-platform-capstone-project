@@ -1,1 +1,17 @@
-<h2>Yo this is workign</h2>
+<div class="childNavWrapper">
+    <ul>
+        <li ng-repeat="link in navigationLinks">
+            <a ui-sref="{{ link.state }}" >
+                <div class="navLiWrapper">
+                    <div class="navIcon">
+                        <span class="{{ link.icon }}" aria-hidden="true"></span>
+                    </div>
+                    <div class="navText">
+                        {{ link.name }}
+                    </div>
+                </div>
+            </a>
+        </li>
+    </ul>
+
+</div>
