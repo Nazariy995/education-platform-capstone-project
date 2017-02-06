@@ -22,4 +22,4 @@ Controller.prototype.init = function(){
 module.exports = angular.module('app.views.student.assignments.controller', [
     'app.models.assignment'
 ])
-.controller('Student.AssignmentCtrl', Controller);
+.controller('Student.AssignmentsCtrl', Controller);
