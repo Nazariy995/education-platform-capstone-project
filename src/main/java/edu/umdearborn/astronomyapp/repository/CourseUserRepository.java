@@ -28,8 +28,14 @@ public interface CourseUserRepository extends JpaRepository<CourseUser, String> 
 
   @EntityGraph(attributePaths = {"user"}, type = EntityGraphType.LOAD)
   @Query("select cu from CourseUser cu join cu.user u join cu.course c "
-      + "where c.id = :courseId and cu.isActive = true")
+      + "where c.id = :courseId and cu.isActive = true and u.isEnabled = true")
   public List<CourseUser> getClassList(@Param(value = "courseId") String courseId);
+
+  @Query("select cu from CourseUser cu join cu.user u join cu.course c "
+      + "where c.id = :courseId and cu.isActive = true and u.isEnabled = true and "
+      + "lower(u.email) = lower(:email)")
+  public CourseUser getCourseUser(@Param(value = "courseId") String courseId,
+      @Param(value = "email") String email);
 
   @Query("select cu.role from CourseUser cu join cu.user u join cu.course c "
       + "where c.id = :courseId and cu.isActive = true and u.isEnabled = true "

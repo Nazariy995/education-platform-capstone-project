@@ -9,87 +9,115 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import javax.validation.Valid;
 
-import org.springframework.http.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.umdearborn.astronomyapp.entity.Course;
 import edu.umdearborn.astronomyapp.entity.CourseUser;
 import edu.umdearborn.astronomyapp.entity.Module;
-import edu.umdearborn.astronomyapp.repository.CourseRepository;
-import edu.umdearborn.astronomyapp.repository.CourseUserRepository;
 import edu.umdearborn.astronomyapp.service.AclService;
+import edu.umdearborn.astronomyapp.service.CourseService;
 import edu.umdearborn.astronomyapp.util.ValidAssert;
 
 @RestController
 @RequestMapping(REST_PATH_PREFIX)
 public class CourseController {
 
-  private AclService acl;
+  private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
 
-  private CourseRepository courseRepository;
+  private AclService    acl;
+  private CourseService courseService;
 
-  private CourseUserRepository courseUserRepository;
-
-  public CourseController(AclService acl, CourseRepository courseRepository,
-      CourseUserRepository courseUserRepository) {
+  public CourseController(AclService acl, CourseService courseService) {
     this.acl = acl;
-    this.courseRepository = courseRepository;
-    this.courseUserRepository = courseUserRepository;
+    this.courseService = courseService;
   }
 
-  @RequestMapping(value = {INSTRUCTOR_PATH + "/courses/current", STUDENT_PATH + "/courses/current"},
-      method = GET)
-  public Set<Course> getCurrentCourses(Principal principal) {
-    return courseUserRepository.getCurrentCourses(principal.getName());
+  @RequestMapping(value = {INSTRUCTOR_PATH + "/courses", STUDENT_PATH + "/courses"}, method = GET)
+  public List<Course> getCurrentCourses(
+      @RequestParam(name = "hideClosed", defaultValue = "true") boolean hideClosed,
+      @RequestParam(name = "hideOpenSoon", defaultValue = "true") boolean hideOpenSoon,
+      Principal principal) {
+    
+    return courseService.getCourses(principal.getName(), hideClosed, hideOpenSoon);
   }
 
   @RequestMapping(value = INSTRUCTOR_PATH + "/course", method = POST)
   public Course createCourse(@Valid @RequestBody Course course, Errors errors) {
+    
     ValidAssert.isValid(errors);
-    return courseRepository.saveAndFlush(course);
+    
+    return courseService.createCourse(course);
   }
 
   @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}", method = PUT)
   public Course updateCourse(@Valid @RequestBody Course course, Errors errors,
-      @PathVariable("courseId") String courseId, Principal principal) {
-    acl.enforceCourse(principal.getName(), courseId);
+      @PathVariable("courseId") String courseId,
+      @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
+
+    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
+
     ValidAssert.isValid(errors);
     course.setId(courseId);
-    return courseRepository.saveAndFlush(course);
+    return courseService.updateCourse(course);
   }
 
   @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/modules", method = GET)
-  public List<Module> getModules(@PathVariable("courseId") String courseId, Principal principal) {
-    acl.enforceCourse(principal.getName(), courseId);
-    return courseRepository.getAllModules(courseId);
+  public List<Module> getModules(@PathVariable("courseId") String courseId,
+      @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
+
+    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
+
+    return courseService.getModules(courseId, false);
   }
 
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/modules", method = GET)
   public List<Module> getVisibleModules(@PathVariable("courseId") String courseId,
-      Principal principal) {
-    acl.enforceCourse(principal.getName(), courseId);
-    return courseRepository.getVisibleModules(courseId);
+      @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
+
+    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
+
+    return courseService.getModules(courseId, true);
   }
 
-  @RequestMapping(
-      value = {STUDENT_PATH + "/course/{courseId}/role", STUDENT_PATH + "/course/{courseId}/role",
-          GRADER_PATH + "/course/{courseId}/role"},
-      method = GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public CourseUser getCourseRole(@PathVariable("courseId") String courseId,
+  @RequestMapping(value = {STUDENT_PATH + "/course/{courseId}/users",
+      GRADER_PATH + "/course/{courseId}/users", INSTRUCTOR_PATH + "/course/{courseId}/users"},
+      method = GET)
+  public List<CourseUser> getClassList(@PathVariable("courseId") String courseId,
+      @RequestParam(name = "roles", defaultValue = "") List<CourseUser.CourseRole> roles,
+      @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
+
+    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
+
+    if (roles == null || roles.isEmpty()) {
+      logger.debug("Setting empty roles parameter");
+      roles = Arrays.asList(CourseUser.CourseRole.INSTRUCTOR, CourseUser.CourseRole.TA,
+          CourseUser.CourseRole.STUDENT);
+    }
+    
+    return courseService.getClassList(courseId, roles);
+  }
+
+  @RequestMapping(value = {STUDENT_PATH + "/course/{courseId}/self",
+      GRADER_PATH + "/course/{courseId}/self", INSTRUCTOR_PATH + "/course/{courseId}/self"},
+      method = GET)
+  public CourseUser getCourseUserSelf(@PathVariable("courseId") String courseId,
       Principal principal) {
-    acl.enforceCourse(principal.getName(), courseId);
-    CourseUser cu = new CourseUser();
-    cu.setRole(courseUserRepository.getRole(courseId, principal.getName()));
-    return cu;
+
+    acl.enforceInCourse(principal.getName(), courseId);
+
+    return courseService.getCourseUser(principal.getName(), courseId);
   }
 
 }

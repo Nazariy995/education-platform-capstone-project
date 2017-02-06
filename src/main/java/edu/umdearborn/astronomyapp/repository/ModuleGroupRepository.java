@@ -28,14 +28,5 @@ public interface ModuleGroupRepository extends JpaRepository<ModuleGroup, String
       + "gm.courseUser cu join cu.user u where cu.isActive = true and u.isEnabled = true "
       + "and m.id = :moduleId")
   public List<AstroAppUser> getUsersInGroup(@Param("moduleId") String moduleId);
-  /*
-   * @EntityGraph(attributePaths = {"email", "firstName", "lastName"}, type = EntityGraphType.FETCH)
-   * 
-   * @Query("select u from GroupMember gm join gm.moduleGroup mg join mg.module m join " +
-   * "gm.courseUser cu join cu.user u where cu.isActive = true and u.isEnabled = true" +
-   * "gm.id = :moduleGroupId and m.id = :moduleId") public List<AstroAppUser>
-   * getFreeMembers(@Param("courseId") String courseId,
-   * 
-   * @Param("moduleId") String moduleId);
-   */
+
 }

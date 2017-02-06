@@ -1,6 +1,6 @@
 package edu.umdearborn.astronomyapp.entity;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -16,7 +16,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @MappedSuperclass
-@JsonInclude(NON_EMPTY)
+@JsonInclude(NON_NULL)
 public abstract class AbstractGeneratedId implements Serializable {
 
   private static final long serialVersionUID = -7979849207672422242L;

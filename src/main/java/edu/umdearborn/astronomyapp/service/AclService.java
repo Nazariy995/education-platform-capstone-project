@@ -1,7 +1,21 @@
 package edu.umdearborn.astronomyapp.service;
 
+import java.util.List;
+
+import edu.umdearborn.astronomyapp.entity.CourseUser;
+
 public interface AclService {
 
-  public void enforceCourse(String email, String courseId);
+  public void enforceInCourse(String email, String courseId);
+
+  public void enforceIsCourseRole(String email, String courseId, List<CourseUser.CourseRole> role);
+
+  public void enforceInGroup(String courseUserId, String groupId);
+
+  public void enforceInCourse(String email, String courseId, String courseUserId);
+
+  public void enforceModuleVisible(String moduleId);
+
+  public void enforeceModuleInCourse(String courseId, String moduleId);
 
 }

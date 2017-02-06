@@ -47,8 +47,8 @@ public class AstroAppUser extends AbstractGeneratedId {
 
   private static final long serialVersionUID = -7245103766854987243L;
 
-  @Email(groups = ValidationGroup.Checkin.class)
-  @NotNull(groups = ValidationGroup.Checkin.class)
+  @Email
+  @NotNull
   @Column(updatable = false)
   @Size(min = 5, max = 255)
   private String email;
@@ -58,26 +58,26 @@ public class AstroAppUser extends AbstractGeneratedId {
   private String firstName;
 
   @NotNull
-  @JsonProperty(access = Access.READ_ONLY)
+  @JsonIgnore
   private boolean isEnabled = true;
 
 
   @NotNull
-  @JsonProperty(access = Access.READ_ONLY)
+  @JsonIgnore
   private boolean isPasswordNonExpired = true;
 
   @NotNull
-  @JsonProperty(access = Access.READ_ONLY)
+  @JsonIgnore
   private boolean isUserNonExpired = true;
 
   @NotNull
-  @JsonProperty(access = Access.READ_ONLY)
+  @JsonIgnore
   private boolean isUserNonLocked = true;
 
   @NotNull
   @Size(min = 1, max = 35)
   private String lastName;
-  
+
   @NotNull(groups = ValidationGroup.Checkin.class)
   @JsonProperty(access = Access.WRITE_ONLY)
   @Column(length = 62, nullable = false)
