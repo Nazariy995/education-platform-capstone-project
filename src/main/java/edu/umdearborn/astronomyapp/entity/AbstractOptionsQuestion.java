@@ -15,7 +15,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @MappedSuperclass
-public class AbstractOptionsQuestion<T extends AbstractOption> extends Question
+public abstract class AbstractOptionsQuestion<T extends AbstractOption> extends Question
     implements MachineGradeable {
 
   private static final long serialVersionUID = -3078009736538827491L;

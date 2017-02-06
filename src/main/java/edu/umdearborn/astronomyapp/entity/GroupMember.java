@@ -33,7 +33,7 @@ public class GroupMember extends AbstractGeneratedId {
   @NotNull
   @ManyToOne
   @JoinColumn(name = "moduleGroupId", updatable = false)
-  private ModuleGroup module;
+  private ModuleGroup moduleGroup;
 
   @Override
   public boolean equals(Object obj) {
@@ -44,8 +44,8 @@ public class GroupMember extends AbstractGeneratedId {
     return courseUser;
   }
 
-  public ModuleGroup getModule() {
-    return module;
+  public ModuleGroup getModuleGroup() {
+    return moduleGroup;
   }
 
   @Override
@@ -57,8 +57,8 @@ public class GroupMember extends AbstractGeneratedId {
     this.courseUser = courseUser;
   }
 
-  public void setModule(ModuleGroup module) {
-    this.module = module;
+  public void setModuleGroup(ModuleGroup moduleGroup) {
+    this.moduleGroup = moduleGroup;
   }
 
   @Override

@@ -8,11 +8,10 @@ public final class UrlConstants {
 
   public static final String REST_PATH_PREFIX = "/rest";
 
-  public static final String ADMIN_PATH = "/admin";
-
+  public static final String ADMIN_PATH      = "/admin";
   public static final String INSTRUCTOR_PATH = "/instructor";
-
-  public static final String STUDENT_PATH = "/student";
+  public static final String STUDENT_PATH    = "/student";
+  public static final String GRADER_PATH     = STUDENT_PATH + "/ta";
 
   public static final String LOGIN_PATH           = "/login";
   public static final String LOGIN_FAILURE_PATH   = LOGIN_PATH + "?error";

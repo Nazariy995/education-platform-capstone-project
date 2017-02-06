@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import edu.umdearborn.astronomyapp.validation.annotation.LogicalAppRoles;
+import edu.umdearborn.astronomyapp.validation.group.ValidationGroup;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "userId"))
@@ -57,26 +58,27 @@ public class AstroAppUser extends AbstractGeneratedId {
   private String firstName;
 
   @NotNull
-  @JsonProperty(access = Access.READ_ONLY)
+  @JsonIgnore
   private boolean isEnabled = true;
 
 
   @NotNull
-  @JsonProperty(access = Access.READ_ONLY)
+  @JsonIgnore
   private boolean isPasswordNonExpired = true;
 
   @NotNull
-  @JsonProperty(access = Access.READ_ONLY)
+  @JsonIgnore
   private boolean isUserNonExpired = true;
 
   @NotNull
-  @JsonProperty(access = Access.READ_ONLY)
+  @JsonIgnore
   private boolean isUserNonLocked = true;
 
   @NotNull
   @Size(min = 1, max = 35)
   private String lastName;
 
+  @NotNull(groups = ValidationGroup.Checkin.class)
   @JsonProperty(access = Access.WRITE_ONLY)
   @Column(length = 62, nullable = false)
   private String password;

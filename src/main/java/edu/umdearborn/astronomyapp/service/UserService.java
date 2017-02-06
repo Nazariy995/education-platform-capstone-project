@@ -1,49 +1,52 @@
 package edu.umdearborn.astronomyapp.service;
 
-import java.util.Optional;
+import java.util.List;
 
-import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import edu.umdearborn.astronomyapp.entity.AstroAppUser;
-import edu.umdearborn.astronomyapp.repository.UserRepository;
+import edu.umdearborn.astronomyapp.util.ResultListUtil;
 import edu.umdearborn.astronomyapp.util.converter.UserConverter;
 
 @Service
 @Transactional
 public class UserService implements UserDetailsService {
 
+  private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
+  private EntityManager entityManager;
   private UserConverter userConverter;
 
-  private UserRepository userRepository;
-
-  @Autowired
-  public UserService(UserRepository userRepository, UserConverter userConverter) {
-    this.userRepository = userRepository;
+  public UserService(EntityManager entityManager, UserConverter userConverter) {
+    this.entityManager = entityManager;
     this.userConverter = userConverter;
-  }
-
-  private AstroAppUser getUser(String username) {
-    Optional<AstroAppUser> user = Optional.of(userRepository.findByEmail(username));
-    return user.orElseThrow(() -> new UsernameNotFoundException("Cannot find: " + username));
   }
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return userConverter.convert(getUser(username));
-  }
 
-  @PostConstruct
-  public void postConstruct() {
-    Assert.notNull(userRepository);
-    Assert.notNull(userConverter);
+    TypedQuery<AstroAppUser> query = entityManager.createQuery(
+        "select u from AstroAppUser u join fetch u.roles r where lower(u.email) = lower(:email)",
+        AstroAppUser.class);
+    query.setParameter("email", username);
+    List<AstroAppUser> result = query.getResultList();
+
+    if (!ResultListUtil.hasResult(result)) {
+      logger.debug("Cannot find: {}", username);
+      throw new UsernameNotFoundException("Cannot find: " + username);
+    }
+
+    return userConverter.convert(result.get(0));
+
   }
 
 }
