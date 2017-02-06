@@ -25,7 +25,10 @@ gulp.task('browserify', [ 'clean' ], function() {
 });
 
 gulp.task('css',function(){
-    return gulp.src('src/main/js/views/**/*.css')
+    return gulp.src([
+        'src/main/js/views/**/*.css',
+        'src/main/js/components/**/*.css'
+        ])
         .pipe(concatCss('src/main/js/dist/bundle.css'))
         .pipe(gulp.dest('.'));
 });

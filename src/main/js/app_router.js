@@ -51,16 +51,21 @@ function Router($stateProvider, $httpProvider, $locationProvider){
             url  : 'courses/{courseId}',
             views : {
                 'mainContent@app' : {
-                    templateUrl : 'views/student/course/home.html'
+                    templateUrl : 'views/student/course/home.html',
+                    controller : 'Student.Course',
+                    controllerAs : 'course'
                 }
             }
         },
         {
             name : 'app.course.assignments',
-            url : 'assignments',
+            url : '/assignments',
             views : {
-                'mainContent@app.course' : {
-                    templateUrl : 'views/student/assignment/home.html'
+                'childContent' : {
+                    templateUrl : 'views/student/assignment/home.html',
+                    controller : 'Student.AssignmentsCtrl',
+                    controllerAs : 'courseAssignments'
+
                 }
             }
         }
