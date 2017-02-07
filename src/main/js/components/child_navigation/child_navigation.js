@@ -4,11 +4,11 @@ function Directive($state, appSettings, SessionService){
 
     function link(scope, element){
 
-//        var roles = SessionService.getUser().roles;
-//        if (roles.indexOf("USER") != -1){
-//            var role = "USER";
-        scope.navigationLinks = appSettings["USER"]["childNavigationLinks"];
-//        }
+        var roles = SessionService.getUser().roles;
+        if (roles.indexOf("USER") != -1){
+            var role = "USER";
+            scope.navigationLinks = appSettings[role]["childNavigationLinks"];
+        }
 
     }
 

@@ -23,6 +23,11 @@ module.exports = angular.module('app.settings', [])
                 "name" : "Assignments",
                 "state" : "app.course.assignments",
                 "icon" : "glyphicon glyphicon-edit"
+            },
+            {
+                "name" : "Grades",
+                "state" : "app.course.grades",
+                "icon" : "glyphicon glyphicon-book"
             }
         ]
     }
