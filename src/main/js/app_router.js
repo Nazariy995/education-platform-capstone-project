@@ -5,47 +5,69 @@ function Router($stateProvider, $httpProvider, $locationProvider){
 
     var states = [
         {
-            name:'login',
-            url:'/',
-            templateUrl:'views/app/login/login.html',
-            controller: 'LoginCtrl',
-            controllerAs: 'login'
+            name : 'app',
+            url : '/',
+            views : {
+                'app' : {
+                    templateUrl : 'views/app/home/home.html'
+                }
+            }
         },
         {
-            name:'home',
-            url:'/home',
-            templateUrl:'views/app/home/home.html',
-            controller: 'HomeCtrl',
-            controllerAs: 'home'
+            name : 'app.login',
+            url : 'login',
+            views : {
+                'app@' : {
+                    templateUrl : 'views/app/login/login.html',
+                    controller: 'LoginCtrl',
+                    controllerAs: 'login'
+                }
+            }
         },
         {
-            name:'home.teacher',
-            url:'/teacher',
-            templateUrl:'views/teacher/home/home.html',
-            controller: 'Teacher.HomeCtrl',
-            controllerAs: 'teacherHome'
+            name : 'app.account',
+            url : 'account',
+            views : {
+                'mainContent@app' : {
+                    templateUrl : 'views/app/account/account.html',
+                    controller : 'AccountCtrl',
+                    controllerAs : 'account'  
+                }
+            }
+        }, 
+        {
+            name : 'app.courses',
+            url : 'courses',
+            views : {
+                'mainContent@app' : {
+                    templateUrl: 'views/student/home/home.html',
+                    controller: 'Student.HomeCtrl',
+                    controllerAs: 'studentHome' 
+                }
+            }
+        }, 
+        {
+            name : 'app.course',
+            url  : 'courses/{courseId}',
+            views : {
+                'mainContent@app' : {
+                    templateUrl : 'views/student/course/home.html',
+                    controller : 'Student.Course',
+                    controllerAs : 'course'
+                }
+            }
         },
         {
-            name:'home.student',
-            url:'/student',
-            templateUrl:'views/student/home/home.html',
-            controller: 'Student.HomeCtrl',
-            controllerAs: 'studentHome'
-        },
-        {
-            name : 'home.account',
-            url : '/account',
-            templateUrl : 'views/app/account/account.html',
-            controller : 'AccountCtrl',
-            controllerAs : 'account'
-        },
-        {
-            name : 'home.assignments',
-            url :  "/course/{courseId}/assignments",
-            templateUrl : 'views/student/assignment/home.html',
-            controller : 'Student.AssignmentCtrl',
-            controllerAs : 'courseAssignments'
+            name : 'app.course.assignments',
+            url : '/assignments',
+            views : {
+                'childContent' : {
+                    templateUrl : 'views/student/assignment/home.html',
+                    controller : 'Student.AssignmentsCtrl',
+                    controllerAs : 'courseAssignments'
 
+                }
+            }
         }
     ]
 

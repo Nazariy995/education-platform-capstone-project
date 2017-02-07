@@ -19,7 +19,7 @@ Controller.prototype.login = function(){
     self._AuthService.login(self.credentials).then(function(user){
 
         if(user.roles.indexOf("USER") != -1){
-            self._$state.go("home.student");
+            self._$state.go("app.courses");
         } else if(user.roles.indexOf("INSTRUCTOR") != -1) {
             self._$state.go("home.teacher");
         }
