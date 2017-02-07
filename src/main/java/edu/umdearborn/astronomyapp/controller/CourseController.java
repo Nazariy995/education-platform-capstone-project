@@ -73,24 +73,6 @@ public class CourseController {
     return courseService.updateCourse(course);
   }
 
-  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/modules", method = GET)
-  public List<Module> getModules(@PathVariable("courseId") String courseId,
-      @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
-
-    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
-
-    return courseService.getModules(courseId, false);
-  }
-
-  @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/modules", method = GET)
-  public List<Module> getVisibleModules(@PathVariable("courseId") String courseId,
-      @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
-
-    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
-
-    return courseService.getModules(courseId, true);
-  }
-
   @RequestMapping(value = {STUDENT_PATH + "/course/{courseId}/users",
       GRADER_PATH + "/course/{courseId}/users", INSTRUCTOR_PATH + "/course/{courseId}/users"},
       method = GET)

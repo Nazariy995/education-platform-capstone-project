@@ -48,7 +48,7 @@ public class Answer extends AbstractGeneratedId {
   @NotNull
   @ManyToOne
   @JoinColumn(name = "questionId", updatable = false)
-  private Question quiestion;
+  private Question question;
 
   @Min(0)
   @NotNull
@@ -76,8 +76,8 @@ public class Answer extends AbstractGeneratedId {
     return pointesEarned;
   }
 
-  public Question getQuiestion() {
-    return quiestion;
+  public Question getQuestion() {
+    return question;
   }
 
   public int getSubmissionNumber() {
@@ -109,8 +109,8 @@ public class Answer extends AbstractGeneratedId {
     this.pointesEarned = pointesEarned;
   }
 
-  public void setQuiestion(Question quiestion) {
-    this.quiestion = quiestion;
+  public void setQuestion(Question question) {
+    this.question = question;
   }
 
   public void setSubmissionNumber(int submissionNumber) {

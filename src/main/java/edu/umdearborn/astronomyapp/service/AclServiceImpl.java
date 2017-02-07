@@ -143,4 +143,22 @@ public class AclServiceImpl implements AclService {
 
   }
 
+  @Override
+  public void enforceGroupInCourse(String groupId, String courseId) {
+
+    TypedQuery<Boolean> query =
+        entityManager.createQuery("select count (g) > 0 from ModuleGroup g join g.module m join "
+            + "m.course c where g.id = :groupId and c.id = :courseId", Boolean.class);
+    query.setParameter("groupId", groupId).setParameter("courseId", courseId);
+    boolean result = query.getSingleResult();
+
+    if (!result) {
+      logger.debug("Group: '{}' not part of course: '{}'", groupId, courseId);
+      throw new AccessDeniedException("Group: " + groupId + " not part of course: " + courseId);
+    }
+
+    logger.debug("Group: '{}' is part of course: '{}'", groupId, courseId);
+
+  }
+
 }

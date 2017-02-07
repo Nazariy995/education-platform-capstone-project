@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import edu.umdearborn.astronomyapp.entity.Module;
+import edu.umdearborn.astronomyapp.entity.PageItem;
 import edu.umdearborn.astronomyapp.util.ResultListUtil;
 import edu.umdearborn.astronomyapp.util.jsondecorator.JsonDecorator;
 
@@ -38,6 +39,23 @@ public class ModuleServiceImpl implements ModuleService {
   public Module updateModule(Module module) {
     entityManager.merge(module);
     return module;
+  }
+
+  @Override
+  public List<Module> getModules(String courseId, boolean showVisibleOnly) {
+    StringBuilder jpql =
+        new StringBuilder("select m from Module m join m.course c where c.id = :courseId");
+
+    if (showVisibleOnly) {
+      logger.debug("Hiding not yet visible modules");
+      jpql.append(" and m.visibleTimestamp <= current_timestamp()");
+    }
+
+    logger.debug("Resuting JPQL: {}", jpql.toString());
+    TypedQuery<Module> query = entityManager.createQuery(jpql.toString(), Module.class);
+    query.setParameter("courseId", courseId);
+
+    return query.getResultList();
   }
 
   @Override
@@ -73,5 +91,17 @@ public class ModuleServiceImpl implements ModuleService {
     logger.debug("Not results for module: '{}'", moduleId);
     return null;
 
+  }
+
+  @Override
+  public List<PageItem> getPage(String moduleId, int pageNumber) {
+
+    TypedQuery<PageItem> query = entityManager.createQuery(
+        "select i from PageItem i join i.page p join p.module m where m.id = :moduleId and "
+            + "p.order = :pageNumber",
+        PageItem.class);
+    query.setParameter("moduleId", moduleId).setParameter("pageNumber", pageNumber);
+    
+    return query.getResultList();
   }
 }

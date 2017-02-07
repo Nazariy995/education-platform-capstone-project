@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import edu.umdearborn.astronomyapp.entity.Course;
 import edu.umdearborn.astronomyapp.entity.CourseUser;
-import edu.umdearborn.astronomyapp.entity.Module;
 import edu.umdearborn.astronomyapp.util.ResultListUtil;
 
 @Service
@@ -65,23 +64,6 @@ public class CourseServiceImpl implements CourseService {
     logger.debug("Resuting JPQL: {}", jpql.toString());
     TypedQuery<Course> query = entityManager.createQuery(jpql.toString(), Course.class);
     query.setParameter("email", email);
-
-    return query.getResultList();
-  }
-
-  @Override
-  public List<Module> getModules(String courseId, boolean showVisibleOnly) {
-    StringBuilder jpql =
-        new StringBuilder("select m from Module m join m.course c where c.id = :courseId");
-
-    if (showVisibleOnly) {
-      logger.debug("Hiding not yet visible modules");
-      jpql.append(" and m.visibleTimestamp <= current_timestamp()");
-    }
-
-    logger.debug("Resuting JPQL: {}", jpql.toString());
-    TypedQuery<Module> query = entityManager.createQuery(jpql.toString(), Module.class);
-    query.setParameter("courseId", courseId);
 
     return query.getResultList();
   }

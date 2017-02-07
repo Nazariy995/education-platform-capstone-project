@@ -8,14 +8,17 @@ import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.Valid;
-import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "moduleLockId"))
@@ -26,7 +29,7 @@ public class ModuleLock extends AbstractGeneratedId {
   private static final long serialVersionUID = 5772684472161202294L;
 
   @NotNull
-  @Future
+  @JsonProperty(access = Access.READ_ONLY)
   private Date expirationTimestamp;
 
   @Valid
@@ -92,6 +95,12 @@ public class ModuleLock extends AbstractGeneratedId {
   @Override
   public String toString() {
     return ToStringBuilder.reflectionToString(this);
+  }
+
+  @PrePersist
+  public void prePersist() {
+    expirationTimestamp = new Date();
+    super.prePersist();
   }
 
 }
