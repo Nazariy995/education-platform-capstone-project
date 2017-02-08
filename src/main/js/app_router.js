@@ -76,10 +76,33 @@ function Router($stateProvider, $httpProvider, $locationProvider){
                     templateUrl : 'views/student/assignment/home.html',
                     controller : 'Student.AssignmentsCtrl',
                     controllerAs : 'courseAssignments'
-
+                }
+            }
+        },
+        {
+            name : 'app.course.grades',
+            url : '/grades',
+            views : {
+                'childContent' : {
+                    templateUrl : 'views/student/grades/home.html',
+                    controller : 'Student.GradesCtrl',
+                    controllerAs : 'courseGrades'
+                }
+            }
+        },
+        {
+            name : 'app.course.assignmentDetails',
+            url : '/assignments/{moduleId}',
+            views : {
+                'childContent' : {
+                    templateUrl : 'views/student/assignment_details/home.html',
+                    controller : 'Student.AssignmentDetailsCtrl',
+                    controllerAs : 'assignmentDetails'
                 }
             }
         }
+
+
     ]
 
     states.forEach(function(state) {
