@@ -1,6 +1,6 @@
-function Controller($scope, $state, $stateParams){
+function Controller($scope, $state, course){
     "ngInject";
-    this.courseName = $stateParams.courseId;
+    this.courseName = course.courseId;
 
     $state.go('app.course.assignments')
 };
