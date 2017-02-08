@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
+var concatCss = require('gulp-concat-css');
 var ngAnnotate = require('gulp-ng-annotate');
 var sourcemaps = require('gulp-sourcemaps');
 var browserify = require('browserify');
@@ -23,7 +24,16 @@ gulp.task('browserify', [ 'clean' ], function() {
 
 });
 
-gulp.task('copy', [ 'browserify' ], function() {
+gulp.task('css',function(){
+    return gulp.src([
+        'src/main/js/views/**/*.css',
+        'src/main/js/components/**/*.css'
+        ])
+        .pipe(concatCss('src/main/js/dist/bundle.css'))
+        .pipe(gulp.dest('.'));
+});
+
+gulp.task('copy', [ 'browserify', 'css' ], function() {
 	return gulp.src('src/main/js/**').pipe(
 			gulp.dest('src/main/resources/static/'));
 });

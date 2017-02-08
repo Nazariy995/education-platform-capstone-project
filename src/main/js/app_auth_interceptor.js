@@ -1,9 +1,10 @@
 
-function Interceptor(SessionService){
+function Interceptor($injector, SessionService){
     "ngInject";
 
     var sessionInjector = {
         request: function(config) {
+            console.log("Sent request");
             if(SessionService.getAccessToken() != null) {
 //                console.log(SessionService.getAccessToken());
                 config.headers['X-Auth-Token'] = SessionService.getAccessToken();
@@ -23,6 +24,12 @@ function Interceptor(SessionService){
             }
 
             return response;
+        },
+        responseError : function(rejection) {
+            console.log("New Reject 2");
+            SessionService.destroy();
+            $injector.get('$state').transitionTo('app.login');
+            return rejection;
         }
     };
 
