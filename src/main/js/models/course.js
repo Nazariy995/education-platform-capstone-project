@@ -21,8 +21,9 @@ CourseService.prototype.getCourses = function(){
 
 CourseService.prototype.getCourse = function(courseId){
     var self = this;
+    var url = self._appSettings.API.basePath + '/rest/student/course/'+courseId;
     return self._$http
-        .get(this._appSettings.API.basePath + '/rest/student/course/'+courseId+'/self')
+        .get(url)
         .then(function(res){
             return res.data;
     });
