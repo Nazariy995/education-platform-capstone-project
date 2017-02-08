@@ -22,6 +22,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "answerId"))
 @Table(
@@ -44,6 +46,7 @@ public class Answer extends AbstractGeneratedId {
   @DecimalMin("0")
   private BigDecimal pointesEarned = new BigDecimal(0);
 
+  @JsonIgnore
   @Valid
   @NotNull
   @ManyToOne

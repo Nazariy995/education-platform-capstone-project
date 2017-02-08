@@ -17,4 +17,6 @@ public interface CourseService {
 
   public List<CourseUser> getClassList(String courseId, List<CourseUser.CourseRole> roles);
 
+  public Course getCourseDetails(String courseId);
+
 }

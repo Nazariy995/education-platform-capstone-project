@@ -23,6 +23,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(indexes = @Index(columnList = "courseId"))
 @AttributeOverride(name = "id", column = @Column(name = "moduleId"))
@@ -33,7 +35,8 @@ public class Module extends AbstractGeneratedId {
   @Future
   @Temporal(TemporalType.TIMESTAMP)
   private Date closeTimestamp;
-
+  
+  @JsonIgnore
   @Valid
   @NotNull
   @ManyToOne

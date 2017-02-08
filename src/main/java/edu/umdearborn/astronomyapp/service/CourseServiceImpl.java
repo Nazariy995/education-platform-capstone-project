@@ -92,5 +92,20 @@ public class CourseServiceImpl implements CourseService {
     return query.getResultList();
   }
 
+  @Override
+  public Course getCourseDetails(String courseId) {
+
+    TypedQuery<Course> query =
+        entityManager.createQuery("select c from Course c where c.id = :courseId", Course.class);
+    query.setParameter("courseId", courseId);
+    List<Course> result = query.getResultList();
+
+    if (ResultListUtil.hasResult(result)) {
+      return result.get(0);
+    }
+
+    return null;
+  }
+
 
 }
