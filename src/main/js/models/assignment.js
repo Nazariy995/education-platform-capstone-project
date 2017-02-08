@@ -2,19 +2,24 @@
 Description: Add, Get, Set, Delete Assignments
 */
 
-function AssignmentService($http, appSettings){
+function AssignmentService($http, appSettings, SessionService){
     "ngInject";
 
     this._$http = $http;
     this._appSettings = appSettings;
-
+    this.courseUserId = SessionService.getCourseUserId();
 }
 
 AssignmentService.prototype.getAssignments = function(courseId){
-    console.log(courseId);
+    var self = this;
     return this._$http
-          .get(this._appSettings.API.basePath + '/rest/student/course/' + courseId + '/modules')
+          .get(this._appSettings.API.basePath + '/rest/student/course/'+courseId+'/modules',
+              {params : {
+                  "courseUserId" : self.courseUserId
+              }})
           .then(function (res) {
+            console.log("Got Assignments List");
+            console.log(res);
             return res.data;
           });
 }
