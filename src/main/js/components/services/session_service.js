@@ -6,10 +6,21 @@ function SessionService($window){
     this._$window = $window;
     this._user = JSON.parse(localStorage.getItem('session.user'));
     this._accessToken = JSON.parse(localStorage.getItem('session.accessToken'));
+    this._courseUserId = JSON.parse(localStorage.getItem('session.courseUserId'));
 }
 
 SessionService.prototype.getUser = function(){
     return this._user;
+}
+
+SessionService.prototype.setCourseUserId = function(courseUserId){
+    this._courseUserId = courseUserId;
+    this._$window.localStorage.setItem('session.courseUserId', JSON.stringify(courseUserId));
+}
+
+SessionService.prototype.getCourseUserId = function(){
+    var self = this;
+    return self._courseUserId;
 }
 
 SessionService.prototype.setUser = function(user){
