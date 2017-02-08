@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import edu.umdearborn.astronomyapp.entity.Module;
 import edu.umdearborn.astronomyapp.entity.PageItem;
 import edu.umdearborn.astronomyapp.service.AclService;
 import edu.umdearborn.astronomyapp.service.ModuleService;
-import edu.umdearborn.astronomyapp.util.jsondecorator.JsonDecorator;
+import edu.umdearborn.astronomyapp.util.json.JsonDecorator;
+import edu.umdearborn.astronomyapp.util.json.View;
 
 @RestController
 @RequestMapping(REST_PATH_PREFIX)
@@ -62,11 +65,12 @@ public class ModuleController {
     return moduleService.getModuleDetails(moduleId);
   }
 
+  @JsonView(View.Student.class)
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}", params = "page",
       method = GET)
-  public List<PageItem> getOpenModuleDetails(@PathVariable("courseId") String courseId,
+  public List<PageItem> getModulePage(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId,
-      @RequestParam(name = "page", defaultValue = "0") int pageNumber,
+      @RequestParam(name = "page", defaultValue = "1") int pageNumber,
       @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);

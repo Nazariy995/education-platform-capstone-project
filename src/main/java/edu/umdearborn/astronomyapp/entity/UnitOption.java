@@ -15,14 +15,23 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.annotation.JsonView;
+
+import edu.umdearborn.astronomyapp.util.json.View;
+
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "unitOptionId"))
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"unitId", "optionQuestionId"}),
     indexes = @Index(columnList = "optionQuestionId"))
+@JsonIgnoreProperties("id")
 public class UnitOption extends AbstractOption {
 
   private static final long serialVersionUID = -2298005560218235570L;
 
+  @JsonUnwrapped
+  @JsonView(View.Student.class)
   @Valid
   @NotNull
   @OneToOne

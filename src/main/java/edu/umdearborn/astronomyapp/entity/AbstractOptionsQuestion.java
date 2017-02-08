@@ -14,12 +14,17 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import edu.umdearborn.astronomyapp.util.json.View;
+
 @MappedSuperclass
 public abstract class AbstractOptionsQuestion<T extends AbstractOption> extends Question
     implements MachineGradeable {
 
   private static final long serialVersionUID = -3078009736538827491L;
 
+  @JsonView(View.Student.class)
   @Valid
   @Size(min = 1)
   @OneToMany(cascade = CascadeType.ALL)

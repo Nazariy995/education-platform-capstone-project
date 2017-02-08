@@ -23,7 +23,9 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+
+import edu.umdearborn.astronomyapp.util.json.View;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"pageId", "itemOrder"}),
@@ -40,22 +42,24 @@ public class PageItem extends AbstractGeneratedId {
 
   private static final long serialVersionUID = 2553850340823580376L;
 
+  @JsonView(View.Student.class)
   @NotNull
   @Size(min = 1)
   private String humanReadableText;
 
+  @JsonView(View.Student.class)
   @NotNull
-  @Min(0)
+  @Min(1)
   @Column(name = "itemOrder")
-  private int order = 0;
+  private int order = 1;
 
-  @JsonIgnore
   @Valid
   @NotNull
   @ManyToOne
   @JoinColumn(name = "pageId")
   private Page page;
 
+  @JsonView(View.Student.class)
   @Valid
   @NotNull
   @Enumerated(EnumType.STRING)

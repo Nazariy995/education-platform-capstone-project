@@ -4,7 +4,6 @@ import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.ADMIN_PATH
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.INSTRUCTOR_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.LOGOUT_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.LOGOUT_SUCCESS_PATH;
-import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.PUBLIC_PATH_PATTERNS;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.REST_PATH_PREFIX;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.SESSION_EXPIRED_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.SESSION_INVALID_PATH;

@@ -28,7 +28,7 @@ import edu.umdearborn.astronomyapp.entity.CourseUser;
 import edu.umdearborn.astronomyapp.service.AclService;
 import edu.umdearborn.astronomyapp.service.CourseService;
 import edu.umdearborn.astronomyapp.util.ValidAssert;
-import edu.umdearborn.astronomyapp.util.jsondecorator.JsonDecorator;
+import edu.umdearborn.astronomyapp.util.json.JsonDecorator;
 
 @RestController
 @RequestMapping(REST_PATH_PREFIX)

@@ -13,8 +13,12 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import edu.umdearborn.astronomyapp.util.json.View;
+
 @Entity
-@AttributeOverride(name = "id", column = @Column(name = "multipleChoiceId"))
+@AttributeOverride(name = "id", column = @Column(name = "multipleChoiceOptionId"))
 @Table(
     uniqueConstraints = @UniqueConstraint(columnNames = {"humanReadableText", "optionQuestionId"}),
     indexes = @Index(columnList = "optionQuestionId"))
@@ -22,6 +26,7 @@ public class MultipleChoiceOption extends AbstractOption {
 
   private static final long serialVersionUID = -5311013272908483434L;
 
+  @JsonView(View.Student.class)
   @NotNull
   @Size(min = 1)
   private String humanReadableText;

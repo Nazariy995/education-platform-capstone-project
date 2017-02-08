@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ public class AclServiceImpl implements AclService {
     this.entityManager = entityManager;
   }
 
+  @Cacheable
   @Override
   public void enforceInCourse(String email, String courseId) {
 
@@ -47,6 +49,7 @@ public class AclServiceImpl implements AclService {
     logger.debug("{} has access to course: '{}'", email, courseId);
   }
 
+  @Cacheable
   @Override
   public void enforceIsCourseRole(String email, String courseId, List<CourseUser.CourseRole> role) {
 
@@ -65,7 +68,8 @@ public class AclServiceImpl implements AclService {
 
     logger.debug("{} does not have any role in {} in course: '{}'", email, role, courseId);
   }
-
+  
+  @Cacheable
   @Override
   public void enforceInGroup(String courseUserId, String groupId) {
 
@@ -86,6 +90,7 @@ public class AclServiceImpl implements AclService {
 
   }
 
+  @Cacheable
   @Override
   public void enforceInCourse(String email, String courseId, String courseUserId) {
     TypedQuery<Boolean> query =
@@ -107,6 +112,7 @@ public class AclServiceImpl implements AclService {
 
   }
 
+  @Cacheable
   @Override
   public void enforceModuleVisible(String moduleId) {
 
@@ -125,6 +131,7 @@ public class AclServiceImpl implements AclService {
 
   }
 
+  @Cacheable
   @Override
   public void enforeceModuleInCourse(String courseId, String moduleId) {
 
@@ -143,6 +150,7 @@ public class AclServiceImpl implements AclService {
 
   }
 
+  @Cacheable
   @Override
   public void enforceGroupInCourse(String groupId, String courseId) {
 
