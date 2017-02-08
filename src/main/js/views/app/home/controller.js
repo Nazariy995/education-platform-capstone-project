@@ -20,12 +20,6 @@ Controller.prototype.init = function(){
     }
 }
 
-Controller.prototype.logout = function(){
-    this._SessionService.destroy();
-    this._$state.go('login');
-}
-
-
 
 module.exports = angular.module('app.views.app.controller', [
     "app.components.services.session_service",

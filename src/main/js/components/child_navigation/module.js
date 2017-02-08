@@ -1,9 +1,7 @@
 
-var childNavigationDirective = require('./child_navigation.js');
+var directive = require('./child_navigation.js');
 
 module.exports = angular.module('app.components.child_navigation', [])
-.directive('childNavigation', function() {
-    return new childNavigationDirective();
-})
+.directive('childNavigation', directive)
 
 
