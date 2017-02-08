@@ -59,27 +59,31 @@ public class ModuleGroupController {
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group", method = GET)
   public JsonDecorator<ModuleGroup> getGroup(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId,
-      @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
+      @RequestParam(name = "courseUserId") String courseUserId, HttpSession session,
+      Principal principal) {
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
         Arrays.asList(CourseUser.CourseRole.STUDENT));
 
     ModuleGroup group = groupService.getGroup(courseUserId, moduleId);
-    
+
     if (group != null) {
       JsonDecorator<ModuleGroup> json = new JsonDecorator<>();
       json.setPayload(group);
       json.addProperty("members", groupService.getUsersInGroup(group.getId()));
-      
-      logger.debug("Returning group and members");
+
+      json.addProperty("isModuleEditable", groupService.hasLock(group.getId(),
+          getCheckinSessionAttribute(session, group.getId(), courseUserId)));
+
+      logger.debug("Returning group and members and if editable");
       return json;
     }
-    
+
     logger.debug("Not in group");
-    
+
     return null;
-    
+
   }
 
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}",
@@ -100,7 +104,7 @@ public class ModuleGroupController {
   @RequestMapping(
       value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/checkin",
       method = GET)
-  public List<String> getCheckinStatus(@PathVariable("courseId") String courseId,
+  public JsonDecorator<List<String>> getCheckinStatus(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
       @RequestParam(name = "courseUserId") String courseUserId, HttpSession session,
       Principal principal) {
@@ -112,14 +116,19 @@ public class ModuleGroupController {
     acl.enforceInGroup(courseUserId, groupId);
 
     List<String> checkin = getCheckinSessionAttribute(session, groupId, courseUserId);
+    
+    JsonDecorator<List<String>> json = new JsonDecorator<>();
+    json.setPayload(checkin);
+    json.addProperty("isModuleEditable", groupService.hasLock(groupId,
+        getCheckinSessionAttribute(session, groupId, courseUserId)));
 
-    return checkin;
+    return json;
   }
 
   @RequestMapping(
       value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/checkin",
       method = POST)
-  public List<String> getCheckin(@PathVariable("courseId") String courseId,
+  public JsonDecorator<List<String>> checkin(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
       @RequestParam(name = "courseUserId") String courseUserId,
       @RequestBody Map<String, String> checkinUser, HttpSession session, Principal principal) {
@@ -139,8 +148,13 @@ public class ModuleGroupController {
       checkin.add(user.getId());
       session.setAttribute(groupId, checkin);
     }
+    
+    JsonDecorator<List<String>> json = new JsonDecorator<>();
+    json.setPayload(checkin);
+    json.addProperty("isModuleEditable", groupService.hasLock(groupId,
+        getCheckinSessionAttribute(session, groupId, courseUserId)));
 
-    return checkin;
+    return json;
   }
 
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}",
