@@ -42,7 +42,7 @@ function Router($stateProvider, $httpProvider, $locationProvider){
                 'mainContent@app' : {
                     templateUrl: 'views/student/home/home.html',
                     controller: 'Student.HomeCtrl',
-                    controllerAs: 'studentHome' 
+                    controllerAs: 'studentHome'
                 }
             }
         }, 
@@ -55,6 +55,17 @@ function Router($stateProvider, $httpProvider, $locationProvider){
                     controller : 'Student.Course',
                     controllerAs : 'course'
                 }
+            },
+            resolve : {
+                course : ['CourseService','SessionService','$stateParams', function(CourseService, SessionService, $stateParams){
+                    return CourseService.getCourse($stateParams.courseId)
+                        .then(function(course){
+                        SessionService.setCourseUserId(course.id);
+                        return course;
+                    }, function(err){
+                        return err;
+                    });
+                }]
             }
         },
         {
