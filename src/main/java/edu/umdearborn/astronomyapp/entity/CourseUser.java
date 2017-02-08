@@ -34,9 +34,6 @@ public class CourseUser extends AbstractGeneratedId {
 
   private static final long serialVersionUID = 453757782768837852L;
 
-//  @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-//  @JsonIdentityReference(alwaysAsId = true)
-//  @JsonProperty("courseId")
   @JsonIgnore
   @Valid
   @NotNull
@@ -52,7 +49,7 @@ public class CourseUser extends AbstractGeneratedId {
   @NotNull
   @Enumerated(EnumType.STRING)
   private CourseRole role;
-  
+
   @JsonIgnoreProperties("appRoles")
   @JsonUnwrapped
   @Valid
@@ -83,6 +80,7 @@ public class CourseUser extends AbstractGeneratedId {
     return HashCodeBuilder.reflectionHashCode(this);
   }
 
+  @JsonIgnore
   public boolean isActive() {
     return isActive;
   }

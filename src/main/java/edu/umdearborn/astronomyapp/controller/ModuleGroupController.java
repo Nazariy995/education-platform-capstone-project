@@ -26,6 +26,7 @@ import edu.umdearborn.astronomyapp.entity.CourseUser;
 import edu.umdearborn.astronomyapp.entity.ModuleGroup;
 import edu.umdearborn.astronomyapp.service.AclService;
 import edu.umdearborn.astronomyapp.service.GroupService;
+import edu.umdearborn.astronomyapp.util.json.JsonDecorator;
 
 @RestController
 @RequestMapping(REST_PATH_PREFIX)
@@ -56,7 +57,7 @@ public class ModuleGroupController {
   }
 
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group", method = GET)
-  public ModuleGroup getGroup(@PathVariable("courseId") String courseId,
+  public JsonDecorator<ModuleGroup> getGroup(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId,
       @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
 
@@ -64,7 +65,21 @@ public class ModuleGroupController {
     acl.enforceIsCourseRole(principal.getName(), courseId,
         Arrays.asList(CourseUser.CourseRole.STUDENT));
 
-    return groupService.getGroup(courseUserId, moduleId);
+    ModuleGroup group = groupService.getGroup(courseUserId, moduleId);
+    
+    if (group != null) {
+      JsonDecorator<ModuleGroup> json = new JsonDecorator<>();
+      json.setPayload(group);
+      json.addProperty("members", groupService.getUsersInGroup(group.getId()));
+      
+      logger.debug("Returning group and members");
+      return json;
+    }
+    
+    logger.debug("Not in group");
+    
+    return null;
+    
   }
 
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}",

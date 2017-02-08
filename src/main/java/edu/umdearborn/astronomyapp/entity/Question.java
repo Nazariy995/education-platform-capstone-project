@@ -18,6 +18,10 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import edu.umdearborn.astronomyapp.util.json.View;
+
 @Entity
 @DiscriminatorValue("QUESTION")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -28,6 +32,7 @@ public class Question extends PageItem {
   public static enum QuestionType {
     FREE_RESPONSE(false), IMAGE(false), MULTIPLE_CHOICE(true), NUMERIC(true);
 
+    @JsonView(View.Student.class)
     private boolean isMachineGradeable;
 
     QuestionType(boolean isMachineGradeable) {
@@ -43,14 +48,17 @@ public class Question extends PageItem {
 
   private String defaultComment;
 
+  @JsonView(View.Student.class)
   @NotNull
   private boolean isGatekeeper = false;
 
+  @JsonView(View.Student.class)
   @NotNull
   @DecimalMin("0")
   @Column(precision = 8, scale = 4)
   private BigDecimal points = new BigDecimal(0);
 
+  @JsonView(View.Student.class)
   @NotNull
   @Enumerated(EnumType.STRING)
   @Column(length = 15)

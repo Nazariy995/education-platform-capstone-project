@@ -1,10 +1,11 @@
 package edu.umdearborn.astronomyapp.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import edu.umdearborn.astronomyapp.entity.Module;
 import edu.umdearborn.astronomyapp.entity.PageItem;
-import edu.umdearborn.astronomyapp.util.jsondecorator.JsonDecorator;
+import edu.umdearborn.astronomyapp.util.json.JsonDecorator;
 
 public interface ModuleService {
 
@@ -17,4 +18,6 @@ public interface ModuleService {
   public JsonDecorator<Module> getModuleDetails(String moduleId);
   
   public List<PageItem> getPage(String moduleId, int pageNumber);
+  
+  public BigDecimal getMaxPoints(String moduleId);
 }

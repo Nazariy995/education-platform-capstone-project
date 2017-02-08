@@ -14,6 +14,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
+
+import edu.umdearborn.astronomyapp.util.json.View;
 
 @MappedSuperclass
 @JsonInclude(NON_NULL)
@@ -21,6 +24,7 @@ public abstract class AbstractGeneratedId implements Serializable {
 
   private static final long serialVersionUID = -7979849207672422242L;
 
+  @JsonView(View.Student.class)
   @Id
   protected String id;
 

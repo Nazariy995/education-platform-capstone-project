@@ -8,6 +8,9 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: none
+  cache:
+    guava:
+      spec: maximumSize=500,expireAfterAccess=600s
 server:
   port: ${port:8080}
   session:
