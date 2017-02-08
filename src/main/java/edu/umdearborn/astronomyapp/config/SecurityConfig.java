@@ -4,7 +4,6 @@ import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.ADMIN_PATH
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.INSTRUCTOR_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.LOGOUT_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.LOGOUT_SUCCESS_PATH;
-import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.PUBLIC_PATH_PATTERNS;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.REST_PATH_PREFIX;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.SESSION_EXPIRED_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.SESSION_INVALID_PATH;
@@ -53,17 +52,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .invalidateHttpSession(true)
         .and()
       .authorizeRequests()
-        .filterSecurityInterceptorOncePerRequest(false)
-        .antMatchers(PUBLIC_PATH_PATTERNS).permitAll()
+        .filterSecurityInterceptorOncePerRequest(true)
+        .antMatchers(REST_PATH_PREFIX).fullyAuthenticated()
         .antMatchers(REST_PATH_PREFIX + ADMIN_PATH + "/**").hasRole("ADMIN")
         .antMatchers(REST_PATH_PREFIX + INSTRUCTOR_PATH + "/**").hasRole("INSTRUCTOR")
         .antMatchers(REST_PATH_PREFIX + STUDENT_PATH + "/**").hasRole("USER")
-        .anyRequest().fullyAuthenticated()
+        .anyRequest().permitAll()
         .and()
       .sessionManagement()
         .invalidSessionUrl(SESSION_INVALID_PATH)
         .sessionFixation().changeSessionId()
-        .sessionFixation().newSession()
         .maximumSessions(1)
         .expiredUrl(SESSION_EXPIRED_PATH);
     // @formatter:on

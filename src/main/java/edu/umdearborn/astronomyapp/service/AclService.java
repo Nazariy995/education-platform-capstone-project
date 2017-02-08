@@ -18,4 +18,6 @@ public interface AclService {
 
   public void enforeceModuleInCourse(String courseId, String moduleId);
 
+  public void enforceGroupInCourse(String groupId, String courseId);
+
 }

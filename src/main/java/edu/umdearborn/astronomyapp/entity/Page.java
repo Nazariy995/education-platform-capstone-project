@@ -38,9 +38,9 @@ public class Page extends AbstractGeneratedId {
   private Module module;
 
   @NotNull
-  @Min(0)
+  @Min(1)
   @Column(name = "pageOrder")
-  private int order = 0;
+  private int order = 1;
 
   @Override
   public boolean equals(Object obj) {

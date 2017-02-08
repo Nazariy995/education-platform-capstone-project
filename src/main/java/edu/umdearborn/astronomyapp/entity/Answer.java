@@ -22,6 +22,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "answerId"))
 @Table(
@@ -44,11 +46,12 @@ public class Answer extends AbstractGeneratedId {
   @DecimalMin("0")
   private BigDecimal pointesEarned = new BigDecimal(0);
 
+  @JsonIgnore
   @Valid
   @NotNull
   @ManyToOne
   @JoinColumn(name = "questionId", updatable = false)
-  private Question quiestion;
+  private Question question;
 
   @Min(0)
   @NotNull
@@ -76,8 +79,8 @@ public class Answer extends AbstractGeneratedId {
     return pointesEarned;
   }
 
-  public Question getQuiestion() {
-    return quiestion;
+  public Question getQuestion() {
+    return question;
   }
 
   public int getSubmissionNumber() {
@@ -109,8 +112,8 @@ public class Answer extends AbstractGeneratedId {
     this.pointesEarned = pointesEarned;
   }
 
-  public void setQuiestion(Question quiestion) {
-    this.quiestion = quiestion;
+  public void setQuestion(Question question) {
+    this.question = question;
   }
 
   public void setSubmissionNumber(int submissionNumber) {

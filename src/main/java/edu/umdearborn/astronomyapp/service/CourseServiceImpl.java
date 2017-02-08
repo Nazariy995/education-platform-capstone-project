@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import edu.umdearborn.astronomyapp.entity.Course;
 import edu.umdearborn.astronomyapp.entity.CourseUser;
-import edu.umdearborn.astronomyapp.entity.Module;
 import edu.umdearborn.astronomyapp.util.ResultListUtil;
 
 @Service
@@ -70,23 +69,6 @@ public class CourseServiceImpl implements CourseService {
   }
 
   @Override
-  public List<Module> getModules(String courseId, boolean showVisibleOnly) {
-    StringBuilder jpql =
-        new StringBuilder("select m from Module m join m.course c where c.id = :courseId");
-
-    if (showVisibleOnly) {
-      logger.debug("Hiding not yet visible modules");
-      jpql.append(" and m.visibleTimestamp <= current_timestamp()");
-    }
-
-    logger.debug("Resuting JPQL: {}", jpql.toString());
-    TypedQuery<Module> query = entityManager.createQuery(jpql.toString(), Module.class);
-    query.setParameter("courseId", courseId);
-
-    return query.getResultList();
-  }
-
-  @Override
   public Course createCourse(Course course) {
     entityManager.persist(course);
     return course;
@@ -108,6 +90,21 @@ public class CourseServiceImpl implements CourseService {
     query.setParameter("roles", roles).setParameter("courseId", courseId);
 
     return query.getResultList();
+  }
+
+  @Override
+  public Course getCourseDetails(String courseId) {
+
+    TypedQuery<Course> query =
+        entityManager.createQuery("select c from Course c where c.id = :courseId", Course.class);
+    query.setParameter("courseId", courseId);
+    List<Course> result = query.getResultList();
+
+    if (ResultListUtil.hasResult(result)) {
+      return result.get(0);
+    }
+
+    return null;
   }
 
 

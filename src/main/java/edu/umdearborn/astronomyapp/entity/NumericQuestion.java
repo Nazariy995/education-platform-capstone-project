@@ -14,6 +14,10 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import edu.umdearborn.astronomyapp.util.json.View;
+
 @Entity
 @DiscriminatorValue("NUMERIC")
 @PrimaryKeyJoinColumn(name = "NUMERIC_QUESTION_ID")
@@ -21,14 +25,12 @@ public class NumericQuestion extends AbstractOptionsQuestion<UnitOption> {
 
   private static final long serialVersionUID = -4122369698440997963L;
 
-  // private static final BigDecimal BASE = new BigDecimal(10);
-
-  // private static final String DECIMAL_FORMAT = "0.0E0";
-
+  @JsonView(View.Student.class)
   @NotNull
   @Column(precision = 11, scale = 10)
   private BigDecimal allowedCoefficientSpread = new BigDecimal(0);
 
+  @JsonView(View.Student.class)
   @NotNull
   @Min(0)
   @Max(10)
@@ -43,6 +45,7 @@ public class NumericQuestion extends AbstractOptionsQuestion<UnitOption> {
   @Max(10)
   private int correctExponenet = 0;
 
+  @JsonView(View.Student.class)
   @Min(0)
   @Max(10)
   @NotNull
@@ -72,26 +75,6 @@ public class NumericQuestion extends AbstractOptionsQuestion<UnitOption> {
   public int getRequiresScale() {
     return requiresScale;
   }
-
-  // TODO: (Patrick) move this logic to a grading service
-  // @Override
-  // public String getAnswer() {
-  // BigDecimal multiplicand = BASE.pow(correctExponenet);
-  // BigDecimal answer = new BigDecimal(correctCoefficient).multiply(multiplicand);
-  // return new StringBuilder(formatNumber(answer)).append(" ").append(getCorrectUnit()).toString();
-  // }
-  //
-  // private String formatNumber(BigDecimal aswer) {
-  // NumberFormat format = new DecimalFormat(DECIMAL_FORMAT);
-  // format.setRoundingMode(RoundingMode.HALF_UP);
-  // format.setMaximumFractionDigits(requiresScale);
-  // return format.format(aswer);
-  // }
-  //
-  // private String getCorrectUnit() {
-  // return options.parallelStream().filter(x -> x.isCorrect())
-  // .map(x -> x.getUnit().getHumanReadableText()).findFirst().orElse("");
-  // }
 
   @Override
   public int hashCode() {

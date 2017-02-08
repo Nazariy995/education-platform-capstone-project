@@ -25,10 +25,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.umdearborn.astronomyapp.entity.Course;
 import edu.umdearborn.astronomyapp.entity.CourseUser;
-import edu.umdearborn.astronomyapp.entity.Module;
 import edu.umdearborn.astronomyapp.service.AclService;
 import edu.umdearborn.astronomyapp.service.CourseService;
 import edu.umdearborn.astronomyapp.util.ValidAssert;
+import edu.umdearborn.astronomyapp.util.json.JsonDecorator;
 
 @RestController
 @RequestMapping(REST_PATH_PREFIX)
@@ -49,15 +49,15 @@ public class CourseController {
       @RequestParam(name = "hideClosed", defaultValue = "true") boolean hideClosed,
       @RequestParam(name = "hideOpenSoon", defaultValue = "true") boolean hideOpenSoon,
       Principal principal) {
-    
+
     return courseService.getCourses(principal.getName(), hideClosed, hideOpenSoon);
   }
 
   @RequestMapping(value = INSTRUCTOR_PATH + "/course", method = POST)
   public Course createCourse(@Valid @RequestBody Course course, Errors errors) {
-    
+
     ValidAssert.isValid(errors);
-    
+
     return courseService.createCourse(course);
   }
 
@@ -71,24 +71,6 @@ public class CourseController {
     ValidAssert.isValid(errors);
     course.setId(courseId);
     return courseService.updateCourse(course);
-  }
-
-  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/modules", method = GET)
-  public List<Module> getModules(@PathVariable("courseId") String courseId,
-      @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
-
-    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
-
-    return courseService.getModules(courseId, false);
-  }
-
-  @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/modules", method = GET)
-  public List<Module> getVisibleModules(@PathVariable("courseId") String courseId,
-      @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
-
-    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
-
-    return courseService.getModules(courseId, true);
   }
 
   @RequestMapping(value = {STUDENT_PATH + "/course/{courseId}/users",
@@ -105,19 +87,39 @@ public class CourseController {
       roles = Arrays.asList(CourseUser.CourseRole.INSTRUCTOR, CourseUser.CourseRole.TA,
           CourseUser.CourseRole.STUDENT);
     }
-    
+
     return courseService.getClassList(courseId, roles);
   }
 
-  @RequestMapping(value = {STUDENT_PATH + "/course/{courseId}/self",
-      GRADER_PATH + "/course/{courseId}/self", INSTRUCTOR_PATH + "/course/{courseId}/self"},
-      method = GET)
-  public CourseUser getCourseUserSelf(@PathVariable("courseId") String courseId,
+  @RequestMapping(value = {STUDENT_PATH + "/course/{courseId}", GRADER_PATH + "/course/{courseId}",
+      INSTRUCTOR_PATH + "/course/{courseId}"}, method = GET)
+  public JsonDecorator<Course> getCourseDetails(@PathVariable("courseId") String courseId,
       Principal principal) {
 
     acl.enforceInCourse(principal.getName(), courseId);
 
-    return courseService.getCourseUser(principal.getName(), courseId);
+    Course course = courseService.getCourseDetails(courseId);
+
+    if (course != null) {
+      CourseUser courseUser = courseService.getCourseUser(principal.getName(), courseId);
+
+      if (courseUser != null) {
+        JsonDecorator<Course> decorator = new JsonDecorator<>();
+        decorator.setPayload(course);
+        decorator.addProperty("courseUserId", courseUser.getId());
+        decorator.addProperty("courseRole", courseUser.getRole());
+
+        return decorator;
+      }
+
+      logger.info("Cannot find details for user: '{}' in course: '{}'", principal.getName(),
+          courseId);
+    }
+
+    logger.info("Course: '{}' does not exist", courseId);
+    return null;
+
+
   }
 
 }

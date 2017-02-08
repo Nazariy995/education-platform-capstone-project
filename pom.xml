@@ -15,12 +15,11 @@
 		<java.version>1.8</java.version>
 		<commons-lang3.version>3.5</commons-lang3.version>
 		<commons-validator.version>1.5.1</commons-validator.version>
+		<guava.version>21.0</guava.version>
 	</properties>
 	<dependencies>
-<!-- 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-		</dependency> -->
+		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-devtools</artifactId> 
+			</dependency> -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -51,6 +50,11 @@
 			<version>${commons-lang3.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>commons-validator</groupId>
 			<artifactId>commons-validator</artifactId>
 			<version>${commons-validator.version}</version>
@@ -67,17 +71,6 @@
 	</dependencies>
 	<build>
 		<finalName>${project.artifactId}</finalName>
-		<!-- <resources> -->
-		<!-- <resource> -->
-		<!-- <directory>${basedir}/src/frontend/dist/</directory> -->
-		<!-- <targetPath>${project.build.outputDirectory}/static/</targetPath> -->
-		<!-- <includes> -->
-		<!-- <include>**/*.js</include> -->
-		<!-- <include>**/*.css</include> -->
-		<!-- <include>**/*.html</include> -->
-		<!-- </includes> -->
-		<!-- </resource> -->
-		<!-- </resources> -->
 		<plugins>
 			<plugin>
 				<groupId>com.github.eirslett</groupId>
@@ -136,22 +129,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>com.spotify</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.4.11</version>
-				<configuration>
-					<imageName>umdearborn/${project.artifactId}</imageName>
-					<dockerDirectory>src/main/docker</dockerDirectory>
-					<resources>
-						<resource>
-							<targetPath>/</targetPath>
-							<directory>${project.build.directory}</directory>
-							<include>${project.build.finalName}.jar</include>
-						</resource>
-					</resources>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

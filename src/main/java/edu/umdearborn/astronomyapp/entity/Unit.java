@@ -16,6 +16,10 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import edu.umdearborn.astronomyapp.util.json.View;
+
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "unitId"))
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"courseId", "humanReadableText"}),
@@ -30,8 +34,10 @@ public class Unit extends AbstractGeneratedId {
   @JoinColumn(name = "courseId", updatable = false)
   private Course courseId;
 
+  @JsonView(View.Student.class)
   private String helpText;
 
+  @JsonView(View.Student.class)
   @NotNull
   @Size(min = 1, max = 10)
   private String humanReadableText;
