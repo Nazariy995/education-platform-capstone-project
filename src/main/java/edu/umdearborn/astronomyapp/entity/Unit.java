@@ -16,6 +16,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "unitId"))
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"courseId", "humanReadableText"}),
@@ -24,6 +26,7 @@ public class Unit extends AbstractGeneratedId {
 
   private static final long serialVersionUID = 5457895373300173472L;
 
+  @JsonIgnore
   @Valid
   @NotNull
   @ManyToOne

@@ -17,11 +17,10 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "courseUserId"))
@@ -35,15 +34,17 @@ public class CourseUser extends AbstractGeneratedId {
 
   private static final long serialVersionUID = 453757782768837852L;
 
-  @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-  @JsonIdentityReference(alwaysAsId = true)
-  @JsonProperty("courseId")
+//  @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+//  @JsonIdentityReference(alwaysAsId = true)
+//  @JsonProperty("courseId")
+  @JsonIgnore
   @Valid
   @NotNull
   @ManyToOne
   @JoinColumn(name = "courseId", updatable = false)
   private Course course;
 
+  @JsonIgnore
   @NotNull
   private boolean isActive = true;
 
@@ -51,7 +52,8 @@ public class CourseUser extends AbstractGeneratedId {
   @NotNull
   @Enumerated(EnumType.STRING)
   private CourseRole role;
-
+  
+  @JsonIgnoreProperties("appRoles")
   @JsonUnwrapped
   @Valid
   @NotNull

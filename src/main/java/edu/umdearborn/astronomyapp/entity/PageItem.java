@@ -23,6 +23,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"pageId", "itemOrder"}),
     indexes = @Index(columnList = "pageId"))
@@ -47,6 +49,7 @@ public class PageItem extends AbstractGeneratedId {
   @Column(name = "itemOrder")
   private int order = 0;
 
+  @JsonIgnore
   @Valid
   @NotNull
   @ManyToOne
