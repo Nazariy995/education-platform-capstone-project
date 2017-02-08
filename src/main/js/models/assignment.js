@@ -34,11 +34,23 @@ AssignmentService.prototype.getAssignments = function(courseId){
 
 AssignmentService.prototype.getAssignmentDetails = function(courseId, moduleId){
     var self = this;
-    var url = self._appSettings.API.basePath + '/rest/student/course/'+ courseId+ '/modules' + moduleId
+    var url = self._appSettings.API.basePath + '/rest/student/course/'+ courseId+ '/module/' + moduleId
     return self._$http
         .get(url, self.config)
         .then(function(res){
         console.log("Get Assignment Details")
+        console.log(res)
+        return res.data;
+    })
+}
+
+AssignmentService.prototype.getAssignmentGroup = function(courseId, moduleId){
+    var self = this;
+    var url = self._appSettings.API.basePath + '/rest/student/course/'+ courseId+ '/module/' + moduleId + "/group"
+        return self._$http
+        .get(url, self.config)
+        .then(function(res){
+        console.log("Get Assignment Group Data")
         console.log(res)
         return res.data;
     })

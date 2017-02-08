@@ -60,7 +60,7 @@ function Router($stateProvider, $httpProvider, $locationProvider){
                 course : ['CourseService','SessionService','$stateParams', function(CourseService, SessionService, $stateParams){
                     return CourseService.getCourse($stateParams.courseId)
                         .then(function(course){
-                        SessionService.setCourseUserId(course.id);
+                        SessionService.setCourseUserId(course.courseUserId);
                         return course;
                     }, function(err){
                         return err;
