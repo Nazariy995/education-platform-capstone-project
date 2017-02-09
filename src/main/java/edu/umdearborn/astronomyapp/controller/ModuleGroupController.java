@@ -50,15 +50,22 @@ public class ModuleGroupController {
 
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group",
       method = POST)
-  public ModuleGroup createGroup(@PathVariable("courseId") String courseId,
-      @PathVariable("moduleId") String moduleId,
+  public JsonDecorator<ModuleGroup> createGroup(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId, HttpSession session,
       @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
         Arrays.asList(CourseUser.CourseRole.STUDENT));
 
-    return groupService.createGroup(courseUserId, moduleId);
+    ModuleGroup group = groupService.createGroup(courseUserId, moduleId);
+
+    JsonDecorator<ModuleGroup> json = new JsonDecorator<>();
+    json.setPayload(group);
+    json.addProperty("isModuleEditable", groupService.hasLock(group.getId(),
+        getCheckinSessionAttribute(session, group.getId(), courseUserId)));
+
+    return json;
   }
 
   @RequestMapping(
@@ -213,9 +220,9 @@ public class ModuleGroupController {
   }
 
   @RequestMapping(
-      value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/save",
+      value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/answers/save",
       method = POST)
-  public List<Answer> saveAnswer(@PathVariable("courseId") String courseId,
+  public List<Answer> saveAnswers(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
       @RequestParam(name = "courseUserId") String courseUserId,
       @RequestBody Map<String, String> answers, HttpSession session, Principal principal) {
@@ -229,6 +236,25 @@ public class ModuleGroupController {
     acl.enforceHasLock(groupId, getCheckinSessionAttribute(session, groupId, courseUserId));
 
     return groupService.saveAnswers(answers, groupId);
+  }
+  
+  @RequestMapping(
+      value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/answers/submit",
+      method = POST)
+  public List<Answer> submitAnswers(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
+      @RequestParam(name = "courseUserId") String courseUserId,
+      @RequestBody Map<String, String> answers, HttpSession session, Principal principal) {
+
+    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
+    acl.enforceIsCourseRole(principal.getName(), courseId,
+        Arrays.asList(CourseUser.CourseRole.STUDENT));
+    acl.enforceGroupInCourse(groupId, courseId);
+    acl.enforceInGroup(courseUserId, groupId);
+    acl.enforceGroupLocked(groupId, true);
+    acl.enforceHasLock(groupId, getCheckinSessionAttribute(session, groupId, courseUserId));
+
+    return groupService.submitAnswers(groupId);
   }
 
   @RequestMapping(
