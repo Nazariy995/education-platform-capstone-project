@@ -94,7 +94,7 @@ public class ModuleGroupController {
     acl.enforceIsCourseRole(principal.getName(), courseId,
         Arrays.asList(CourseUser.CourseRole.STUDENT));
 
-    Optional<ModuleGroup> optional = Optional.of(groupService.getGroup(courseUserId, moduleId));
+    Optional<ModuleGroup> optional = Optional.ofNullable(groupService.getGroup(courseUserId, moduleId));
     JsonDecorator<ModuleGroup> json = new JsonDecorator<>();
     optional.ifPresent(g -> {
       logger.debug("Returning group and members and if editable");
