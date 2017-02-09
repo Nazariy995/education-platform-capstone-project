@@ -73,7 +73,7 @@ function Router($stateProvider, $httpProvider, $locationProvider){
             url : '/assignments',
             views : {
                 'childContent' : {
-                    templateUrl : 'views/student/assignment/home.html',
+                    templateUrl : 'views/student/assignments/home.html',
                     controller : 'Student.AssignmentsCtrl',
                     controllerAs : 'courseAssignments'
                 }
@@ -91,16 +91,33 @@ function Router($stateProvider, $httpProvider, $locationProvider){
             }
         },
         {
-            name : 'app.course.assignmentDetails',
+            name : 'app.course.assignment',
             url : '/assignments/{moduleId}',
             views : {
                 'childContent' : {
-                    templateUrl : 'views/student/assignment_details/home.html',
+                    templateUrl : 'views/student/assignment/home.html',
                     controller : 'Student.AssignmentDetailsCtrl',
                     controllerAs : 'assignmentDetails'
+                },
+                'assignmentContent@app.course.assignment' : {
+                    templateUrl : 'views/student/assignment_details/home.html'
+                }
+            }
+        },
+        {
+            name : 'app.course.assignment.group',
+            url : '/group',
+            views : {
+                'assignmentContent' : {
+                    templateUrl : 'views/student/assignment_create_group/home.html',
+                    controller : 'Student.AssignmentGroupCtrl',
+                    controllerAs : 'assignmentGroup'
+
                 }
             }
         }
+
+
 
 
     ]
