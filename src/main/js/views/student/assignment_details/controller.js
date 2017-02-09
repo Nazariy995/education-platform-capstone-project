@@ -8,6 +8,7 @@ function Controller($scope, $state, $stateParams, AssignmentService){
     this._AssignmentService = AssignmentService;
     this.assignment = {};
     this.assignmentMembers = [];
+    this.locked = true;
     this.init();
 };
 
@@ -17,18 +18,21 @@ Controller.prototype.init = function(){
         .then(function(assignmentDetails){
             self.assignment = assignmentDetails;
             self.pageName = assignmentDetails.moduleTitle;
+            self.locked = assignmentDetails.locked;
             console.log("Got the Assignment Details");
+            self.getGroup();
     }, function(err){
        self.error = err;
     });
 }
 
-Controller.prototype.setGroups = function(){
+Controller.prototype.getGroup = function(){
     var self = this;
     self._AssignmentService.getAssignmentGroup(self.courseId, self.moduleId)
-        .then(function(assignmentMembers){
-            self.assignmentMembers = assignmentMembers;
+        .then(function(assignmentGroupData){
+            self.assignmentMembers = assignmentGroupData.members;
             console.log("Got the Assignment Group Data");
+            console.log(assignmentGroupData);
     }, function(err){
        self.error = err;
     });
