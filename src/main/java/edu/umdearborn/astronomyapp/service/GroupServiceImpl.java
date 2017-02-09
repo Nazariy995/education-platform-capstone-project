@@ -1,5 +1,6 @@
 package edu.umdearborn.astronomyapp.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -7,7 +8,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -93,14 +93,20 @@ public class GroupServiceImpl implements GroupService {
 
   private void enforceNotInGroup(String courseUserId, String moduleId) {
 
-    if (!isInAGroup(courseUserId, moduleId)) {
-      logger.info("Course user: '{}' is already in a group for module: '{}'", courseUserId,
-          moduleId);
+    TypedQuery<Boolean> query = entityManager.createQuery(
+        "select count(u) > 0 CourseUser u where u.id = :courseUserId and u.role = :role",
+        Boolean.class);
+    query.setParameter("courseUserId", courseUserId).setParameter("role",
+        CourseUser.CourseRole.STUDENT);
+    boolean canJoinGroup = query.getSingleResult();
+
+    if (isInAGroup(courseUserId, moduleId) || canJoinGroup) {
+      logger.info("Course user: '{}' cannot join group for module: '{}'", courseUserId, moduleId);
       throw new GroupAlterationException(
-          "Course user: " + courseUserId + " is already in a group for module: " + moduleId);
+          "Course user: " + courseUserId + " cannot join group for module: " + moduleId);
     }
 
-    logger.debug("Course user: '{}' is not in a group for module: '{}'", courseUserId, moduleId);
+    logger.debug("Course user: '{}' can join group for module: '{}'", courseUserId, moduleId);
   }
 
   @Override
@@ -165,35 +171,136 @@ public class GroupServiceImpl implements GroupService {
   }
 
   @Override
-  public Map<String, String> saveAnswers(Map<String, String> answers, String groupId) {
+  public List<Answer> saveAnswers(Map<String, String> answers, String groupId) {
 
-    Answer answer;
-    String value;
-    Question question;
-    ModuleGroup group = new ModuleGroup();
-    group.setId(groupId);
+    List<Answer> savedAnswers = getAnswers(groupId, true);
+    if (ResultListUtil.hasResult(savedAnswers)) {
 
-    for (String key : answers.keySet()) {
-      value = StringUtils.trimToEmpty(answers.get(key));
-      if (!value.isEmpty()) {
-        answer = new Answer();
-        answer.setValue(value);
+      ModuleGroup group = new ModuleGroup();
+      group.setId(groupId);
 
-        question = new Question();
-        question.setId(key);
-        answer.setQuestion(question);
-
-        answer.setGroup(group);
-
-        entityManager.persist(answer);
-
-        answers.put(key, answer.getId());
-      } else {
-        answers.remove(key);
+      for (String key : answers.keySet()) {
+        savedAnswers.parallelStream().filter(a -> a.getQuestion().getId() == key).findAny()
+            .ifPresent(a -> {
+              a.setValue(answers.get(key));
+            });
       }
+
+      return getAnswers(groupId, true);
     }
 
-    return answers;
+    return null;
   }
 
+  @Override
+  public Long submissionNumber(String groupId) {
+
+    TypedQuery<Long> query = entityManager.createQuery(
+        "select max(a.submissionNumber) from Answer a join a.group g join g.module m where "
+            + "g.groupId = :groupId",
+        Long.class);
+    query.setParameter("groupId", groupId);
+    List<Long> result = query.getResultList();
+
+    if (ResultListUtil.hasResult(result)) {
+      return result.get(0);
+    }
+
+    return null;
+  }
+
+  @Override
+  public List<Answer> getAnswers(String groupId, boolean getSavedAnswers) {
+    StringBuilder jpql = new StringBuilder(
+        "select Answer a join a.group g join g.module m where g.id = :groupId and "
+            + "a.submissionNumber = :submissionNumber");
+
+    if (!getSavedAnswers) {
+      jpql.append(" and a.submissionDate is not null");
+    }
+
+    TypedQuery<Answer> query = entityManager.createQuery(jpql.toString(), Answer.class);
+    query.setParameter("groupId", groupId);
+
+    if (getSavedAnswers) {
+      query.setParameter("submissionNumber", 0);
+    } else {
+      query.setParameter("submissionNumber", submissionNumber(groupId));
+    }
+
+    return query.getResultList();
+  }
+
+  @Override
+  public void finalizeGroup(String groupId) {
+    entityManager
+        .createQuery("update ModuleGroup g set g.isLocked = true where g.groupId = :groupId")
+        .executeUpdate();
+
+    TypedQuery<String> questionIdQuery = entityManager.createQuery(
+        "select q.id from Question q join q.page p join p.module m where m.id = (select m.id "
+            + "from ModuleGroup g join g.module m where g.id = :groupId)",
+        String.class);
+    questionIdQuery.setParameter("groupId", groupId);
+    List<String> questionIdsResult = questionIdQuery.getResultList();
+
+    ModuleGroup group = new ModuleGroup();
+    group.setId(groupId);
+    Question question = new Question();
+    if (ResultListUtil.hasResult(questionIdsResult)) {
+      logger.debug("Creating answers...");
+
+      questionIdsResult.parallelStream().map(questionId -> {
+        Answer answer = new Answer();
+        answer.setGroup(group);
+        question.setId(questionId);
+        answer.setQuestion(question);
+        return answer;
+      }).forEach(entityManager::persist);
+
+    }
+
+  }
+
+  @Override
+  public List<Answer> submitAnswers(String groupId) {
+    List<Answer> answers = getAnswers(groupId, true);
+
+    if (ResultListUtil.hasResult(answers)) {
+      Date date = new Date();
+      answers.parallelStream().map(a -> {
+        a.setId(null);
+        a.setSubmissionNumber(submissionNumber(groupId) + 1);
+        a.setSubmissionTimestamp(date);
+        return a;
+      }).forEach(entityManager::persist);;
+    }
+
+    return getAnswers(groupId, false);
+  }
+
+  @Override
+  public List<CourseUser> removeFromGroup(String groupId, String courseUserId) {
+    entityManager
+        .createQuery(
+            "remove GroupMember m join m.group g join m.courseUser u where g.id = :groupId and "
+                + "u.id = :courseUserId")
+        .setParameter("groupId", groupId).setParameter("courseUserId", courseUserId)
+        .executeUpdate();
+
+    TypedQuery<Boolean> isGroupEmptyQuery = entityManager
+        .createQuery("select count(m) > 0 from GroupMember m join m.group g where g.id = :groupId",
+            Boolean.class)
+        .setParameter("groupId", groupId);
+    boolean isGroupEmpty = isGroupEmptyQuery.getSingleResult();
+
+    if (isGroupEmpty) {
+      entityManager.createQuery("remove ModuleGroup g where g.id = :groupId")
+          .setParameter("groupId", groupId).executeUpdate();
+
+      return null;
+    }
+
+    return getUsersInGroup(groupId);
+  }
 }
