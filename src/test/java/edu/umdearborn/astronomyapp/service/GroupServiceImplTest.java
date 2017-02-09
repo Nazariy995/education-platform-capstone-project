@@ -58,7 +58,7 @@ public class GroupServiceImplTest {
 
   @Test
   public void joinGroupTest() {
-    when(booleanQuery.getSingleResult()).thenReturn(true, false);
+    when(booleanQuery.getSingleResult()).thenReturn(false, false, true);
     when(groupQuery.getResultList()).thenReturn(Arrays.asList(new ModuleGroup()));
     when(courseUserQuery.getResultList()).thenReturn(Arrays.asList(new CourseUser()));
 
@@ -80,7 +80,7 @@ public class GroupServiceImplTest {
 
   @Test
   public void createGroupTest() {
-    when(booleanQuery.getSingleResult()).thenReturn(true, false);
+    when(booleanQuery.getSingleResult()).thenReturn(false, false, true);
 
     try {
       service.createGroup("not in group", "moduleId");

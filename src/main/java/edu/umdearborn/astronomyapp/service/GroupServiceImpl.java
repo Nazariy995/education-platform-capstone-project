@@ -94,13 +94,13 @@ public class GroupServiceImpl implements GroupService {
   private void enforceNotInGroup(String courseUserId, String moduleId) {
 
     TypedQuery<Boolean> query = entityManager.createQuery(
-        "select count(u) > 0 CourseUser u where u.id = :courseUserId and u.role = :role",
+        "select count(u) > 0 CourseUser u where u.id = :courseUserId and u.role != :role",
         Boolean.class);
     query.setParameter("courseUserId", courseUserId).setParameter("role",
         CourseUser.CourseRole.STUDENT);
-    boolean canJoinGroup = query.getSingleResult();
+    boolean isNotStudentRole = query.getSingleResult();
 
-    if (isInAGroup(courseUserId, moduleId) || canJoinGroup) {
+    if (isInAGroup(courseUserId, moduleId) || isNotStudentRole) {
       logger.info("Course user: '{}' cannot join group for module: '{}'", courseUserId, moduleId);
       throw new GroupAlterationException(
           "Course user: " + courseUserId + " cannot join group for module: " + moduleId);
