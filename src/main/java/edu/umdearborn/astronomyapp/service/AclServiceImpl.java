@@ -68,7 +68,7 @@ public class AclServiceImpl implements AclService {
 
     logger.debug("{} does not have any role in {} in course: '{}'", email, role, courseId);
   }
-  
+
   @Cacheable
   @Override
   public void enforceInGroup(String courseUserId, String groupId) {
@@ -167,6 +167,43 @@ public class AclServiceImpl implements AclService {
 
     logger.debug("Group: '{}' is part of course: '{}'", groupId, courseId);
 
+  }
+
+  @Override
+  public void enforceHasLock(String groupId, List<String> checkedIn) {
+
+    TypedQuery<Boolean> query = entityManager.createQuery(
+        "select count(cu) = 0 from GroupMember gm join gm.moduleGroup g join gm.courseUser cu "
+            + "join cu.user u where g.id = :groupId and cu.isActive = true and "
+            + "u.isEnabled = true and cu.id not in (:checkedIn)",
+        Boolean.class);
+    query.setParameter("groupId", groupId).setParameter("checkedIn", checkedIn);
+    boolean result = query.getSingleResult();
+
+    if (!result) {
+      logger.debug("Lock not aquired for group: '{}'", groupId);
+      throw new AccessDeniedException("Lock not aquired for group: " + groupId);
+    }
+
+    logger.debug("Lock aquired for group: '{}'", groupId);
+
+  }
+
+  @Override
+  public void enforceGroupLocked(String groupId, boolean shouldBeLocked) {
+
+    TypedQuery<Boolean> query = entityManager
+        .createQuery("select count(g) > 0 from ModuleGroup g where g.id = :groupId and "
+            + "g.isLocked = :shouldBeLocked", Boolean.class)
+        .setParameter("groupId", groupId).setParameter("shouldBeLocked", shouldBeLocked);
+    boolean result = query.getSingleResult();
+
+    if (!result) {
+      logger.debug("Group: '{}' finalized status not valid", groupId);
+      throw new AccessDeniedException("Group: " + groupId + " finalized status not valid");
+    }
+    
+    logger.debug("Group: '{}' finalized status is valid", groupId);
   }
 
 }
