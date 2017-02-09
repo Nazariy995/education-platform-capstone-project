@@ -14,7 +14,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "moduleGroupId"))
@@ -22,8 +22,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class ModuleGroup extends AbstractGeneratedId {
 
   private static final long serialVersionUID = -5650773937729046598L;
-  
-  @JsonIgnore
+
+  @JsonProperty("isFinalized")
   private boolean isLocked = false;
 
   @Valid

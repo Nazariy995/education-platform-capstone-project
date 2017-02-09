@@ -22,7 +22,9 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "answerId"))
@@ -42,11 +44,11 @@ public class Answer extends AbstractGeneratedId {
   @JoinColumn(name = "moduleGroupId", updatable = false)
   private ModuleGroup group;
 
-  @NotNull
   @DecimalMin("0")
   private BigDecimal pointesEarned = new BigDecimal(0);
 
-  @JsonIgnore
+  @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+  @JsonIdentityReference(alwaysAsId = true)
   @Valid
   @NotNull
   @ManyToOne
@@ -55,7 +57,7 @@ public class Answer extends AbstractGeneratedId {
 
   @Min(0)
   @NotNull
-  private int submissionNumber = 0;
+  private Long submissionNumber = 0L;
 
   @Temporal(TemporalType.TIMESTAMP)
   private Date submissionTimestamp;
@@ -83,7 +85,7 @@ public class Answer extends AbstractGeneratedId {
     return question;
   }
 
-  public int getSubmissionNumber() {
+  public long getSubmissionNumber() {
     return submissionNumber;
   }
 
@@ -116,7 +118,7 @@ public class Answer extends AbstractGeneratedId {
     this.question = question;
   }
 
-  public void setSubmissionNumber(int submissionNumber) {
+  public void setSubmissionNumber(long submissionNumber) {
     this.submissionNumber = submissionNumber;
   }
 

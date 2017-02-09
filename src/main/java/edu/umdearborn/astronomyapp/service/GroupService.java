@@ -3,6 +3,7 @@ package edu.umdearborn.astronomyapp.service;
 import java.util.List;
 import java.util.Map;
 
+import edu.umdearborn.astronomyapp.entity.Answer;
 import edu.umdearborn.astronomyapp.entity.CourseUser;
 import edu.umdearborn.astronomyapp.entity.ModuleGroup;
 
@@ -22,6 +23,16 @@ public interface GroupService {
 
   public boolean hasLock(String groupId, List<String> checkedIn);
 
-  public Map<String, String> saveAnswers(Map<String, String> answers, String groupId);
+  public List<Answer> saveAnswers(Map<String, String> answers, String groupId);
+  
+  public Long submissionNumber(String groupId);
+  
+  public List<Answer> getAnswers(String groupId, boolean getSavedAnswers);
+
+  public void finalizeGroup(String groupId);
+
+  public List<Answer> submitAnswers(String groupId);
+
+  public List<CourseUser> removeFromGroup(String groupId, String courseUserId);
 
 }
