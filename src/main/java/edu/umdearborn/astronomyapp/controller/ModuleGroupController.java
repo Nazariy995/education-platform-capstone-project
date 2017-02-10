@@ -85,6 +85,22 @@ public class ModuleGroupController {
     return groupService.removeFromGroup(courseUserId, moduleId);
   }
 
+  @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/free", method = GET)
+  public List<CourseUser> getFreeAgents(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId,
+      @RequestParam(name = "courseUserId") String courseUserId, HttpSession session,
+      Principal principal) {
+
+    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
+    acl.enforceIsCourseRole(principal.getName(), courseId,
+        Arrays.asList(CourseUser.CourseRole.STUDENT));
+
+    Optional<List<CourseUser>> optional =
+        Optional.ofNullable(groupService.getFreeUsers(courseId, moduleId));
+
+    return optional.orElse(new ArrayList<CourseUser>());
+  }
+
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group", method = GET)
   public JsonDecorator<ModuleGroup> getGroup(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId,
