@@ -115,6 +115,17 @@ function Router($stateProvider, $httpProvider, $locationProvider){
 
                 }
             }
+        },
+        {
+            name :  'app.course.assignment.login',
+            url : '/login',
+            views : {
+                'assignmentContent' : {
+                    templateUrl : 'views/student/assignment_group_login/home.html',
+                    controller : 'Student.AssignmentLoginCtrl',
+                    controllerAs : 'assignmentLogin'
+                }
+            }
         }
 
 

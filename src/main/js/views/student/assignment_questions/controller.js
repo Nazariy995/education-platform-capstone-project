@@ -20,7 +20,7 @@ Controller.prototype.init = function(){
             self.pageName = assignmentDetails.moduleTitle;
             self.locked = assignmentDetails.locked;
             console.log("Got the Assignment Details");
-            self.getGroup();
+//            self.getGroup(); Uncommented it for right now because currently it is giving me an error
     }, function(err){
        self.error = err;
     });
