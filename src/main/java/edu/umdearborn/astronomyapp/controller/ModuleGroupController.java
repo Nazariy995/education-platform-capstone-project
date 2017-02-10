@@ -2,9 +2,9 @@ package edu.umdearborn.astronomyapp.controller;
 
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.REST_PATH_PREFIX;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.STUDENT_PATH;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 
 import java.security.Principal;
 import java.util.ArrayList;
