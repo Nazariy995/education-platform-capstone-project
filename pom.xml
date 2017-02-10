@@ -16,6 +16,7 @@
 		<commons-lang3.version>3.5</commons-lang3.version>
 		<commons-validator.version>1.5.1</commons-validator.version>
 		<guava.version>21.0</guava.version>
+		<owasp-java-html-sanitizer.version>r239</owasp-java-html-sanitizer.version>
 	</properties>
 	<dependencies>
 		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-devtools</artifactId> 
@@ -67,6 +68,11 @@
 		<dependency>
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+			<artifactId>owasp-java-html-sanitizer</artifactId>
+			<version>${owasp-java-html-sanitizer.version}</version>
 		</dependency>
 	</dependencies>
 	<build>

@@ -24,9 +24,9 @@ public interface GroupService {
   public boolean hasLock(String groupId, List<String> checkedIn);
 
   public List<Answer> saveAnswers(Map<String, String> answers, String groupId);
-  
+
   public Long submissionNumber(String groupId);
-  
+
   public List<Answer> getAnswers(String groupId, boolean getSavedAnswers);
 
   public void finalizeGroup(String groupId);
@@ -34,5 +34,7 @@ public interface GroupService {
   public List<Answer> submitAnswers(String groupId);
 
   public List<CourseUser> removeFromGroup(String groupId, String courseUserId);
+
+  public List<CourseUser> getFreeUsers(String courseId, String moduleId);
 
 }

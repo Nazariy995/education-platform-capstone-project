@@ -2,9 +2,9 @@ package edu.umdearborn.astronomyapp.controller;
 
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.REST_PATH_PREFIX;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.STUDENT_PATH;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -69,12 +69,13 @@ public class ModuleGroupController {
   }
 
   @RequestMapping(
-      value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/member",
+      value = STUDENT_PATH
+          + "/course/{courseId}/module/{moduleId}/group/{groupId}/member/{removeUser}",
       method = DELETE)
   public List<CourseUser> removeUser(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
-      @RequestParam(name = "courseUserId") String courseUserId, @RequestBody String removedUser,
-      Principal principal) {
+      @RequestParam(name = "courseUserId") String courseUserId,
+      @PathVariable("removeUser") String removedUser, Principal principal) {
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
@@ -82,6 +83,22 @@ public class ModuleGroupController {
     acl.enforceInGroup(courseUserId, groupId);
 
     return groupService.removeFromGroup(courseUserId, moduleId);
+  }
+
+  @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/free", method = GET)
+  public List<CourseUser> getFreeAgents(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId,
+      @RequestParam(name = "courseUserId") String courseUserId, HttpSession session,
+      Principal principal) {
+
+    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
+    acl.enforceIsCourseRole(principal.getName(), courseId,
+        Arrays.asList(CourseUser.CourseRole.STUDENT));
+
+    Optional<List<CourseUser>> optional =
+        Optional.ofNullable(groupService.getFreeUsers(courseId, moduleId));
+
+    return optional.orElse(new ArrayList<CourseUser>());
   }
 
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group", method = GET)
@@ -94,7 +111,8 @@ public class ModuleGroupController {
     acl.enforceIsCourseRole(principal.getName(), courseId,
         Arrays.asList(CourseUser.CourseRole.STUDENT));
 
-    Optional<ModuleGroup> optional = Optional.ofNullable(groupService.getGroup(courseUserId, moduleId));
+    Optional<ModuleGroup> optional =
+        Optional.ofNullable(groupService.getGroup(courseUserId, moduleId));
     JsonDecorator<ModuleGroup> json = new JsonDecorator<>();
     optional.ifPresent(g -> {
       logger.debug("Returning group and members and if editable");
@@ -108,12 +126,14 @@ public class ModuleGroupController {
 
   }
 
-  @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}",
+  @RequestMapping(
+      value = STUDENT_PATH
+          + "/course/{courseId}/module/{moduleId}/group/{groupId}/member/{addMember}",
       method = POST)
   public List<CourseUser> joinGroup(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
       @RequestParam(name = "courseUserId") String courseUserId,
-      @RequestBody String joiningCourseUserId, Principal principal) {
+      @PathVariable("addMember") String addMember, Principal principal) {
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
@@ -121,7 +141,7 @@ public class ModuleGroupController {
     acl.enforceInGroup(courseUserId, groupId);
     acl.enforceGroupLocked(groupId, false);
 
-    return groupService.joinGroup(joiningCourseUserId, moduleId, groupId);
+    return groupService.joinGroup(addMember, moduleId, groupId);
   }
 
   @RequestMapping(
@@ -184,7 +204,8 @@ public class ModuleGroupController {
     return json;
   }
 
-  @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}",
+  @RequestMapping(
+      value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/members",
       method = GET)
   public List<CourseUser> getGroupRoster(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
@@ -237,7 +258,7 @@ public class ModuleGroupController {
 
     return groupService.saveAnswers(answers, groupId);
   }
-  
+
   @RequestMapping(
       value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/answers/submit",
       method = POST)
