@@ -127,12 +127,13 @@ public class ModuleGroupController {
   }
 
   @RequestMapping(
-      value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/member/add",
+      value = STUDENT_PATH
+          + "/course/{courseId}/module/{moduleId}/group/{groupId}/member/{addMember}",
       method = POST)
   public List<CourseUser> joinGroup(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
       @RequestParam(name = "courseUserId") String courseUserId,
-      @RequestBody Map<String, String> joiningCourseUserIdMap, Principal principal) {
+      @PathVariable("addMember") String addMember, Principal principal) {
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
@@ -140,7 +141,7 @@ public class ModuleGroupController {
     acl.enforceInGroup(courseUserId, groupId);
     acl.enforceGroupLocked(groupId, false);
 
-    return groupService.joinGroup(joiningCourseUserIdMap.get("id"), moduleId, groupId);
+    return groupService.joinGroup(addMember, moduleId, groupId);
   }
 
   @RequestMapping(
