@@ -303,4 +303,18 @@ public class GroupServiceImpl implements GroupService {
 
     return getUsersInGroup(groupId);
   }
+
+  @Override
+  public List<CourseUser> getFreeUsers(String courseId, String moduleId) {
+
+    TypedQuery<CourseUser> query = entityManager
+        .createQuery(
+            "select u from CourseUser u join u.course c where c.id = :courseId and u.id not in "
+                + "(select cu.id from GroupMember gm join gm.moduleGroup g join g.module m join "
+                + "gm.courseUser cu where m.id = :moduleId) and u.role = 'STUDENT'",
+            CourseUser.class)
+        .setParameter("courseId", courseId).setParameter("moduleId", moduleId);
+
+    return query.getResultList();
+  }
 }
