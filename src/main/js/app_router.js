@@ -106,7 +106,7 @@ function Router($stateProvider, $httpProvider, $locationProvider){
         },
         {
             name : 'app.course.assignment.group',
-            url : '/group',
+            url : '/group/{groupId}',
             views : {
                 'assignmentContent' : {
                     templateUrl : 'views/student/assignment_create_group/home.html',
