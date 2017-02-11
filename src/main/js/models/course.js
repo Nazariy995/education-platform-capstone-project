@@ -11,9 +11,7 @@ function CourseService($http, appSettings){
 
 CourseService.prototype.getCourses = function(){
     return this._$http
-          .get(this._appSettings.API.basePath + '/rest/student/courses/',
-               { cache: true }
-              )
+          .get(this._appSettings.API.basePath + '/rest/student/courses/')
           .then(function (res) {
             return res.data;
           });

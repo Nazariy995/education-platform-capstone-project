@@ -14,7 +14,7 @@ function AssignmentService($http, appSettings, SessionService){
 
 AssignmentService.prototype.init = function(){
     var self = this;
-    self.params = {}
+    self.params = {};
     self.params[self.courseUserIdKey] = self.courseUserIdValue;
     self.config = {
         params : self.params
@@ -23,8 +23,9 @@ AssignmentService.prototype.init = function(){
 
 AssignmentService.prototype.getAssignments = function(courseId){
     var self = this;
+    var url = self._appSettings.API.basePath + '/rest/student/course/'+courseId+'/modules'
     return this._$http
-          .get(this._appSettings.API.basePath + '/rest/student/course/'+courseId+'/modules', self.config)
+          .get(url, self.config)
           .then(function (res) {
             console.log("Got Assignments List");
             console.log(res);
@@ -34,26 +35,27 @@ AssignmentService.prototype.getAssignments = function(courseId){
 
 AssignmentService.prototype.getAssignmentDetails = function(courseId, moduleId){
     var self = this;
-    var url = self._appSettings.API.basePath + '/rest/student/course/'+ courseId+ '/module/' + moduleId
+    var url = self._appSettings.API.basePath + '/rest/student/course/'+ courseId+ '/module/' + moduleId;
     return self._$http
         .get(url, self.config)
         .then(function(res){
-        console.log("Get Assignment Details")
-        console.log(res)
+        console.log("Get Assignment Details");
+        console.log(res);
         return res.data;
     })
-}
+};
 
-AssignmentService.prototype.getAssignmentGroup = function(courseId, moduleId){
+AssignmentService.prototype.getAssignmentMembers = function(courseId, moduleId){
     var self = this;
-    var url = self._appSettings.API.basePath + '/rest/student/course/'+ courseId+ '/module/' + moduleId + "/group"
-        return self._$http
+    var url = self._appSettings.API.basePath + '/rest/student/course/'+ courseId+ '/module/' + moduleId + '/free';
+    return self._$http
         .get(url, self.config)
         .then(function(res){
-        console.log("Get Assignment Group Data")
-        console.log(res)
+        console.log("Get Assignment Members");
+        console.log(res);
         return res.data;
     })
+
 }
 
 module.exports = angular.module('app.models.assignment', [
