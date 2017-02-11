@@ -66,7 +66,7 @@ public class AclServiceImpl implements AclService {
       throw new AccessDeniedException(email + " is not a " + role + " in course " + courseId);
     }
 
-    logger.debug("{} does not have any role in {} in course: '{}'", email, role, courseId);
+    logger.debug("{} does have any role in {} in course: '{}'", email, role, courseId);
   }
 
   @Cacheable
