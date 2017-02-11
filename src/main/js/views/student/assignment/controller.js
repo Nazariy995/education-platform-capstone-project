@@ -1,11 +1,13 @@
 
-function Controller($scope, $state, $stateParams, AssignmentService){
+function Controller($scope, $state, $stateParams, AssignmentService, GroupService){
     "ngInject";
-
+    this._$state = $state;
     this.pageName = "Assignment";
     this.courseId = $stateParams.courseId;
     this.moduleId = $stateParams.moduleId;
+    this.groupId = null;
     this._AssignmentService = AssignmentService;
+    this._GroupService = GroupService;
     this.assignment = {};
     this.assignmentMembers = [];
     this.locked = true;
@@ -20,7 +22,7 @@ Controller.prototype.init = function(){
             self.pageName = assignmentDetails.moduleTitle;
             self.locked = assignmentDetails.locked;
             console.log("Got the Assignment Details");
-            //self.getGroup(); //Uncommented it for right now because currently it is giving me an error
+            self.getGroup(); //Uncommented it for right now because currently it is giving me an error
     }, function(err){
        self.error = err;
     });
@@ -28,18 +30,27 @@ Controller.prototype.init = function(){
 
 Controller.prototype.getGroup = function(){
     var self = this;
-    self._AssignmentService.getAssignmentGroup(self.courseId, self.moduleId)
-        .then(function(assignmentGroupData){
-            self.assignmentMembers = assignmentGroupData.members;
+    self._GroupService.getGroupMembers(self.courseId, self.moduleId)
+        .then(function(payload){
+            self.assignmentMembers = payload.members;
+            self.groupId = payload.id;
             console.log("Got the Assignment Group Data");
-            console.log(assignmentGroupData);
+            console.log(payload);
     }, function(err){
        self.error = err;
     });
-}
+};
+
+Controller.prototype.navToGroup = function(){
+    var self = this;
+    console.log("This is the group id");
+    console.log(self.groupId);
+    self._$state.go('app.course.assignment.group',{ groupId: self.groupId });
+};
 
 
 module.exports = angular.module('app.views.student.assignment.details.controller', [
-    'app.models.assignment'
+    'app.models.assignment',
+    'app.models.group'
 ])
 .controller('Student.AssignmentDetailsCtrl', Controller);

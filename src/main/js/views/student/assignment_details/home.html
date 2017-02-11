@@ -9,10 +9,11 @@
     Start
 </button></a>
 <h2>Group</h2>
-<a ui-sref="app.course.assignment.group"><button type="button"
+<button type="button"
+        ng-click="assignmentDetails.navToGroup()"
         ng-class="assignmentDetails.locked == true ? 'btn btn-primary disabled' : 'btn btn-primary'">
     Create/Edit Group
-</button></a>
+</button>
 <table class="table table-hover">
 <thead>
     <tr>
