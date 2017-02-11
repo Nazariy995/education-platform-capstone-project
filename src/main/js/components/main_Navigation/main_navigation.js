@@ -13,6 +13,7 @@ function Directive($state, appSettings, SessionService){
         scope.logout = function(){
             SessionService.destroy();
             $state.go('app.login');
+            window.location.reload();
         }
 
     }
