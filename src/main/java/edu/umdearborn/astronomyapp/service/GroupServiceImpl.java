@@ -83,7 +83,7 @@ public class GroupServiceImpl implements GroupService {
   public boolean isInAGroup(String courseUserId, String moduleId) {
 
     TypedQuery<Boolean> query = entityManager.createQuery(
-        "select count(gm) > 0 from GroupMember gm join gm.moduleGroup g join mg.module m "
+        "select count(gm) > 0 from GroupMember gm join gm.moduleGroup g join g.module m "
             + "join gm.courseUser cu where cu.id = :courseUserId and m.id = :moduleId",
         Boolean.class);
     query.setParameter("courseUserId", courseUserId).setParameter("moduleId", moduleId);
@@ -94,7 +94,7 @@ public class GroupServiceImpl implements GroupService {
   private void enforceNotInGroup(String courseUserId, String moduleId) {
 
     TypedQuery<Boolean> query = entityManager.createQuery(
-        "select count(u) > 0 CourseUser u where u.id = :courseUserId and u.role != :role",
+        "select count(u) > 0 from CourseUser u where u.id = :courseUserId and u.role != :role",
         Boolean.class);
     query.setParameter("courseUserId", courseUserId).setParameter("role",
         CourseUser.CourseRole.STUDENT);
@@ -125,8 +125,8 @@ public class GroupServiceImpl implements GroupService {
   public ModuleGroup getGroup(String courseUserId, String moduleId) {
 
     TypedQuery<ModuleGroup> query = entityManager
-        .createQuery("select g from GroupMember gm join gm.moduleGroup g join gm.courseUser cu "
-            + "join gm.moduleGroup mg join mg.module m where cu.id = :courseUserId and "
+        .createQuery("select mg from GroupMember gm join gm.moduleGroup mg join gm.courseUser cu "
+            + "join mg.module m where cu.id = :courseUserId and "
             + "cu.isActive = true and m.id = :moduleId", ModuleGroup.class);
     query.setParameter("courseUserId", courseUserId).setParameter("moduleId", moduleId);
     List<ModuleGroup> result = query.getResultList();
@@ -307,13 +307,14 @@ public class GroupServiceImpl implements GroupService {
   @Override
   public List<CourseUser> getFreeUsers(String courseId, String moduleId) {
 
-    TypedQuery<CourseUser> query = entityManager
-        .createQuery(
-            "select u from CourseUser u join u.course c where c.id = :courseId and u.id not in "
-                + "(select cu.id from GroupMember gm join gm.moduleGroup g join g.module m join "
-                + "gm.courseUser cu where m.id = :moduleId) and u.role = 'STUDENT'",
-            CourseUser.class)
-        .setParameter("courseId", courseId).setParameter("moduleId", moduleId);
+    TypedQuery<CourseUser> query =
+        entityManager
+            .createQuery(
+                "select u from CourseUser u join u.course c where c.id = :courseId and u.id not in "
+                    + "(select cu.id from GroupMember gm join gm.moduleGroup g join g.module m join "
+                    + "gm.courseUser cu where m.id = :moduleId) and u.role = 'STUDENT'",
+                CourseUser.class)
+            .setParameter("courseId", courseId).setParameter("moduleId", moduleId);
 
     return query.getResultList();
   }
