@@ -1,8 +1,7 @@
 
 
-function Controller($scope, $state, AuthService){
+function Controller($scope, $state, $window, AuthService){
     "ngInject";
-
     this._AuthService = AuthService;
     this._$state = $state;
     this._$scope = $scope;
