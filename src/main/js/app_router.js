@@ -112,8 +112,24 @@ function Router($stateProvider, $httpProvider, $locationProvider){
                     templateUrl : 'views/student/assignment_create_group/home.html',
                     controller : 'Student.AssignmentGroupCtrl',
                     controllerAs : 'assignmentGroup'
-
                 }
+            },
+            resolve : {
+                groupId : ['GroupService','$stateParams','$state', function(GroupService, $stateParams, $state){
+                    if(!$stateParams.groupId){
+                        var courseId = $stateParams.courseId;
+                        var moduleId = $stateParams.moduleId;
+                        GroupService.initialize(courseId, moduleId)
+                            .then(function(payload){
+                                $state.go($state.current, {groupId:payload.id});
+                            return payload.id;
+                        }, function(err){
+                            return err;
+                        });
+                    }else{
+                        return $stateParams.groupId;
+                    }
+                }]
             }
         },
         {
