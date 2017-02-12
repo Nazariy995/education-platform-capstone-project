@@ -50,11 +50,28 @@ Controller.prototype.addGroupMember = function(){
     self._GroupService.addGroupMember(self.courseId, self.moduleId, self.groupId, self.newGroupMember)
         .then(function(payload){
             self.groupMembers = payload;
+            self.newGroupMember = "";
+            self.getAssignmentMembers();
             console.log("Returned Group Members After Adding a member");
             console.log(self.groupMembers);
     }, function(err){
        self.error = err;
     });
+};
+
+Controller.prototype.removeGroupMember = function(memberToBeRemovedId){
+    var self = this;
+    self._GroupService.removeGroupMember(self.courseId, self.moduleId, self.groupId, memberToBeRemovedId)
+        .then(function(payload){
+            self.groupMembers = payload;
+            self.getAssignmentMembers();
+            console.log("Returned Group Members After Adding a member");
+            console.log(self.groupMembers);
+    }, function(err){
+       self.error = err;
+    });
+
+
 }
 
 module.exports = angular.module('app.views.student.assignment.group.controller', [

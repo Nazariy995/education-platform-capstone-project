@@ -2,6 +2,10 @@
 
 <ul class="list-group">
     <li class="list-group-item" ng-repeat="member in assignmentGroup.groupMembers">
+        <button class="btn btn-xs btn-warning"
+                ng-click="assignmentGroup.removeGroupMember(member.id)">
+          <span class="glyphicon glyphicon-trash"></span>
+        </button>
         {{ member.firstName }} {{ member.lastName }} <br>
         {{ member.email }}
     </li>
