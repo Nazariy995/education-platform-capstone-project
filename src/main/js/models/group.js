@@ -7,22 +7,28 @@ function GroupService($http, appSettings, SessionService){
     var self = this;
     this._$http = $http;
     this._appSettings = appSettings;
-    this.courseUserIdValue = SessionService.getCourseUserId();
+    this._SessionService = SessionService;
     this.courseUserIdKey = appSettings.API.PARAMS.courseUserId;
     this.init();
 }
 
 GroupService.prototype.init = function(){
     var self = this;
-    self.params = {}
-    self.params[self.courseUserIdKey] = self.courseUserIdValue;
+    self.getConfig();
+};
+
+GroupService.prototype.getConfig = function(){
+    var self = this;
+    self.params = {};
+    self.params[self.courseUserIdKey] = self._SessionService.getCourseUserId();
     self.config = {
         params : self.params
-    }
-}
+    };
+};
 
 GroupService.prototype.getGroupMembers = function(courseId, moduleId){
     var self = this;
+    self.getConfig();
     var url = self._appSettings.API.basePath + '/rest/student/course/'+ courseId+ '/module/' + moduleId + "/group"
     return self._$http
         .get(url, self.config)
@@ -35,6 +41,7 @@ GroupService.prototype.getGroupMembers = function(courseId, moduleId){
 
 GroupService.prototype.addGroupMember = function(courseId, moduleId, groupId, newMemberId){
     var self = this;
+    self.getConfig();
     var url = self._appSettings.API.basePath + '/rest/student/course/'+
         courseId+ '/module/'
         + moduleId + "/group/"
@@ -55,6 +62,7 @@ GroupService.prototype.addGroupMember = function(courseId, moduleId, groupId, ne
 
 GroupService.prototype.removeGroupMember = function(courseId, moduleId, groupId, memberToBeRemovedId){
     var self= this;
+    self.getConfig();
     var url = self._appSettings.API.basePath + '/rest/student/course/'+
         courseId+ '/module/'
         + moduleId + "/group/"
