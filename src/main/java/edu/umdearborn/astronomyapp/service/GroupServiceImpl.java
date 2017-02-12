@@ -41,6 +41,8 @@ public class GroupServiceImpl implements GroupService {
 
     enforceNotInGroup(courseUserId, groupId);
 
+    logger.debug("Joining group: '{}' for course user: '{}' for module: '{}'", groupId,
+        courseUserId, moduleId);
     TypedQuery<ModuleGroup> query = entityManager
         .createQuery("select g from ModuleGroup g where g.id =  :groupId", ModuleGroup.class);
     query.setParameter("groupId", groupId);
@@ -63,6 +65,7 @@ public class GroupServiceImpl implements GroupService {
 
     enforceNotInGroup(courseUserId, moduleId);
 
+    logger.debug("Creating group for course user: '{}' for module: '{}'", courseUserId, moduleId);
     ModuleGroup group = new ModuleGroup();
     Module module = new Module();
     module.setId(moduleId);
@@ -112,6 +115,7 @@ public class GroupServiceImpl implements GroupService {
   @Override
   public List<CourseUser> getUsersInGroup(String groupId) {
 
+    logger.debug("Getting group members in group: '{}'", groupId);
     TypedQuery<CourseUser> query = entityManager.createQuery(
         "select cu from GroupMember gm join gm.moduleGroup g join gm.courseUser cu join cu.user u"
             + " where g.id = :groupId and cu.isActive = true and u.isEnabled = true",
@@ -124,6 +128,7 @@ public class GroupServiceImpl implements GroupService {
   @Override
   public ModuleGroup getGroup(String courseUserId, String moduleId) {
 
+    logger.debug("Getting group for course user: '{}' for module: '{}'", courseUserId, moduleId);
     TypedQuery<ModuleGroup> query = entityManager
         .createQuery("select mg from GroupMember gm join gm.moduleGroup mg join gm.courseUser cu "
             + "join mg.module m where cu.id = :courseUserId and "
@@ -135,6 +140,7 @@ public class GroupServiceImpl implements GroupService {
       return result.get(0);
     }
 
+    logger.info("No group for course user: '{}' for module: '{}'", courseUserId, moduleId);
     return null;
   }
 
@@ -151,15 +157,19 @@ public class GroupServiceImpl implements GroupService {
 
     if (ResultListUtil.hasResult(result)
         && passwordEncoder.matches(password, result.get(0).getUser().getPassword())) {
+
+      logger.debug("Checin successful for user: '{}' in group: '{}'", email, groupId);
       return result.get(0);
     }
 
+    logger.info("Checin not successful for user: '{}' in group: '{}'", email, groupId);
     return null;
   }
 
   @Override
   public boolean hasLock(String groupId, List<String> checkedIn) {
 
+    logger.debug("Checking if group: '{}' has the lock", groupId);
     TypedQuery<Boolean> query = entityManager.createQuery(
         "select count(cu) = 0 from GroupMember gm join gm.moduleGroup g join gm.courseUser cu "
             + "join cu.user u where g.id = :groupId and cu.isActive = true and "
@@ -173,6 +183,7 @@ public class GroupServiceImpl implements GroupService {
   @Override
   public List<Answer> saveAnswers(Map<String, String> answers, String groupId) {
 
+    logger.debug("Saving answers for group: '{}'", groupId);
     List<Answer> savedAnswers = getAnswers(groupId, true);
     if (ResultListUtil.hasResult(savedAnswers)) {
 
@@ -195,6 +206,7 @@ public class GroupServiceImpl implements GroupService {
   @Override
   public Long submissionNumber(String groupId) {
 
+    logger.debug("Getting submission number for groupId: '{}'", groupId);
     TypedQuery<Long> query = entityManager.createQuery(
         "select max(a.submissionNumber) from Answer a join a.group g join g.module m where "
             + "g.groupId = :groupId",
@@ -206,16 +218,19 @@ public class GroupServiceImpl implements GroupService {
       return result.get(0);
     }
 
+    logger.warn("Could not retrieve submission number for groupId: '{}'", groupId);
     return null;
   }
 
   @Override
   public List<Answer> getAnswers(String groupId, boolean getSavedAnswers) {
+    logger.debug("Getting answers for group: '{}'", groupId);
     StringBuilder jpql = new StringBuilder(
         "select Answer a join a.group g join g.module m where g.id = :groupId and "
             + "a.submissionNumber = :submissionNumber");
 
     if (!getSavedAnswers) {
+      logger.debug("Appending saved answers querery for groupId: '{}'", groupId);
       jpql.append(" and a.submissionDate is not null");
     }
 
@@ -264,6 +279,7 @@ public class GroupServiceImpl implements GroupService {
 
   @Override
   public List<Answer> submitAnswers(String groupId) {
+    logger.debug("Submitting asnwers for group: '{}'", groupId);
     List<Answer> answers = getAnswers(groupId, true);
 
     if (ResultListUtil.hasResult(answers)) {
@@ -281,19 +297,23 @@ public class GroupServiceImpl implements GroupService {
 
   @Override
   public List<CourseUser> removeFromGroup(String groupId, String courseUserId) {
+    logger.debug("Deleting group member in group: '{}' with course user id: '{}'", groupId,
+        courseUserId);
     entityManager
-        .createQuery("delete from GroupMember m where m in (select sm from GroupMember sm join "
-            + " sm.moduleGroup g join sm.courseUser u where g.id = :groupId and "
-            + "u.id = :courseUserId)")
+        .createQuery(
+            "delete from GroupMember m where m.id in (select sm.id from GroupMember sm join "
+                + " sm.moduleGroup g join sm.courseUser u where g.id = :groupId and "
+                + "u.id = :courseUserId)")
         .setParameter("groupId", groupId).setParameter("courseUserId", courseUserId)
         .executeUpdate();
 
     TypedQuery<Boolean> isGroupEmptyQuery = entityManager.createQuery(
-        "select count(m) > 0 from GroupMember m join m.moduleGroup g where g.id = :groupId",
+        "select count(m) = 0 from GroupMember m join m.moduleGroup g where g.id = :groupId",
         Boolean.class).setParameter("groupId", groupId);
     boolean isGroupEmpty = isGroupEmptyQuery.getSingleResult();
 
     if (isGroupEmpty) {
+      logger.debug("Removing group instance for group: '{}'", groupId);
       entityManager.createQuery("delete from ModuleGroup g where g.id = :groupId")
           .setParameter("groupId", groupId).executeUpdate();
 
