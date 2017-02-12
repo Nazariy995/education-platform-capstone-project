@@ -75,16 +75,41 @@ GroupService.prototype.removeGroupMember = function(courseId, moduleId, groupId,
             console.log(res);
         return res.data;
     });
+};
 
+GroupService.prototype.groupCheckin = function(courseId, moduleId, groupId, loginInfo){
+    var self = this;
+    self.getConfig();
+    var url = self._appSettings.API.basePath + '/rest/student/course/'+
+        courseId+ '/module/'
+        + moduleId + "/group/"
+        + groupId + "/member/checkin";
+    url = encodeURI(url);
+    return self._$http
+        .post(url, loginInfo, self.config)
+        .then(function(res){
+            console.log("Group Checkin");
+            console.log(res);
+        return res.data;
+    });
+};
+
+GroupService.prototype.finalize = function(courseId, moduleId, groupId){
+    var self = this;
+    self.getConfig();
+    var url = self._appSettings.API.basePath + '/rest/student/course/'+
+        courseId+ '/module/'
+        + moduleId + "/group/"
+        + groupId + "/finalize";
+    url = encodeURI(url);
+    return self._$http
+        .post(url, loginInfo, self.config)
+        .then(function(res){
+            console.log("Group Finalize");
+            console.log(res);
+        return res.data;
+    });
 }
-
-//GroupService.prototype.groupCheckin = function(courseId, moduleId, groupId){
-//    var self = this;
-//
-//
-//
-//
-//}
 
 
 module.exports = angular.module('app.models.group', [

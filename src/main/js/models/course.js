@@ -25,7 +25,8 @@ CourseService.prototype.getCourse = function(courseId){
         .then(function(res){
             return res.data;
     });
-}
+};
+
 
 
 module.exports = angular.module('app.models.course', [
