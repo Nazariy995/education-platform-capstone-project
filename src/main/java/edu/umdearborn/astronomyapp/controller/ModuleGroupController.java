@@ -82,7 +82,7 @@ public class ModuleGroupController {
         Arrays.asList(CourseUser.CourseRole.STUDENT));
     acl.enforceInGroup(courseUserId, groupId);
 
-    return groupService.removeFromGroup(courseUserId, moduleId);
+    return groupService.removeFromGroup(groupId, courseUserId);
   }
 
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/free", method = GET)
