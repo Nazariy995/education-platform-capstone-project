@@ -249,7 +249,7 @@ public class GroupServiceImpl implements GroupService {
   @Override
   public void finalizeGroup(String groupId) {
     entityManager
-        .createQuery("update ModuleGroup g set g.isLocked = true where g.groupId = :groupId")
+        .createQuery("update ModuleGroup g set g.isLocked = true where g.id = :groupId")
         .executeUpdate();
 
     TypedQuery<String> questionIdQuery = entityManager.createQuery(
