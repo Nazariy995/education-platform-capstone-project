@@ -56,7 +56,9 @@ AssignmentService.prototype.getAssignmentMembers = function(courseId, moduleId){
         return res.data;
     })
 
-}
+};
+
+
 
 module.exports = angular.module('app.models.assignment', [
     'app.settings'
