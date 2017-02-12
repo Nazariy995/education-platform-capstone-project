@@ -5,6 +5,7 @@ function Controller($scope, $state, $stateParams, AssignmentService, GroupServic
     this.pageName = "Login";
     this.courseId = $stateParams.courseId;
     this.moduleId = $stateParams.moduleId;
+    this.groupId = $stateParams.groupId;
     this._GroupService = GroupService;
     this.groupMembersCount = 0;
     this.membersLoginInfo = [];
@@ -31,7 +32,10 @@ Controller.prototype.getGroupMembersCount = function(){
 
 Controller.prototype.groupCheckin = function(){
     var self = this;
-    console.log(self.membersLoginInfo);
+    angular.forEach(self.membersLoginInfo, function(memberLogin){
+        console.log("looping");
+
+    });
 }
 
 
