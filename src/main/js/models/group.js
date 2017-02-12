@@ -109,6 +109,23 @@ GroupService.prototype.finalize = function(courseId, moduleId, groupId){
             console.log(res);
         return res.data;
     });
+};
+
+GroupService.prototype.initialize = function(courseId, moduleId){
+    var self = this;
+    self.getConfig();
+    var url = self._appSettings.API.basePath + '/rest/student/course/'+
+        courseId+ '/module/'
+        + moduleId + "/group/";
+    url = encodeURI(url);
+    return self._$http
+        .post(url, null, self.config)
+        .then(function(res){
+            console.log("Group Initialize");
+            console.log(res);
+        return res.data;
+    });
+
 }
 
 
