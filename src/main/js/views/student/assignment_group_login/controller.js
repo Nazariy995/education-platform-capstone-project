@@ -17,7 +17,6 @@ Controller.prototype.init = function(){
     self.getGroupMembersCount();
 };
 
-
 Controller.prototype.getGroupMembersCount = function(){
     var self = this;
     self._GroupService.getGroupMembers(self.courseId, self.moduleId)
@@ -36,8 +35,7 @@ Controller.prototype.groupCheckin = function(){
         console.log("looping");
 
     });
-}
-
+};
 
 module.exports = angular.module('app.views.student.assignment.login.controller', [
     'app.models.assignment',
