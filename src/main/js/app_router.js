@@ -118,7 +118,7 @@ function Router($stateProvider, $httpProvider, $locationProvider){
         },
         {
             name :  'app.course.assignment.login',
-            url : '/login',
+            url : '/group/{groupId}/login',
             views : {
                 'assignmentContent' : {
                     templateUrl : 'views/student/assignment_group_login/home.html',
