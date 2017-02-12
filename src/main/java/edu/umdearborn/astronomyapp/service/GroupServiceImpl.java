@@ -282,20 +282,19 @@ public class GroupServiceImpl implements GroupService {
   @Override
   public List<CourseUser> removeFromGroup(String groupId, String courseUserId) {
     entityManager
-        .createQuery(
-            "remove GroupMember m join m.group g join m.courseUser u where g.id = :groupId and "
-                + "u.id = :courseUserId")
+        .createQuery("delete from GroupMember m where m in (select sm from GroupMember sm join "
+            + " sm.moduleGroup g join sm.courseUser u where g.id = :groupId and "
+            + "u.id = :courseUserId)")
         .setParameter("groupId", groupId).setParameter("courseUserId", courseUserId)
         .executeUpdate();
 
-    TypedQuery<Boolean> isGroupEmptyQuery = entityManager
-        .createQuery("select count(m) > 0 from GroupMember m join m.group g where g.id = :groupId",
-            Boolean.class)
-        .setParameter("groupId", groupId);
+    TypedQuery<Boolean> isGroupEmptyQuery = entityManager.createQuery(
+        "select count(m) > 0 from GroupMember m join m.moduleGroup g where g.id = :groupId",
+        Boolean.class).setParameter("groupId", groupId);
     boolean isGroupEmpty = isGroupEmptyQuery.getSingleResult();
 
     if (isGroupEmpty) {
-      entityManager.createQuery("remove ModuleGroup g where g.id = :groupId")
+      entityManager.createQuery("delete from ModuleGroup g where g.id = :groupId")
           .setParameter("groupId", groupId).executeUpdate();
 
       return null;
