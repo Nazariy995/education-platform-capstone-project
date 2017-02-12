@@ -124,6 +124,7 @@ function Router($stateProvider, $httpProvider, $locationProvider){
                                 $state.go($state.current, {groupId:payload.id});
                             return payload.id;
                         }, function(err){
+                                $state.go('app.course.assignment', {moduleId : moduleId});
                             return err;
                         });
                     }else{
