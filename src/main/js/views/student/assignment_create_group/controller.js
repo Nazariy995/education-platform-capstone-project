@@ -70,9 +70,7 @@ Controller.prototype.removeGroupMember = function(memberToBeRemovedId){
     }, function(err){
        self.error = err;
     });
-
-
-}
+};
 
 module.exports = angular.module('app.views.student.assignment.group.controller', [
     'app.models.assignment',
