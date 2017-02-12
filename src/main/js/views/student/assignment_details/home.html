@@ -4,10 +4,10 @@
 <p>{{ assignmentDetails.assignment.numQuestion }}</p>
 <h4>Number of Sections</h4>
 <p>{{ assignmentDetails.assignment.numPages }}</p>
-<a ui-sref="app.course.assignment.login">
-<button type="button" class="btn btn-primary">
+<button type="button" class="btn btn-primary"
+        ng-click="assignmentDetails.navToLogin()">
     Start
-</button></a>
+</button>
 <h2>Group</h2>
 <button type="button"
         ng-click="assignmentDetails.navToGroup()"

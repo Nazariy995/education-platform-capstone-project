@@ -45,8 +45,13 @@ Controller.prototype.navToGroup = function(){
     var self = this;
     console.log("This is the group id");
     console.log(self.groupId);
-    self._$state.go('app.course.assignment.group',{ groupId: self.groupId });
+    self._$state.go('app.course.assignment.group',{groupId:self.groupId});
 };
+
+Controller.prototype.navToLogin = function(){
+    var self = this;
+    self._$state.go('app.course.assignment.login',{groupId:self.groupId});
+}
 
 
 module.exports = angular.module('app.views.student.assignment.details.controller', [
