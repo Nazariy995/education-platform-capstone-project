@@ -248,31 +248,30 @@ public class GroupServiceImpl implements GroupService {
 
   @Override
   public void finalizeGroup(String groupId) {
-    entityManager
-        .createQuery("update ModuleGroup g set g.isLocked = true where g.id = :groupId")
-        .executeUpdate();
+    entityManager.createQuery("update ModuleGroup g set g.isLocked = true where g.id = :groupId")
+        .setParameter("groupId", groupId).executeUpdate();
 
-    TypedQuery<String> questionIdQuery = entityManager.createQuery(
-        "select q.id from Question q join q.page p join p.module m where m.id = (select m.id "
-            + "from ModuleGroup g join g.module m where g.id = :groupId)",
-        String.class);
-    questionIdQuery.setParameter("groupId", groupId);
-    List<String> questionIdsResult = questionIdQuery.getResultList();
+    TypedQuery<Question> questionQuery = entityManager.createQuery(
+        "select distinct(q) from Question q join q.page p join p.module m where m.id = "
+            + "(select m.id from ModuleGroup g join g.module m where g.id = :groupId)",
+        Question.class);
+    questionQuery.setParameter("groupId", groupId);
+    List<Question> questionResult = questionQuery.getResultList();
 
     ModuleGroup group = new ModuleGroup();
     group.setId(groupId);
-    Question question = new Question();
-    if (ResultListUtil.hasResult(questionIdsResult)) {
+    if (ResultListUtil.hasResult(questionResult)) {
       logger.debug("Creating answers...");
 
-      questionIdsResult.parallelStream().map(questionId -> {
+      questionResult.stream().map(q -> {
         Answer answer = new Answer();
         answer.setGroup(group);
-        question.setId(questionId);
-        answer.setQuestion(question);
+        answer.setQuestion(q);
         return answer;
-      }).forEach(entityManager::persist);
-
+      }).forEach(entity -> {
+        logger.debug("Persisting: {}", entity);
+        entityManager.persist(entity);
+      });
     }
 
   }
