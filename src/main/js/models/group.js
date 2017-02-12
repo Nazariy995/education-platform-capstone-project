@@ -40,7 +40,6 @@ GroupService.prototype.addGroupMember = function(courseId, moduleId, groupId, ne
         + moduleId + "/group/"
         + groupId + "/member/"
         + newMemberId;
-    url = url.replace(" ","");
     console.log(url);
     url = encodeURI(url);
     console.log(url);
@@ -52,8 +51,33 @@ GroupService.prototype.addGroupMember = function(courseId, moduleId, groupId, ne
             console.log(res);
         return res.data;
     });
+};
+
+GroupService.prototype.removeGroupMember = function(courseId, moduleId, groupId, memberToBeRemovedId){
+    var self= this;
+    var url = self._appSettings.API.basePath + '/rest/student/course/'+
+        courseId+ '/module/'
+        + moduleId + "/group/"
+        + groupId + "/member/"
+        +memberToBeRemovedId;
+    return self._$http
+        .delete(url, self.config)
+        .then(function(res){
+            console.log("Remove Member From Group");
+            console.log(res);
+        return res.data;
+    });
 
 }
+
+//GroupService.prototype.groupCheckin = function(courseId, moduleId, groupId){
+//    var self = this;
+//
+//
+//
+//
+//}
+
 
 module.exports = angular.module('app.models.group', [
     'app.settings'
