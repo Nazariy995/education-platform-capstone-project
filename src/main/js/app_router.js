@@ -143,6 +143,34 @@ function Router($stateProvider, $httpProvider, $locationProvider){
                     controllerAs : 'assignmentLogin'
                 }
             }
+        },
+        {
+            name : 'app.course.assignment.questions',
+            url : '/group/{groupId}/questions',
+            views : {
+                'assignmentContent' : {
+                    templateUrl : 'views/student/assignment_questions/home.html',
+                    controller : 'Student.AssignmentQuestionsCtrl',
+                    controllerAs : 'assignmentQuestions'
+                }
+            },
+            resolve : {
+                lock : ['GroupService','$stateParams','$state', function(GroupService, $stateParams, $state){
+                    var courseId = $stateParams.courseId;
+                    var moduleId = $stateParams.moduleId;
+                    var groupId = $stateParams.groupId;
+                    GroupService.getLock(courseId, moduleId, groupId)
+                        .then(function(payload){
+                            if(!payload){
+                                $state.go('app.course.assignment', {moduleId : moduleId});
+                            }
+                        return payload;
+                    }, function(err){
+                            $state.go('app.course.assignment', {moduleId : moduleId});
+                        return err;
+                    });
+                }]
+            }
         }
 
 
