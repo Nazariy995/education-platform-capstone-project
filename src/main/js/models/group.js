@@ -83,12 +83,46 @@ GroupService.prototype.groupCheckin = function(courseId, moduleId, groupId, logi
     var url = self._appSettings.API.basePath + '/rest/student/course/'+
         courseId+ '/module/'
         + moduleId + "/group/"
-        + groupId + "/member/checkin";
+        + groupId + "/checkin";
     url = encodeURI(url);
     return self._$http
         .post(url, loginInfo, self.config)
         .then(function(res){
             console.log("Group Checkin");
+            console.log(res);
+        return res.data;
+    });
+};
+
+GroupService.prototype.getLock = function(courseId, moduleId, groupId){
+    var self = this;
+    self.getConfig();
+    var url = self._appSettings.API.basePath + '/rest/student/course/'+
+        courseId+ '/module/'
+        + moduleId + "/group/"
+        + groupId + "/lock";
+    url = encodeURI(url);
+    return self._$http
+        .get(url, self.config)
+        .then(function(res){
+            console.log("Get Group Lock");
+            console.log(res);
+        return res.data;
+    });
+};
+
+GroupService.prototype.getCheckedIn = function(courseId, moduleId, groupId){
+    var self = this;
+    self.getConfig();
+    var url = self._appSettings.API.basePath + '/rest/student/course/'+
+        courseId+ '/module/'
+        + moduleId + "/group/"
+        + groupId + "/checkin";
+    url = encodeURI(url);
+    return self._$http
+        .get(url, self.config)
+        .then(function(res){
+            console.log("Get Checked In");
             console.log(res);
         return res.data;
     });
@@ -125,7 +159,6 @@ GroupService.prototype.initialize = function(courseId, moduleId){
             console.log(res);
         return res.data;
     });
-
 }
 
 
