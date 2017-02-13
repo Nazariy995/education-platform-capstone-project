@@ -103,9 +103,9 @@ GroupService.prototype.finalize = function(courseId, moduleId, groupId){
         + groupId + "/finalize";
     url = encodeURI(url);
     return self._$http
-        .post(url, loginInfo, self.config)
+        .post(url, null, self.config)
         .then(function(res){
-            console.log("Group Finalize");
+            console.log("Group Finalized");
             console.log(res);
         return res.data;
     });

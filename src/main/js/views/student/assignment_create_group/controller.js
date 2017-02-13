@@ -6,6 +6,7 @@ function Controller($scope, $state, $stateParams, AssignmentService, GroupServic
     this.courseId = $stateParams.courseId;
     this.moduleId = $stateParams.moduleId;
     this.groupId = $stateParams.groupId;
+    this._$state = $state;
     this._AssignmentService = AssignmentService;
     this._GroupService = GroupService;
     this.groupMembers = [];
@@ -71,6 +72,16 @@ Controller.prototype.removeGroupMember = function(memberToBeRemovedId){
        self.error = err;
     });
 };
+
+Controller.prototype.finalize = function(){
+    var self= this;
+    self._GroupService.finalize(self.courseId, self.moduleId, self.groupId)
+        .then(function(payload){
+            self._$state.go('app.course.assignment',{moduleId:self.moduleId});
+    }, function(err){
+       self.error = err;
+    });
+}
 
 module.exports = angular.module('app.views.student.assignment.group.controller', [
     'app.models.assignment',
