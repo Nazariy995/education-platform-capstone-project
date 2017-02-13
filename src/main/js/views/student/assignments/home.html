@@ -11,7 +11,7 @@
 <tbody>
     <tr ng-repeat="assignment in courseAssignments.assignments">
         <td><a ui-sref="app.course.assignment({moduleId:'{{ assignment.id }}'})">{{ assignment.moduleTitle }}</a> </td>
-        <td> {{ assignment.dueDate }} </td>
+        <td> {{ assignment.dueDate | date }} </td>
         <td> {{ assignment.maxStudents }} </td>
     </tr>
 </tbody>
