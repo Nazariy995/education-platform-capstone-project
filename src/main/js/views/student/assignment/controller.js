@@ -10,17 +10,16 @@ function Controller($scope, $state, $stateParams, AssignmentService, GroupServic
     this._GroupService = GroupService;
     this.assignment = {};
     this.assignmentMembers = [];
-    this.locked = true;
+    this.finalized = true;
     this.init();
 };
 
 Controller.prototype.init = function(){
     var self = this;
     self._AssignmentService.getAssignmentDetails(self.courseId, self.moduleId)
-        .then(function(assignmentDetails){
-            self.assignment = assignmentDetails;
-            self.pageName = assignmentDetails.moduleTitle;
-            self.locked = assignmentDetails.locked;
+        .then(function(payload){
+            self.assignment = payload;
+            self.pageName = payload.moduleTitle;
             console.log("Got the Assignment Details");
             self.getGroup(); //Uncommented it for right now because currently it is giving me an error
     }, function(err){
@@ -34,6 +33,7 @@ Controller.prototype.getGroup = function(){
         .then(function(payload){
             self.assignmentMembers = payload.members;
             self.groupId = payload.id;
+            self.finalized = payload.isFinalized;
             console.log("Got the Assignment Group Data");
             console.log(payload);
     }, function(err){
@@ -43,14 +43,16 @@ Controller.prototype.getGroup = function(){
 
 Controller.prototype.navToGroup = function(){
     var self = this;
-    console.log("This is the group id");
-    console.log(self.groupId);
-    self._$state.go('app.course.assignment.group',{groupId:self.groupId});
+    if(!self.finalized){
+        self._$state.go('app.course.assignment.group',{groupId:self.groupId});
+    }
 };
 
 Controller.prototype.navToLogin = function(){
     var self = this;
-    self._$state.go('app.course.assignment.login',{groupId:self.groupId});
+    if(self.finalized){
+        self._$state.go('app.course.assignment.login',{groupId:self.groupId});
+    }
 }
 
 
