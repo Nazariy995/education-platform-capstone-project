@@ -77,7 +77,7 @@ Controller.prototype.finalize = function(){
     var self= this;
     self._GroupService.finalize(self.courseId, self.moduleId, self.groupId)
         .then(function(payload){
-            self._$state.go('app.course.assignment',{moduleId:self.moduleId});
+            self._$state.go('app.course.assignment', {moduleId:self.moduleId}, { reload:true });
     }, function(err){
        self.error = err;
     });
