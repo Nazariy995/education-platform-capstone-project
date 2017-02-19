@@ -2,9 +2,10 @@
 
 
 //External
-//require('jquery');
 require('angular');
 require('angular-ui-router');
+require('angular-ui-bootstrap');
+require('angular-animate');
 
 //Internal
 var views = require('./views/module');
@@ -18,6 +19,8 @@ var appAuthInterceptor = require('./app_auth_interceptor');
 angular.module("app", [
     //External
     'ui.router',
+    'ui.bootstrap',
+    'ngAnimate',
 
     //Internal
     appSettings.name,
