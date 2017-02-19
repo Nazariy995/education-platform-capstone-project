@@ -24,13 +24,16 @@ function Interceptor($injector, SessionService){
             }
 
             return response;
-        },
-        responseError : function(rejection) {
-            console.log("New Reject 2");
-            SessionService.destroy();
-            $injector.get('$state').transitionTo('app.login');
-            return rejection;
         }
+//        responseError : function(rejection) {
+//            console.log("New Reject 2");
+//            console.log(rejection);
+//            if(rejection.status == 302){
+//                SessionService.destroy();
+//                $injector.get('$state').transitionTo('app.login');
+//            }
+//            return rejection;
+//        }
     };
 
     return sessionInjector;

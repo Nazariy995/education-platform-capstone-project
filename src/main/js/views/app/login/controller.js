@@ -1,9 +1,9 @@
 
 
-function Controller($scope, $state, AuthService){
+function Controller($scope, $state, $window, AuthService, ModalService){
     "ngInject";
-
     this._AuthService = AuthService;
+    ModalService.open();
     this._$state = $state;
     this._$scope = $scope;
     this._$scope.error = null;
@@ -31,6 +31,8 @@ Controller.prototype.login = function(){
 }
 
 
-module.exports = angular.module('app.views.app.login.controller', [])
+module.exports = angular.module('app.views.app.login.controller', [
+    'app.components.popup_modal'
+])
 .controller('LoginCtrl', Controller);
 

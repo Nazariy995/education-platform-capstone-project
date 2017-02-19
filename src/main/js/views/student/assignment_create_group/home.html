@@ -1,0 +1,32 @@
+<h2>{{ assignmentGroup.pageName }}</h2>
+
+<ul class="list-group">
+    <li class="list-group-item" ng-repeat="member in assignmentGroup.groupMembers">
+        <button class="btn btn-xs btn-warning"
+                ng-click="assignmentGroup.removeGroupMember(member.id)">
+          <span class="glyphicon glyphicon-trash"></span>
+        </button>
+        {{ member.firstName }} {{ member.lastName }} <br>
+        {{ member.email }}
+    </li>
+</ul>
+
+<h4>Add</h4>
+<form ng-submit="assignmentGroup.addGroupMember()">
+    <div class="form-group">
+        <select class="form-control" ng-model="assignmentGroup.newGroupMember">
+            <option value="">Select Member</option>
+            <option ng-repeat="member in assignmentGroup.assignmentMembers"
+                    value="{{ member.id }}">
+                {{ member.firstName }} {{ member.lastName }}
+            </option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+<button class="btn btn-primary"
+        ng-click="assignmentGroup.finalize()">Finalize</button>
+
+
+
+

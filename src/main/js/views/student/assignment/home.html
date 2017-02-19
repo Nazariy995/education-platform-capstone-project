@@ -1,21 +1,7 @@
-<h2>{{ courseAssignments.pageName }}</h2>
+<h2>{{ assignmentDetails.pageName }}</h2>
 
-<table class="table table-hover">
-<thead>
-    <tr>
-    <th>Name</th>
-    <th>Due Date</th>
-    <th>Max Students</th>
-    </tr>
-</thead>
-<tbody>
-    <tr ng-repeat="assignment in courseAssignments.assignments">
-        <td>{{ assignment.moduleTitle }} </td>
-        <td> {{ assignment.dueDate }} </td>
-        <td> {{ assignment.maxStudents }} </td>
-    </tr>
-</tbody>
-</table>
+<div ui-view="assignmentContent" ></div>
+
 
 
 

@@ -107,8 +107,7 @@
 							<goal>gulp</goal>
 						</goals>
 						<configuration>
-							<srcdir>src/main/js</srcdir>
-							<outputdir>src/main/resources/static</outputdir>
+							<outputdir>src/main/js</outputdir>
 						</configuration>
 					</execution>
 				</executions>
