@@ -1,0 +1,33 @@
+<h4>Description</h4>
+<p>{{ assignmentDetails.assignment.humanReadableText }}</p>
+<h4>Number of Questions</h4>
+<p>{{ assignmentDetails.assignment.numQuestion }}</p>
+<h4>Number of Sections</h4>
+<p>{{ assignmentDetails.assignment.numPages }}</p>
+<button type="button"
+        ng-class="assignmentDetails.finalized ? 'btn btn-primary' : 'btn btn-primary disabled'"
+        ng-click="assignmentDetails.navToLogin()">
+    Start
+</button>
+<h2>Group</h2>
+<button type="button"
+        ng-click="assignmentDetails.navToGroup()"
+        ng-class="assignmentDetails.finalized ? 'btn btn-primary disabled' : 'btn btn-primary'">
+    Create/Edit Group
+</button>
+<table class="table table-hover">
+<thead>
+    <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+    </tr>
+</thead>
+<tbody>
+    <tr ng-repeat="member in assignmentDetails.assignmentMembers">
+        <td>{{ member.firstName }}</td>
+        <td>{{ member.lastName }}</td>
+        <td>{{ member.email }}</td>
+    </tr>
+</tbody>
+</table>

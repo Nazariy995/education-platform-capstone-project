@@ -1,8 +1,6 @@
 function Controller($scope, $state, course){
     "ngInject";
-    this.courseName = course.courseId;
-
-    $state.go('app.course.assignments')
+    this.courseName = course.courseTitle;
 };
 
 module.exports = angular.module('app.views.student.course.controller', [ ])

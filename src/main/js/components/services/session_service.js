@@ -14,7 +14,9 @@ SessionService.prototype.getUser = function(){
 }
 
 SessionService.prototype.setCourseUserId = function(courseUserId){
+    console.log("Set new course user id");
     this._courseUserId = courseUserId;
+    console.log(courseUserId);
     this._$window.localStorage.setItem('session.courseUserId', JSON.stringify(courseUserId));
 }
 
@@ -43,6 +45,7 @@ SessionService.prototype.setAccessToken = function(accessToken){
 SessionService.prototype.destroy = function(){
     this.setUser(null);
     this.setAccessToken(null);
+    this.setCourseUserId(null);
 }
 
 SessionService.prototype.create = function(user, accessToken){

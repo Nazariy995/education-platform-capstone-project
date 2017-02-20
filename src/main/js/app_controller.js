@@ -1,5 +1,5 @@
 
-function AppController($scope, $rootScope, AuthService, SessionService){
+function AppController($scope, $window, $rootScope, AuthService, SessionService){
     "ngInject";
     this.auth = AuthService;
     this.session = SessionService;

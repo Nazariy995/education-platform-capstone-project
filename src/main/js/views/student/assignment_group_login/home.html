@@ -1,0 +1,19 @@
+<h2>{{ assignmentLogin.pageName }}</h2>
+<form ng-submit="assignmentLogin.groupCheckin()">
+    <div class="panel panel-default" ng-repeat="n in [].constructor(assignmentLogin.groupMembersCount) track by $index">
+        <div class="panel-heading">User {{ $index + 1 }}</div>
+        <div class="panel-body">
+            <div class="form-group">
+                <input type="email" class="form-control" placeholder="Email"
+                       ng-model="assignmentLogin.membersLoginInfo[$index].email">
+            </div>
+            <div class="form-group" ng-class="{'has-error':assignmentLogin.membersLoginInfo[$index].error}">
+                <input type="password" class="form-control" placeholder="Password"
+                       ng-model="assignmentLogin.membersLoginInfo[$index].password">
+                <span class="help-block">{{ assignmentLogin.membersLoginInfo[$index].error }}</span>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
