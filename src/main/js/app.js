@@ -16,7 +16,7 @@ var appRouter = require('./app_router');
 var appSettings = require('./app_settings');
 var appAuthInterceptor = require('./app_auth_interceptor');
 
-angular.module("app", [
+var appModule = angular.module("app", [
     //External
     'ui.router',
     'ui.bootstrap',
