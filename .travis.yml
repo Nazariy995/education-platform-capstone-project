@@ -7,3 +7,16 @@ cache:
 branches:
   only:
     - master
+before_deploy: ./ci.sh
+deploy:
+  skip_cleanup: true
+  provider: codedeploy
+    wait-until-deployed: true
+    access_key_id: "YOUR AWS ACCESS KEY"
+    secret_access_key: "YOUR AWS SECRET KEY"
+    bucket: "S3 Bucket"
+    key: app.zip
+    application: astro-app
+    deployment_group: deployment-group
+  on:
+    tags: true

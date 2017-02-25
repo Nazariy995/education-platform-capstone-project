@@ -1,5 +1,5 @@
 
-var homeController = require("./home/controller");
+var coursesController = require("./courses/controller");
 var assignmentController = require("./assignments/controller");
 var assignmentDetailsController = require("./assignment/controller");
 var assignmentGroupController = require("./assignment_create_group/controller");
@@ -9,7 +9,7 @@ var courseController = require("./course/controller");
 var gradesController = require("./grades/controller");
 
 module.exports = angular.module('app.views.student', [
-    homeController.name,
+    coursesController.name,
     assignmentController.name,
     courseController.name,
     gradesController.name,
