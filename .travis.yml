@@ -20,4 +20,4 @@ deploy:
   application: astro
   deployment_group: astro-deployment
   on:
-    tags: true
+    branch: master
