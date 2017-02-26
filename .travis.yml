@@ -7,7 +7,9 @@ cache:
 branches:
   only:
     - master
-before_deploy: ./ci.sh
+before_deploy: 
+  - chmod +x ./ci.sh
+  - ./ci.sh
 deploy:
   skip_cleanup: true
   provider: codedeploy
