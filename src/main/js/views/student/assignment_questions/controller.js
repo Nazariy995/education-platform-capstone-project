@@ -31,6 +31,11 @@ Controller.prototype.getQuestions = function(){
     });
 };
 
+Controller.prototype.submit = function(){
+    var self = this;
+    console.log(self.data);
+}
+
 module.exports = angular.module('app.views.student.assignment.questions.controller', [
     'app.models.assignment',
     'app.models.question',

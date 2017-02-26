@@ -1,14 +1,16 @@
 <h2>{{ assignmentQuestions.pageName }}</h2>
-<form name="quizForm">
+<form name="quizForm" ng-submit="assignmentQuestions.submit()" >
     <div ng-form="answerEntryForm" ng-repeat="field in assignmentQuestions.questions track by $index">
         <div ng-switch="field.questionType">
             <div ng-switch-when="MULTIPLE_CHOICE">
-              <app-student-multiple-choice field="field" model="data.answers[$index]">
+              <app-student-multiple-choice field="field" model="assignmentQuestions.data[field.id]">
               </app-student-multiple-choice>
             </div>
         </div>
     </div>
+    <input type="submit">
 </form>
+{{ assignmentQuestions.data | json }}
 
 
 
