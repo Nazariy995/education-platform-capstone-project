@@ -35,7 +35,7 @@ var states = [
         url : 'courses',
         views : {
             'mainContent@app' : {
-                templateUrl: 'views/student/home/home.html',
+                templateUrl: 'views/student/courses/home.html',
                 controller: 'Student.HomeCtrl',
                 controllerAs: 'studentHome'
             }

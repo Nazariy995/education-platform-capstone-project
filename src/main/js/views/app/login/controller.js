@@ -3,7 +3,6 @@
 function Controller($scope, $state, $window, AuthService, ModalService){
     "ngInject";
     this._AuthService = AuthService;
-    ModalService.open();
     this._$state = $state;
     this._$scope = $scope;
     this._$scope.error = null;

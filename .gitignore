@@ -7,3 +7,5 @@ node/
 node_modules/
 src/main/resources/static/
 src/main/js/dist/
+deploy/
+deploy.zip

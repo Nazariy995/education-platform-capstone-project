@@ -8,6 +8,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import java.security.Principal;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +21,7 @@ import edu.umdearborn.astronomyapp.entity.Module;
 import edu.umdearborn.astronomyapp.entity.PageItem;
 import edu.umdearborn.astronomyapp.service.AclService;
 import edu.umdearborn.astronomyapp.service.ModuleService;
+import edu.umdearborn.astronomyapp.util.HttpSessionUtil;
 import edu.umdearborn.astronomyapp.util.json.JsonDecorator;
 import edu.umdearborn.astronomyapp.util.json.View;
 
@@ -45,7 +48,9 @@ public class ModuleController {
 
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/modules", method = GET)
   public List<Module> getVisibleModules(@PathVariable("courseId") String courseId,
-      @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
+      HttpSession session, Principal principal) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
 
@@ -55,8 +60,9 @@ public class ModuleController {
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}", params = "!page",
       method = GET)
   public JsonDecorator<Module> getOpenModuleDetails(@PathVariable("courseId") String courseId,
-      @PathVariable("moduleId") String moduleId,
-      @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
+      @PathVariable("moduleId") String moduleId, HttpSession session, Principal principal) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforeceModuleInCourse(courseId, moduleId);
@@ -70,8 +76,10 @@ public class ModuleController {
       method = GET)
   public List<PageItem> getModulePage(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId,
-      @RequestParam(name = "page", defaultValue = "1") int pageNumber,
-      @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
+      @RequestParam(name = "page", defaultValue = "1") int pageNumber, HttpSession session,
+      Principal principal) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforeceModuleInCourse(courseId, moduleId);

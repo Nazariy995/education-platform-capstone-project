@@ -14,9 +14,10 @@ var components = require('./components/module');
 var appController = require('./app_controller');
 var appRouter = require('./app_router');
 var appSettings = require('./app_settings');
+var appRun = require('./app_run');
 var appAuthInterceptor = require('./app_auth_interceptor');
 
-angular.module("app", [
+var appModule = angular.module("app", [
     //External
     'ui.router',
     'ui.bootstrap',
@@ -33,6 +34,7 @@ angular.module("app", [
 .config(appRouter)
 .config(['$httpProvider', function($httpProvider) {
     $httpProvider.interceptors.push('SessionInjector');
-}]);
+}])
+.run(appRun);
 
 
