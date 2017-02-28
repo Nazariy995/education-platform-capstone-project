@@ -42,7 +42,7 @@ public final class HttpSessionUtil {
   }
 
   public static <T> T getAttribute(HttpSession session, String key, Class<T> type) {
-    return castIfBelongsToType(session.getAttribute(key), type);
+    return Objects.castIfBelongsToType(session.getAttribute(key), type);
   }
 
   public static <T> T getAttributeOrDefault(HttpSession session, String key, Class<T> type,
@@ -52,13 +52,6 @@ public final class HttpSessionUtil {
     }
 
     return defaultReturn;
-  }
-
-  public static <T> T castIfBelongsToType(Object o, Class<T> type) {
-    if (o != null && type.isAssignableFrom(o.getClass())) {
-      return type.cast(o);
-    }
-    return null;
   }
 
 }

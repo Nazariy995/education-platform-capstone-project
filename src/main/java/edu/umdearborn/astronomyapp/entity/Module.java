@@ -11,6 +11,7 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -141,6 +142,17 @@ public class Module extends AbstractGeneratedId {
   @Override
   public String toString() {
     return ToStringBuilder.reflectionToString(this);
+  }
+  
+  @PrePersist
+  public void prePersist() {
+    super.prePersist();
+    preUpdate();
+  }
+  
+  public void preUpdate() {
+    closeTimestamp = dueDate;
+    visibleTimestamp = openTimestamp;
   }
 
 }

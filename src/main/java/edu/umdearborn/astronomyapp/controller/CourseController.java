@@ -53,12 +53,22 @@ public class CourseController {
     return courseService.getCourses(principal.getName(), hideClosed, hideOpenSoon);
   }
 
-  @RequestMapping(value = INSTRUCTOR_PATH + "/course", method = POST)
-  public Course createCourse(@Valid @RequestBody Course course, Errors errors) {
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course", method = POST, params = "!clone")
+  public Course createCourse(@Valid @RequestBody Course course, Errors errors,
+      Principal principal) {
 
     ValidAssert.isValid(errors);
 
-    return courseService.createCourse(course);
+    return courseService.createCourse(course, principal.getName());
+  }
+
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course", method = POST)
+  public Course cloneCourse(@Valid @RequestBody Course course,
+      @RequestParam("clone") String cloneFromId, Errors errors, Principal principal) {
+
+    ValidAssert.isValid(errors);
+
+    return courseService.clone(course, cloneFromId, principal.getName());
   }
 
   @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}", method = PUT)
