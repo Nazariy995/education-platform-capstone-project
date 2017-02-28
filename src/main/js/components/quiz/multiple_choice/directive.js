@@ -3,7 +3,7 @@ function Directive($state){
 
     function link(scope, element, attributes){
         scope.model = {
-            type : "MULTIPLE_CHOICE"
+            type : scope.field.questionType
         };
 
     }
@@ -14,7 +14,8 @@ function Directive($state){
         templateUrl: 'components/quiz/multiple_choice/home.html',
         link : link,
         scope: {
-            model: '='
+            model: '=',
+            field: '='
         }
     }
 

@@ -3,7 +3,7 @@ function Directive($state){
 
     function link(scope, element, attributes){
         scope.model = {
-            type : "Numeric"
+            type : scope.field.questionType
         };
 
     }
@@ -14,7 +14,8 @@ function Directive($state){
         templateUrl: 'components/quiz/numeric/home.html',
         link : link,
         scope: {
-            model: '='
+            model: '=',
+            field: '='
         }
     }
 

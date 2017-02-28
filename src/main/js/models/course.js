@@ -2,26 +2,43 @@
 Description: Add, Get, Set, Delete Courses
 */
 
-function CourseService($http, appSettings){
+function Service($http, appSettings){
     "ngInject";
 
     this._$http = $http;
     this._appSettings = appSettings;
+    this.init();
 }
 
-CourseService.prototype.getCourses = function(){
+Service.prototype.init = function(){
+    var self = this;
+    self.getConfig();
+};
+
+Service.prototype.getConfig = function(){
+    var self = this;
+    self.config = {
+        headers : {
+            'Accept' : 'application/json'
+        }
+    };
+};
+
+Service.prototype.getCourses = function(){
+    var self =this;
+    var url = self._appSettings.API.basePath + '/rest/student/courses/';
     return this._$http
-          .get(this._appSettings.API.basePath + '/rest/student/courses/')
+          .get(url, self.config)
           .then(function (res) {
             return res.data;
           });
 }
 
-CourseService.prototype.getCourse = function(courseId){
+Service.prototype.getCourse = function(courseId){
     var self = this;
     var url = self._appSettings.API.basePath + '/rest/student/course/'+courseId;
     return self._$http
-        .get(url)
+        .get(url, self.config)
         .then(function(res){
             return res.data;
     });
@@ -31,7 +48,7 @@ CourseService.prototype.getCourse = function(courseId){
 
 module.exports = angular.module('app.models.course', [
     'app.settings'
-]).service('CourseService', CourseService);
+]).service('CourseService', Service);
 
 
 
