@@ -47,16 +47,13 @@ Controller.prototype.groupCheckin = function(){
             console.log("There was an error");
             console.log(err);
             memberLogin.error = "Incorrect Username/Password";
-            console.log(self.membersLoginInfo);
             loginError = true;
         });
     });
-    console.log("After For each");
 };
 
 Controller.prototype.navToQuestions = function(loginError){
     var self = this;
-    console.log("Inside NavToQuestions");
     if(!loginError){
         self._$state.go('app.course.assignment.questions', { groupId:self.groupId});
     };

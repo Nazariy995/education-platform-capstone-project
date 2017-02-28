@@ -9,6 +9,7 @@ function AssignmentService($http, appSettings, SessionService){
     this._appSettings = appSettings;
     this._SessionService = SessionService;
     this.courseUserIdKey = appSettings.API.PARAMS.courseUserId;
+    this.assignmentDetails = {};
     this.init();
 }
 
