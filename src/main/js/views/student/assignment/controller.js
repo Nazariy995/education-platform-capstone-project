@@ -16,10 +16,16 @@ function Controller($scope, $state, $stateParams, AssignmentService, GroupServic
 
 Controller.prototype.init = function(){
     var self = this;
+    self.getAssignmentDetails();
+};
+
+Controller.prototype.getAssignmentDetails = function(){
+    var self = this;
     self._AssignmentService.getAssignmentDetails(self.courseId, self.moduleId)
         .then(function(payload){
             self.assignment = payload;
             self.pageName = payload.moduleTitle;
+            self._AssignmentService.assignmentDetails = payload;
             console.log("Got the Assignment Details");
             self.getGroup(); //Uncommented it for right now because currently it is giving me an error
     }, function(err){

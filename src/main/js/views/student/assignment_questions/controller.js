@@ -3,7 +3,10 @@ function Controller($scope, $state, $stateParams, AssignmentService, QuestionSer
     "ngInject";
 
     this.pageName = "Questions";
-    this.pageNumber = 1;
+    this.maxPage = 1;
+    this.minPage = 1;
+    this.currentPage = 1;
+    this.pages = [];
     this._appSettings = appSettings;
     this.courseId = $stateParams.courseId;
     this.moduleId = $stateParams.moduleId;
@@ -16,14 +19,17 @@ function Controller($scope, $state, $stateParams, AssignmentService, QuestionSer
 
 Controller.prototype.init = function(){
     var self = this;
-    self.getQuestions();
+    self.maxPage = self._AssignmentService.assignmentDetails.numPages;
+    self.getQuestions(self.currentPage);
+    self.pages = new Array(self.maxPage);
 };
 
-Controller.prototype.getQuestions = function(){
+Controller.prototype.getQuestions = function(newPage){
     var self = this;
-    self._QuestionService.getQuestions(self.courseId, self.moduleId, self.pageNumber)
+    self._QuestionService.getQuestions(self.courseId, self.moduleId, newPage)
         .then(function(payload){
             self.questions = payload;
+            self.currentPage = newPage;
             console.log("Got the Assignment Questions Data");
             console.log(payload);
     }, function(err){
@@ -34,6 +40,27 @@ Controller.prototype.getQuestions = function(){
 Controller.prototype.submit = function(){
     var self = this;
     console.log(self.data);
+};
+
+Controller.prototype.nextPage = function(){
+    var self = this;
+    if(self.currentPage <  self.maxPage){
+        self.getQuestions(self.currentPage+1);
+    }
+};
+
+Controller.prototype.previousPage = function(){
+    var self = this;
+    if(self.currentPage > self.minPage){
+        self.getQuestions(self.currentPage-1);
+    }
+};
+
+Controller.prototype.getPage = function(newPage){
+    var self = this;
+    if(newPage >= self.minPage && newPage <= self.maxPage){
+        self.getQuestions(newPage);
+    }
 }
 
 module.exports = angular.module('app.views.student.assignment.questions.controller', [

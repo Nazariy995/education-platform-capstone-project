@@ -1,14 +1,45 @@
 <h2>{{ assignmentQuestions.pageName }}</h2>
 <form name="quizForm" ng-submit="assignmentQuestions.submit()" >
-    <div ng-form="answerEntryForm" ng-repeat="field in assignmentQuestions.questions track by $index">
+    <div ng-form="answerEntryForm"
+         ng-repeat="field in assignmentQuestions.questions
+                    | orderBy: 'order'
+                    track by $index ">
+        <div ng-if="field.pageItemType == 'TEXT'">
+            <legend>Front Text</legend>
+            {{ field.humanReadableText }}
+        </div>
         <div ng-switch="field.questionType">
             <div ng-switch-when="MULTIPLE_CHOICE">
               <app-student-multiple-choice field="field" model="assignmentQuestions.data[field.id]">
               </app-student-multiple-choice>
             </div>
+            <div ng-switch-when="NUMERIC">
+              <app-student-numeric field="field" model="assignmentQuestions.data[field.id]">
+              </app-student-numeric>
+            </div>
         </div>
     </div>
-    <input type="submit">
+    <nav aria-label="Page navigation" class="questionsPaging">
+      <ul class="pagination">
+        <li ng-switch="assignmentQuestions.currentPage > assignmentQuestions.minPage">
+            <a ng-switch-when="true" aria-label="Previous" ng-click="assignmentQuestions.previousPage()">
+                Save/Previous
+            </a>
+        </li>
+        <li ng-repeat="n in assignmentQuestions.pages track by $index"
+            ng-class="{active : $index+1 == assignmentQuestions.currentPage}">
+            <a> {{ $index +1 }} </a>
+        </li>
+        <li ng-switch="assignmentQuestions.currentPage < assignmentQuestions.maxPage">
+            <a ng-switch-when="true" aria-label="Next" ng-click="assignmentQuestions.nextPage()">
+                Save/Next
+            </a>
+            <a ng-switch-when="false" aria-label="Submit" >
+                Submit
+            </a>
+        </li>
+      </ul>
+    </nav>
 </form>
 {{ assignmentQuestions.data | json }}
 
