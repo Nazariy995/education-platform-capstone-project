@@ -17,8 +17,13 @@
               <app-student-numeric field="field" model="assignmentQuestions.data[field.id]">
               </app-student-numeric>
             </div>
+            <div ng-switch-when="FREE_RESPONSE">
+              <app-student-free-response field="field" model="assignmentQuestions.data[field.id]">
+              </app-student-free-response>
+            </div>
         </div>
     </div>
+
     <nav aria-label="Page navigation" class="questionsPaging">
       <ul class="pagination">
         <li ng-switch="assignmentQuestions.currentPage > assignmentQuestions.minPage">

@@ -7,6 +7,7 @@ function Controller($scope, $state, $stateParams, AssignmentService, QuestionSer
     this.minPage = 1;
     this.currentPage = 1;
     this.pages = [];
+    this._$scope = $scope;
     this._appSettings = appSettings;
     this.courseId = $stateParams.courseId;
     this.moduleId = $stateParams.moduleId;
@@ -19,15 +20,21 @@ function Controller($scope, $state, $stateParams, AssignmentService, QuestionSer
 
 Controller.prototype.init = function(){
     var self = this;
-    self.maxPage = self._AssignmentService.assignmentDetails.numPages;
+    self._$scope.assignmentService = self._AssignmentService;
+    self._$scope.$watch('assignmentService.assignmentDetails', function(newAssignmentDetails){
+       if(newAssignmentDetails){
+           self.maxPage = newAssignmentDetails.numPages;
+           self.pages = new Array(self.maxPage);
+       }
+    });
     self.getQuestions(self.currentPage);
-    self.pages = new Array(self.maxPage);
 };
 
 Controller.prototype.getQuestions = function(newPage){
     var self = this;
     self._QuestionService.getQuestions(self.courseId, self.moduleId, newPage)
         .then(function(payload){
+            self.data = {};
             self.questions = payload;
             self.currentPage = newPage;
             console.log("Got the Assignment Questions Data");
