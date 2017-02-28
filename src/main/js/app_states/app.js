@@ -6,7 +6,8 @@ var states = [
             'app' : {
                 templateUrl : 'views/app/home/home.html'
             }
-        }
+        },
+        redirectTo : 'app.courses'
     },
     {
         name : 'app.login',

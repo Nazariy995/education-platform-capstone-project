@@ -3,6 +3,13 @@ function onStateChange($rootScope, $state, AuthService, SessionService){
     "ngInject";
 
     $rootScope.$on('$stateChangeStart', function(evt, toState, toParams, fromState, fromParams){
+        //redirect to default state, the courses page
+        if(toState.redirectTo){
+            evt.preventDefault();
+            $state.go(toState.redirectTo, toParams, {location: 'replace'});
+        }
+
+
         //If the user has previously been authenticated
         if(SessionService.getUser()){
             if(toState.name == 'app.login'){
