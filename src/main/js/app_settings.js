@@ -1,5 +1,9 @@
 module.exports = angular.module('app.settings', [])
 .constant("appSettings", {
+    "ROLES" : {
+        user : "USER",
+        instructor : "INSTRUCTOR"
+    },
     "API" : {
         "basePath" : "",
         "PARAMS" : {
@@ -7,6 +11,37 @@ module.exports = angular.module('app.settings', [])
         }
     },
     "USER" : {
+        "mainNavigationLinks" : [
+            {
+                "name" : "Courses",
+                "url" : "home/student",
+                "state" : "app.courses",
+                "icon" : "glyphicon glyphicon-book"
+            },
+            {
+                "name" : "Account",
+                "url" : "home/account",
+                "state" : "app.account",
+                "icon" : "glyphicon glyphicon-user"
+            }
+        ],
+        "childNavigationLinks" : [
+            {
+                "name" : "Assignments",
+                "state" : "app.course.assignments",
+                "icon" : "glyphicon glyphicon-edit"
+            },
+            {
+                "name" : "Grades",
+                "state" : "app.course.grades",
+                "icon" : "glyphicon glyphicon-book"
+            }
+        ],
+        "quizComponentTemplates" : {
+            "MULTIPLE_CHOICE" : "multiple_choice.html"
+        }
+    },
+    "INSTRUCTOR" : {
         "mainNavigationLinks" : [
             {
                 "name" : "Courses",
