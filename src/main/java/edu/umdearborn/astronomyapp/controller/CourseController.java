@@ -11,7 +11,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -27,6 +29,7 @@ import edu.umdearborn.astronomyapp.entity.Course;
 import edu.umdearborn.astronomyapp.entity.CourseUser;
 import edu.umdearborn.astronomyapp.service.AclService;
 import edu.umdearborn.astronomyapp.service.CourseService;
+import edu.umdearborn.astronomyapp.util.HttpSessionUtil;
 import edu.umdearborn.astronomyapp.util.ValidAssert;
 import edu.umdearborn.astronomyapp.util.json.JsonDecorator;
 
@@ -53,12 +56,37 @@ public class CourseController {
     return courseService.getCourses(principal.getName(), hideClosed, hideOpenSoon);
   }
 
-  @RequestMapping(value = INSTRUCTOR_PATH + "/course", method = POST)
-  public Course createCourse(@Valid @RequestBody Course course, Errors errors) {
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course", method = POST, params = "!clone")
+  public Course createCourse(@Valid @RequestBody Course course, Errors errors, Principal principal,
+      HttpSession session) {
 
     ValidAssert.isValid(errors);
 
-    return courseService.createCourse(course);
+    course = courseService.createCourse(course, principal.getName());
+    CourseUser courseUser = courseService.getCourseUser(principal.getName(), course.getId());
+    Map<String, String> map = HttpSessionUtil.getCourseUsers(session);
+    map.put(course.getId(), courseUser.getId());
+    HttpSessionUtil.putCourseUsers(session, map);
+
+    return course;
+  }
+
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course", method = POST)
+  public Course cloneCourse(@Valid @RequestBody Course course,
+      @RequestParam("clone") String cloneFromId, Errors errors, Principal principal,
+      HttpSession session) {
+
+    ValidAssert.isValid(errors);
+
+    course = courseService.clone(course, cloneFromId, principal.getName());
+
+    course = courseService.createCourse(course, principal.getName());
+    CourseUser courseUser = courseService.getCourseUser(principal.getName(), course.getId());
+    Map<String, String> map = HttpSessionUtil.getCourseUsers(session);
+    map.put(course.getId(), courseUser.getId());
+    HttpSessionUtil.putCourseUsers(session, map);
+
+    return course;
   }
 
   @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}", method = PUT)
@@ -78,7 +106,9 @@ public class CourseController {
       method = GET)
   public List<CourseUser> getClassList(@PathVariable("courseId") String courseId,
       @RequestParam(name = "roles", defaultValue = "") List<CourseUser.CourseRole> roles,
-      @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
+      HttpSession session, Principal principal) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
 
@@ -118,8 +148,11 @@ public class CourseController {
 
     logger.info("Course: '{}' does not exist", courseId);
     return null;
+  }
 
-
+  @RequestMapping(value = INSTRUCTOR_PATH + "/courses/all", method = GET)
+  public List<Course> getCourses() {
+    return courseService.getCourses();
   }
 
 }

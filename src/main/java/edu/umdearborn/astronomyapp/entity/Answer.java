@@ -24,7 +24,11 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import edu.umdearborn.astronomyapp.util.json.AnswerValueSeralizer;
 
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "answerId"))
@@ -41,11 +45,12 @@ public class Answer extends AbstractGeneratedId {
   @Valid
   @NotNull
   @ManyToOne
+  @JsonIgnore
   @JoinColumn(name = "moduleGroupId", updatable = false)
   private ModuleGroup group;
 
   @DecimalMin("0")
-  private BigDecimal pointesEarned = new BigDecimal(0);
+  private BigDecimal pointesEarned;
 
   @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
   @JsonIdentityReference(alwaysAsId = true)
@@ -62,6 +67,7 @@ public class Answer extends AbstractGeneratedId {
   @Temporal(TemporalType.TIMESTAMP)
   private Date submissionTimestamp;
 
+  @JsonSerialize(using = AnswerValueSeralizer.class)
   private String value;
 
   @Override

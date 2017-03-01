@@ -60,7 +60,6 @@ public class PageItem extends AbstractGeneratedId {
   private Page page;
 
   @JsonView(View.Student.class)
-  @Valid
   @NotNull
   @Enumerated(EnumType.STRING)
   @Column(length = 8)

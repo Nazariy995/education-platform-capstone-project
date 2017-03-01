@@ -16,4 +16,6 @@ public interface UserManagementService {
 
   public AstroAppUser updateUser(AstroAppUser user);
 
+  public boolean emailExists(String email);
+
 }

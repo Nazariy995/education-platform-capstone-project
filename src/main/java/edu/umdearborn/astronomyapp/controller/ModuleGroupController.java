@@ -1,5 +1,6 @@
 package edu.umdearborn.astronomyapp.controller;
 
+import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.INSTRUCTOR_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.REST_PATH_PREFIX;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.STUDENT_PATH;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
@@ -9,9 +10,11 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 
@@ -31,6 +34,7 @@ import edu.umdearborn.astronomyapp.entity.CourseUser;
 import edu.umdearborn.astronomyapp.entity.ModuleGroup;
 import edu.umdearborn.astronomyapp.service.AclService;
 import edu.umdearborn.astronomyapp.service.GroupService;
+import edu.umdearborn.astronomyapp.util.HttpSessionUtil;
 import edu.umdearborn.astronomyapp.util.json.JsonDecorator;
 
 @RestController
@@ -51,8 +55,9 @@ public class ModuleGroupController {
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group",
       method = POST)
   public JsonDecorator<ModuleGroup> createGroup(@PathVariable("courseId") String courseId,
-      @PathVariable("moduleId") String moduleId, HttpSession session,
-      @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
+      @PathVariable("moduleId") String moduleId, HttpSession session, Principal principal) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
@@ -74,8 +79,9 @@ public class ModuleGroupController {
       method = DELETE)
   public List<CourseUser> removeUser(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
-      @RequestParam(name = "courseUserId") String courseUserId,
-      @PathVariable("removeUser") String removedUser, Principal principal) {
+      HttpSession session, @PathVariable("removeUser") String removedUser, Principal principal) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
@@ -87,9 +93,9 @@ public class ModuleGroupController {
 
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/free", method = GET)
   public List<CourseUser> getFreeAgents(@PathVariable("courseId") String courseId,
-      @PathVariable("moduleId") String moduleId,
-      @RequestParam(name = "courseUserId") String courseUserId, HttpSession session,
-      Principal principal) {
+      @PathVariable("moduleId") String moduleId, HttpSession session, Principal principal) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
@@ -103,9 +109,9 @@ public class ModuleGroupController {
 
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group", method = GET)
   public JsonDecorator<ModuleGroup> getGroup(@PathVariable("courseId") String courseId,
-      @PathVariable("moduleId") String moduleId,
-      @RequestParam(name = "courseUserId") String courseUserId, HttpSession session,
-      Principal principal) {
+      @PathVariable("moduleId") String moduleId, HttpSession session, Principal principal) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
@@ -118,8 +124,10 @@ public class ModuleGroupController {
       logger.debug("Returning group and members and if editable");
       json.setPayload(g);
       json.addProperty("members", groupService.getUsersInGroup(g.getId()));
-      json.addProperty("isModuleEditable", groupService.hasLock(g.getId(),
-          getCheckinSessionAttribute(session, g.getId(), courseUserId)));
+      boolean hasLock = groupService.hasLock(g.getId(),
+          getCheckinSessionAttribute(session, g.getId(), courseUserId));
+      json.addProperty("hasLock", hasLock);
+      json.addProperty("isModuleEditable", hasLock && true);
     });
 
     return json;
@@ -132,8 +140,9 @@ public class ModuleGroupController {
       method = POST)
   public List<CourseUser> joinGroup(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
-      @RequestParam(name = "courseUserId") String courseUserId,
-      @PathVariable("addMember") String addMember, Principal principal) {
+      HttpSession session, @PathVariable("addMember") String addMember, Principal principal) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
@@ -149,8 +158,9 @@ public class ModuleGroupController {
       method = GET)
   public JsonDecorator<List<String>> getCheckinStatus(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
-      @RequestParam(name = "courseUserId") String courseUserId, HttpSession session,
-      Principal principal) {
+      HttpSession session, Principal principal) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
@@ -162,8 +172,39 @@ public class ModuleGroupController {
 
     JsonDecorator<List<String>> json = new JsonDecorator<>();
     json.setPayload(checkin);
-    json.addProperty("isModuleEditable",
-        groupService.hasLock(groupId, getCheckinSessionAttribute(session, groupId, courseUserId)));
+    boolean hasLock =
+        groupService.hasLock(groupId, getCheckinSessionAttribute(session, groupId, courseUserId));
+    json.addProperty("hasLock", hasLock);
+    json.addProperty("isModuleEditable", hasLock && true);
+
+    return json;
+  }
+
+  @RequestMapping(
+      value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/checkin-reset",
+      method = POST)
+  public JsonDecorator<List<String>> resetCheckin(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
+      HttpSession session, Principal principal) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
+
+    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
+    acl.enforceIsCourseRole(principal.getName(), courseId,
+        Arrays.asList(CourseUser.CourseRole.STUDENT));
+    acl.enforceGroupInCourse(groupId, courseId);
+    acl.enforceInGroup(courseUserId, groupId);
+
+    List<String> checkin = new ArrayList<>();
+    checkin.add(courseUserId);
+    session.setAttribute(groupId, checkin);
+
+    JsonDecorator<List<String>> json = new JsonDecorator<>();
+    json.setPayload(checkin);
+    boolean hasLock =
+        groupService.hasLock(groupId, getCheckinSessionAttribute(session, groupId, courseUserId));
+    json.addProperty("hasLock", hasLock);
+    json.addProperty("isModuleEditable", hasLock && true);
 
     return json;
   }
@@ -173,8 +214,9 @@ public class ModuleGroupController {
       method = POST)
   public JsonDecorator<List<String>> checkin(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
-      @RequestParam(name = "courseUserId") String courseUserId,
       @RequestBody Map<String, String> checkinUser, HttpSession session, Principal principal) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
@@ -185,21 +227,26 @@ public class ModuleGroupController {
 
     List<String> checkin = getCheckinSessionAttribute(session, groupId, courseUserId);
 
-    Optional<CourseUser> optional = Optional.ofNullable(
-        groupService.checkin(checkinUser.get("email"), checkinUser.get("password"), groupId));
+    logger.debug("Current checkin status: {}", Arrays.toString(checkin.toArray()));
+
+    Optional<CourseUser> optional = Optional
+        .ofNullable(groupService.checkin(Optional.ofNullable(checkinUser.get("email")).orElse(""),
+            Optional.ofNullable(checkinUser.get("password")).orElse(""), groupId));
 
     CourseUser user = optional.orElseThrow(
-        () -> new AccessDeniedException("User: " + checkinUser.get("email") + "cannot checkin"));
+        () -> new AccessDeniedException("User: " + checkinUser.get("email") + " cannot checkin"));
 
     if (!checkin.contains(user.getId())) {
       checkin.add(user.getId());
       session.setAttribute(groupId, checkin);
+      logger.debug("After checkin status: {}", Arrays.toString(checkin.toArray()));
     }
 
     JsonDecorator<List<String>> json = new JsonDecorator<>();
-    json.setPayload(checkin);
-    json.addProperty("isModuleEditable",
-        groupService.hasLock(groupId, getCheckinSessionAttribute(session, groupId, courseUserId)));
+    boolean hasLock =
+        groupService.hasLock(groupId, getCheckinSessionAttribute(session, groupId, courseUserId));
+    json.addProperty("hasLock", hasLock);
+    json.addProperty("isModuleEditable", hasLock && true);
 
     return json;
   }
@@ -209,8 +256,9 @@ public class ModuleGroupController {
       method = GET)
   public List<CourseUser> getGroupRoster(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
-      @RequestParam(name = "courseUserId") String courseUserId, HttpSession session,
-      Principal principal) {
+      HttpSession session, Principal principal) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
@@ -222,12 +270,13 @@ public class ModuleGroupController {
   }
 
   @RequestMapping(
-      value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/lock",
+      value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/canEdit",
       method = GET)
-  public boolean hasLock(@PathVariable("courseId") String courseId,
+  public Map<String, Boolean> hasLock(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
-      @RequestParam(name = "courseUserId") String courseUserId, HttpSession session,
-      Principal principal) {
+      HttpSession session, Principal principal) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
@@ -237,7 +286,12 @@ public class ModuleGroupController {
 
     List<String> checkedIn = getCheckinSessionAttribute(session, groupId, courseUserId);
 
-    return groupService.hasLock(groupId, checkedIn);
+    Map<String, Boolean> map = new HashMap<>();
+    boolean hasLock = groupService.hasLock(groupId, checkedIn);
+    map.put("hasLock", hasLock);
+    map.put("isModuleEditable", hasLock && true);
+
+    return map;
   }
 
   @RequestMapping(
@@ -245,8 +299,9 @@ public class ModuleGroupController {
       method = POST)
   public List<Answer> saveAnswers(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
-      @RequestParam(name = "courseUserId") String courseUserId,
-      @RequestBody Map<String, String> answers, HttpSession session, Principal principal) {
+      HttpSession session, @RequestBody Map<String, String> answers, Principal principal) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
@@ -264,8 +319,9 @@ public class ModuleGroupController {
       method = POST)
   public List<Answer> submitAnswers(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
-      @RequestParam(name = "courseUserId") String courseUserId,
       @RequestBody Map<String, String> answers, HttpSession session, Principal principal) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
@@ -281,11 +337,12 @@ public class ModuleGroupController {
   @RequestMapping(
       value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/answers",
       method = GET)
-  public List<Answer> getAnswers(@PathVariable("courseId") String courseId,
+  public Map<String, Answer> getAnswers(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
-      @RequestParam(name = "courseUserId") String courseUserId,
       @RequestParam(name = "showSaved", defaultValue = "true") boolean showSavedAnswers,
-      Principal principal) {
+      Principal principal, HttpSession session) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
@@ -294,7 +351,27 @@ public class ModuleGroupController {
     acl.enforceGroupLocked(groupId, true);
     acl.enforceInGroup(courseUserId, groupId);
 
-    return groupService.getAnswers(groupId, showSavedAnswers);
+    return Optional.ofNullable(groupService.getAnswers(groupId, showSavedAnswers))
+        .orElse(new ArrayList<Answer>()).parallelStream()
+        .collect(Collectors.toMap(a -> a.getQuestion().getId(), a -> a));
+
+  }
+
+  @RequestMapping(
+      value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/answers",
+      method = GET)
+  public Map<String, Answer> getSubmissions(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
+      Principal principal, HttpSession session) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
+
+    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
+
+    return Optional.ofNullable(groupService.getAnswers(groupId, false))
+        .orElse(new ArrayList<Answer>()).parallelStream()
+        .collect(Collectors.toMap(a -> a.getQuestion().getId(), a -> a));
+
   }
 
   @RequestMapping(
@@ -302,7 +379,9 @@ public class ModuleGroupController {
       method = POST)
   public ResponseEntity<Void> finalizeGroup(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
-      @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
+      HttpSession session, Principal principal) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
@@ -318,13 +397,10 @@ public class ModuleGroupController {
 
   private List<String> getCheckinSessionAttribute(HttpSession session, String groupId,
       String courseUserId) {
-    @SuppressWarnings("unchecked")
-    List<String> checkin = (List<String>) session.getAttribute(groupId);
 
-    if (checkin == null) {
-      checkin = new ArrayList<String>();
-      logger.debug("Creating checkin");
-    }
+    @SuppressWarnings("unchecked")
+    List<String> checkin = HttpSessionUtil.getAttributeOrDefault(session, groupId, List.class,
+        new ArrayList<String>());
 
     if (!checkin.contains(courseUserId)) {
       checkin.add(courseUserId);
