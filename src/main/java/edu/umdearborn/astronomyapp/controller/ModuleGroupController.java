@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 
@@ -215,9 +216,9 @@ public class ModuleGroupController {
     acl.enforceGroupLocked(groupId, true);
 
     List<String> checkin = getCheckinSessionAttribute(session, groupId, courseUserId);
-    
+
     logger.debug("Current checkin status: {}", Arrays.toString(checkin.toArray()));
-    
+
     Optional<CourseUser> optional = Optional
         .ofNullable(groupService.checkin(Optional.ofNullable(checkinUser.get("email")).orElse(""),
             Optional.ofNullable(checkinUser.get("password")).orElse(""), groupId));
@@ -320,7 +321,7 @@ public class ModuleGroupController {
   @RequestMapping(
       value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/answers",
       method = GET)
-  public List<Answer> getAnswers(@PathVariable("courseId") String courseId,
+  public Map<String, Answer> getAnswers(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
       @RequestParam(name = "showSaved", defaultValue = "true") boolean showSavedAnswers,
       Principal principal, HttpSession session) {
@@ -334,7 +335,10 @@ public class ModuleGroupController {
     acl.enforceGroupLocked(groupId, true);
     acl.enforceInGroup(courseUserId, groupId);
 
-    return groupService.getAnswers(groupId, showSavedAnswers);
+    return Optional.ofNullable(groupService.getAnswers(groupId, showSavedAnswers))
+        .orElse(new ArrayList<Answer>()).parallelStream()
+        .collect(Collectors.toMap(a -> a.getQuestion().getId(), a -> a));
+
   }
 
   @RequestMapping(

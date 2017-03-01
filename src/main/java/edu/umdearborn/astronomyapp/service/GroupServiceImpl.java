@@ -226,7 +226,7 @@ public class GroupServiceImpl implements GroupService {
   public List<Answer> getAnswers(String groupId, boolean getSavedAnswers) {
     logger.debug("Getting answers for group: '{}'", groupId);
     StringBuilder jpql = new StringBuilder(
-        "select Answer a join a.group g join g.module m where g.id = :groupId and "
+        "select a from Answer a join a.group g join g.module m where g.id = :groupId and "
             + "a.submissionNumber = :submissionNumber");
 
     if (!getSavedAnswers) {
@@ -238,7 +238,7 @@ public class GroupServiceImpl implements GroupService {
     query.setParameter("groupId", groupId);
 
     if (getSavedAnswers) {
-      query.setParameter("submissionNumber", 0);
+      query.setParameter("submissionNumber", 0L);
     } else {
       query.setParameter("submissionNumber", submissionNumber(groupId));
     }
