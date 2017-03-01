@@ -124,8 +124,10 @@ public class ModuleGroupController {
       logger.debug("Returning group and members and if editable");
       json.setPayload(g);
       json.addProperty("members", groupService.getUsersInGroup(g.getId()));
-      json.addProperty("isModuleEditable", groupService.hasLock(g.getId(),
-          getCheckinSessionAttribute(session, g.getId(), courseUserId)));
+      boolean hasLock = groupService.hasLock(g.getId(),
+          getCheckinSessionAttribute(session, g.getId(), courseUserId));
+      json.addProperty("hasLock", hasLock);
+      json.addProperty("isModuleEditable", hasLock && true);
     });
 
     return json;
@@ -170,15 +172,17 @@ public class ModuleGroupController {
 
     JsonDecorator<List<String>> json = new JsonDecorator<>();
     json.setPayload(checkin);
-    json.addProperty("isModuleEditable",
-        groupService.hasLock(groupId, getCheckinSessionAttribute(session, groupId, courseUserId)));
+    boolean hasLock =
+        groupService.hasLock(groupId, getCheckinSessionAttribute(session, groupId, courseUserId));
+    json.addProperty("hasLock", hasLock);
+    json.addProperty("isModuleEditable", hasLock && true);
 
     return json;
   }
 
   @RequestMapping(
       value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/checkin-reset",
-      method = GET)
+      method = POST)
   public JsonDecorator<List<String>> resetCheckin(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
       HttpSession session, Principal principal) {
@@ -190,13 +194,17 @@ public class ModuleGroupController {
         Arrays.asList(CourseUser.CourseRole.STUDENT));
     acl.enforceGroupInCourse(groupId, courseId);
     acl.enforceInGroup(courseUserId, groupId);
-
-    List<String> checkin = getCheckinSessionAttribute(session, groupId, courseUserId);
+    
+    List<String> checkin = new ArrayList<>();
+    checkin.add(courseUserId);
+    session.setAttribute(groupId, checkin);   
 
     JsonDecorator<List<String>> json = new JsonDecorator<>();
     json.setPayload(checkin);
-    json.addProperty("isModuleEditable",
-        groupService.hasLock(groupId, getCheckinSessionAttribute(session, groupId, courseUserId)));
+    boolean hasLock =
+        groupService.hasLock(groupId, getCheckinSessionAttribute(session, groupId, courseUserId));
+    json.addProperty("hasLock", hasLock);
+    json.addProperty("isModuleEditable", hasLock && true);
 
     return json;
   }
@@ -235,11 +243,10 @@ public class ModuleGroupController {
     }
 
     JsonDecorator<List<String>> json = new JsonDecorator<>();
-    boolean isEditable =
+    boolean hasLock =
         groupService.hasLock(groupId, getCheckinSessionAttribute(session, groupId, courseUserId));
-    json.setPayload(checkin);
-    json.addProperty("isModuleEditable", isEditable);
-    json.addProperty("hasLock", isEditable);
+    json.addProperty("hasLock", hasLock);
+    json.addProperty("isModuleEditable", hasLock && true);
 
     return json;
   }

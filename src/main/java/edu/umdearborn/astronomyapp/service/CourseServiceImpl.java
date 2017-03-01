@@ -157,6 +157,11 @@ public class CourseServiceImpl implements CourseService {
     return course;
   }
 
+  @Override
+  public List<Course> getCourses() {
+    return entityManager.createQuery("select c from Course c", Course.class).getResultList();
+  }
+
   private void migrate(Course course, List<Module> modules, List<Page> pages,
       List<PageItem> pageItems) {
 

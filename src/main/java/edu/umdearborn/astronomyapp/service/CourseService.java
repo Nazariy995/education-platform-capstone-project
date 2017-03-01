@@ -20,5 +20,7 @@ public interface CourseService {
   public Course getCourseDetails(String courseId);
 
   public Course clone(Course course, String cloneFromId, String email);
+  
+  public List<Course> getCourses();
 
 }

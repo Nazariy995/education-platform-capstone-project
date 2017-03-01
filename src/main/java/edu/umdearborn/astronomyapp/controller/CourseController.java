@@ -148,8 +148,11 @@ public class CourseController {
 
     logger.info("Course: '{}' does not exist", courseId);
     return null;
-
-
+  }
+  
+  @RequestMapping(value = INSTRUCTOR_PATH + "/courses/all", method = GET)
+  public List<Course> getCourses() {
+    return courseService.getCourses();
   }
 
 }
