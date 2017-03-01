@@ -1,5 +1,6 @@
 package edu.umdearborn.astronomyapp.util;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -17,7 +18,7 @@ public final class HttpSessionUtil {
     if (contains(session, COURSE_USER_KEY)) {
       return (Map<String, String>) getAttribute(session, COURSE_USER_KEY, Map.class);
     }
-    return null;
+    return new HashMap<String, String>();
   }
 
   public static String getCourseUserId(HttpSession session, String courseId) {
