@@ -215,16 +215,20 @@ public class ModuleGroupController {
     acl.enforceGroupLocked(groupId, true);
 
     List<String> checkin = getCheckinSessionAttribute(session, groupId, courseUserId);
-
-    Optional<CourseUser> optional = Optional.ofNullable(
-        groupService.checkin(checkinUser.get("email"), checkinUser.get("password"), groupId));
+    
+    logger.debug("Current checkin status: {}", Arrays.toString(checkin.toArray()));
+    
+    Optional<CourseUser> optional = Optional
+        .ofNullable(groupService.checkin(Optional.ofNullable(checkinUser.get("email")).orElse(""),
+            Optional.ofNullable(checkinUser.get("password")).orElse(""), groupId));
 
     CourseUser user = optional.orElseThrow(
-        () -> new AccessDeniedException("User: " + checkinUser.get("email") + "cannot checkin"));
+        () -> new AccessDeniedException("User: " + checkinUser.get("email") + " cannot checkin"));
 
     if (!checkin.contains(user.getId())) {
       checkin.add(user.getId());
       session.setAttribute(groupId, checkin);
+      logger.debug("After checkin status: {}", Arrays.toString(checkin.toArray()));
     }
 
     JsonDecorator<List<String>> json = new JsonDecorator<>();
