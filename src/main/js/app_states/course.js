@@ -1,5 +1,31 @@
 var states = [
     {
+        name : 'app.courses.add_edit',
+        url : '/{courseId}/add_edit',
+        views : {
+            'mainContent@app' : {
+                templateUrl : 'views/instructor/courses_add_edit/home.html',
+                controller : 'Instructor.CoursesAddEdit',
+                controllerAs : 'coursesEdit'
+            }
+        },
+        resolve : {
+            course : ['CourseService','SessionService','$stateParams', '$state', function(CourseService, SessionService, $stateParams, $state){
+                if($stateParams.courseId == "new"){
+                    return null
+                } else {
+                    return CourseService.getCourse($stateParams.courseId)
+                        .then(function(course){
+                        return course;
+                    }, function(err){
+                        $state.go('app.courses', null, { reload : true, location : 'replace'});
+                        return err;
+                    });
+                }
+            }]
+        }
+    },
+    {
         name : 'app.course',
         url  : 'courses/{courseId}',
         views : {
