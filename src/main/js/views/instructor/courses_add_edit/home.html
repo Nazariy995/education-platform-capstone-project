@@ -8,7 +8,35 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-
+            <form>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" class="form-control" placeholder="Course Title"
+                           ng-model="coursesEdit.course.courseTitle">
+                </div>
+                <div class="form-group">
+                    <label>Course Code</label>
+                    <input type="text" class="form-control" placeholder="Course Code"
+                           ng-model="coursesEdit.course.courseCode">
+                </div>
+                <div class="form-group">
+                    <label>Subject Code</label>
+                    <input type="text" class="form-control" placeholder="Subject Code"
+                           ng-model="coursesEdit.course.subjectCode">
+                </div>
+                <div class="form-group">
+                    <label>Open Date</label>
+                    <input type="date" class="form-control"
+                           ng-model="coursesEdit.course.openTimestamp">
+                </div>
+                <div class="form-group">
+                    <label>Close Date</label>
+                    <input type="date" class="form-control"
+                           ng-model="coursesEdit.course.closeTimestamp">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            {{ coursesEdit.course | json }}
         </div>
     </div>
 </div>

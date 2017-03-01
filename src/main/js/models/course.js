@@ -55,6 +55,16 @@ Service.prototype.getCourse = function(courseId){
     });
 };
 
+Service.prototype.addCourse = function(payload){
+    var self = this;
+    var url = self._appSettings.API.basePath + '/rest/instructor/course';
+    return self._$http
+        .post(url, payload, self.config)
+        .then(function(res){
+            return res.data;
+    });
+};
+
 Service.prototype.getUrl = function(url){
     var self = this;
     if(self.user.roles.indexOf(self.userRoles.user) != -1){
