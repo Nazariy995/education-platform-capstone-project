@@ -1,5 +1,6 @@
 package edu.umdearborn.astronomyapp.controller;
 
+import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.INSTRUCTOR_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.REST_PATH_PREFIX;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.STUDENT_PATH;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
@@ -9,6 +10,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -233,9 +235,11 @@ public class ModuleGroupController {
     }
 
     JsonDecorator<List<String>> json = new JsonDecorator<>();
+    boolean isEditable =
+        groupService.hasLock(groupId, getCheckinSessionAttribute(session, groupId, courseUserId));
     json.setPayload(checkin);
-    json.addProperty("isModuleEditable",
-        groupService.hasLock(groupId, getCheckinSessionAttribute(session, groupId, courseUserId)));
+    json.addProperty("isModuleEditable", isEditable);
+    json.addProperty("hasLock", isEditable);
 
     return json;
   }
@@ -259,9 +263,9 @@ public class ModuleGroupController {
   }
 
   @RequestMapping(
-      value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/lock",
+      value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/canEdit",
       method = GET)
-  public boolean hasLock(@PathVariable("courseId") String courseId,
+  public Map<String, Boolean> hasLock(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
       HttpSession session, Principal principal) {
 
@@ -275,7 +279,12 @@ public class ModuleGroupController {
 
     List<String> checkedIn = getCheckinSessionAttribute(session, groupId, courseUserId);
 
-    return groupService.hasLock(groupId, checkedIn);
+    Map<String, Boolean> map = new HashMap<>();
+    boolean hasLock = groupService.hasLock(groupId, checkedIn);
+    map.put("hasLock", hasLock);
+    map.put("isModuleEditable", hasLock && true);
+
+    return map;
   }
 
   @RequestMapping(
@@ -336,6 +345,23 @@ public class ModuleGroupController {
     acl.enforceInGroup(courseUserId, groupId);
 
     return Optional.ofNullable(groupService.getAnswers(groupId, showSavedAnswers))
+        .orElse(new ArrayList<Answer>()).parallelStream()
+        .collect(Collectors.toMap(a -> a.getQuestion().getId(), a -> a));
+
+  }
+
+  @RequestMapping(
+      value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/answers",
+      method = GET)
+  public Map<String, Answer> getSubmissions(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
+      Principal principal, HttpSession session) {
+
+    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
+
+    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
+
+    return Optional.ofNullable(groupService.getAnswers(groupId, false))
         .orElse(new ArrayList<Answer>()).parallelStream()
         .collect(Collectors.toMap(a -> a.getQuestion().getId(), a -> a));
 
