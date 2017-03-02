@@ -31,7 +31,7 @@ Service.prototype.getCourses = function(){
     var self =this;
     var url = {};
     url[self.userRoles.user] = self._appSettings.API.basePath + '/rest/student/courses';
-    url[self.userRoles.instructor] = self._appSettings.API.basePath + '/rest/instructor/courses';
+    url[self.userRoles.instructor] = self._appSettings.API.basePath + '/rest/instructor/courses/?hideOpenSoon=false';
     url = self.getUrl(url);
     console.log(url);
     return this._$http
@@ -39,7 +39,19 @@ Service.prototype.getCourses = function(){
           .then(function (res) {
             return res.data;
           });
-}
+};
+
+Service.prototype.getAllInstructorCourses = function(){
+    var self =this;
+    var url = self._appSettings.API.basePath + '/rest/instructor/courses/all';
+    return this._$http
+          .get(url, self.config)
+          .then(function (res) {
+            console.log("All possible Courses");
+            console.log(res.data);
+            return res.data;
+          });
+};
 
 Service.prototype.getCourse = function(courseId){
     var self = this;
@@ -58,6 +70,10 @@ Service.prototype.getCourse = function(courseId){
 Service.prototype.addCourse = function(payload){
     var self = this;
     var url = self._appSettings.API.basePath + '/rest/instructor/course';
+    if("cloneCourseId" in payload){
+        url += "?clone=" + payload["cloneCourseId"];
+        delete payload["cloneCourseId"];
+    }
     return self._$http
         .post(url, payload, self.config)
         .then(function(res){
