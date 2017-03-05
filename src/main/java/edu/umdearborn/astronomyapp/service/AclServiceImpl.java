@@ -130,6 +130,25 @@ public class AclServiceImpl implements AclService {
     logger.debug("Can open module: '{}'", moduleId);
 
   }
+  
+  @Cacheable
+  @Override
+  public void enforceModuleOpen(String moduleId) {
+
+    TypedQuery<Boolean> query =
+        entityManager.createQuery("select count (m) > 0 from Module m where m.id = :moduleId and "
+            + "m.openTimestamp <= current_timestamp()", Boolean.class);
+    query.setParameter("moduleId", moduleId);
+    boolean result = query.getSingleResult();
+
+    if (!result) {
+      logger.debug("Cannot open module: '{}'", moduleId);
+      throw new AccessDeniedException("Cannot open module: " + moduleId);
+    }
+
+    logger.debug("Can perform actions for module: '{}'", moduleId);
+
+  }
 
   @Cacheable
   @Override

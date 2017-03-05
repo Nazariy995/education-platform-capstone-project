@@ -62,6 +62,7 @@ public class ModuleGroupController {
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
         Arrays.asList(CourseUser.CourseRole.STUDENT));
+    acl.enforceModuleOpen(moduleId);
 
     ModuleGroup group = groupService.createGroup(courseUserId, moduleId);
 
@@ -194,10 +195,10 @@ public class ModuleGroupController {
         Arrays.asList(CourseUser.CourseRole.STUDENT));
     acl.enforceGroupInCourse(groupId, courseId);
     acl.enforceInGroup(courseUserId, groupId);
-    
+
     List<String> checkin = new ArrayList<>();
     checkin.add(courseUserId);
-    session.setAttribute(groupId, checkin);   
+    session.setAttribute(groupId, checkin);
 
     JsonDecorator<List<String>> json = new JsonDecorator<>();
     json.setPayload(checkin);
@@ -221,6 +222,7 @@ public class ModuleGroupController {
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
         Arrays.asList(CourseUser.CourseRole.STUDENT));
+    acl.enforceModuleOpen(moduleId);
     acl.enforceGroupInCourse(groupId, courseId);
     acl.enforceInGroup(courseUserId, groupId);
     acl.enforceGroupLocked(groupId, true);
@@ -297,21 +299,27 @@ public class ModuleGroupController {
   @RequestMapping(
       value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/answers/save",
       method = POST)
-  public List<Answer> saveAnswers(@PathVariable("courseId") String courseId,
+  public Map<String, Answer> saveAnswers(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
-      HttpSession session, @RequestBody Map<String, String> answers, Principal principal) {
+      HttpSession session, @RequestBody Map<String, Map<String, String>> answers,
+      Principal principal) {
 
     String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
         Arrays.asList(CourseUser.CourseRole.STUDENT));
+    acl.enforceModuleOpen(moduleId);
     acl.enforceGroupInCourse(groupId, courseId);
     acl.enforceInGroup(courseUserId, groupId);
     acl.enforceGroupLocked(groupId, true);
     acl.enforceHasLock(groupId, getCheckinSessionAttribute(session, groupId, courseUserId));
 
-    return groupService.saveAnswers(answers, groupId);
+
+    return Optional.ofNullable(groupService.saveAnswers(answers, groupId))
+        .orElse(new ArrayList<Answer>()).parallelStream()
+        .collect(Collectors.toMap(a -> a.getQuestion().getId(), a -> a));
+
   }
 
   @RequestMapping(
@@ -326,6 +334,7 @@ public class ModuleGroupController {
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforceIsCourseRole(principal.getName(), courseId,
         Arrays.asList(CourseUser.CourseRole.STUDENT));
+    acl.enforceModuleOpen(moduleId);
     acl.enforceGroupInCourse(groupId, courseId);
     acl.enforceInGroup(courseUserId, groupId);
     acl.enforceGroupLocked(groupId, true);

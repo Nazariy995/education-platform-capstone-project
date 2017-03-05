@@ -24,4 +24,6 @@ public interface AclService {
   
   public void enforceGroupLocked(String groupId, boolean shouldBeLocked);
 
+  void enforceModuleOpen(String moduleId);
+
 }

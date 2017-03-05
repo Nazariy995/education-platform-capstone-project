@@ -23,7 +23,7 @@ public interface GroupService {
 
   public boolean hasLock(String groupId, List<String> checkedIn);
 
-  public List<Answer> saveAnswers(Map<String, String> answers, String groupId);
+  public List<Answer> saveAnswers(Map<String, Map<String, String>> answers, String groupId);
 
   public Long submissionNumber(String groupId);
 
