@@ -8,8 +8,11 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
+import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -18,17 +21,24 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
+import org.springframework.util.MimeType;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import edu.umdearborn.astronomyapp.entity.AstroAppUser;
 import edu.umdearborn.astronomyapp.entity.Course;
 import edu.umdearborn.astronomyapp.entity.CourseUser;
+import edu.umdearborn.astronomyapp.entity.CourseUser.CourseRole;
 import edu.umdearborn.astronomyapp.service.AclService;
 import edu.umdearborn.astronomyapp.service.CourseService;
+import edu.umdearborn.astronomyapp.service.CsvParserService;
+import edu.umdearborn.astronomyapp.service.UserManagementService;
 import edu.umdearborn.astronomyapp.util.HttpSessionUtil;
 import edu.umdearborn.astronomyapp.util.ValidAssert;
 import edu.umdearborn.astronomyapp.util.json.JsonDecorator;
@@ -39,12 +49,17 @@ public class CourseController {
 
   private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
 
-  private AclService    acl;
-  private CourseService courseService;
+  private AclService            acl;
+  private CourseService         courseService;
+  private UserManagementService userManagementService;
+  private CsvParserService      csvParserService;
 
-  public CourseController(AclService acl, CourseService courseService) {
+  public CourseController(AclService acl, CourseService courseService,
+      UserManagementService userManagementService, CsvParserService csvParserService) {
     this.acl = acl;
     this.courseService = courseService;
+    this.userManagementService = userManagementService;
+    this.csvParserService = csvParserService;
   }
 
   @RequestMapping(value = {INSTRUCTOR_PATH + "/courses", STUDENT_PATH + "/courses"}, method = GET)
@@ -149,10 +164,70 @@ public class CourseController {
     logger.info("Course: '{}' does not exist", courseId);
     return null;
   }
-  
+
   @RequestMapping(value = INSTRUCTOR_PATH + "/courses/all", method = GET)
   public List<Course> getCourses() {
     return courseService.getCourses();
+  }
+
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/bulk-students", method = POST)
+  public List<CourseUser> addStudentsToCourse(@PathVariable("courseId") String courseId,
+      @RequestParam("file") MultipartFile file, Principal principal) {
+    MimeType fileType = MimeType.valueOf(file.getContentType());
+    logger.debug("Recieved filetype: '{}'", fileType);
+    Assert.isTrue(
+        MimeType.valueOf("text/csv").isCompatibleWith(fileType)
+            || MimeType.valueOf("application/vnd.ms-excel").isCompatibleWith(fileType),
+        "File must be a CSV");
+
+    acl.enforceInCourse(principal.getName(), courseId);
+
+    try {
+      List<String[]> parsed = csvParserService.parseClassList(file.getInputStream(), fileType);
+      if (parsed.isEmpty()) {
+        logger.info("No valid results. Not changing anything");
+
+        return courseService.getClassList(courseId, Arrays.asList(CourseUser.CourseRole.INSTRUCTOR,
+            CourseUser.CourseRole.TA, CourseUser.CourseRole.STUDENT));
+      }
+
+      logger.debug("Parsed {} records correctly", parsed.size());
+
+      CourseUser[] users = parsed.parallelStream().map(e -> {
+        AstroAppUser u = new AstroAppUser();
+        u.setEmail(e[0]);
+        u.setFirstName(e[1]);
+        u.setLastName(e[2]);
+        u.setRoles(new HashSet<AstroAppUser.Role>(Arrays.asList(AstroAppUser.Role.USER)));
+        CourseUser cu = new CourseUser();
+        cu.setUser(u);
+        cu.setRole(CourseRole.STUDENT);
+        return cu;
+      }).toArray(CourseUser[]::new);
+
+      userManagementService.addUsersToCourse(courseId, users);
+      return courseService.getClassList(courseId, Arrays.asList(CourseUser.CourseRole.INSTRUCTOR,
+          CourseUser.CourseRole.TA, CourseUser.CourseRole.STUDENT));
+    } catch (IOException ioe) {
+      logger.error("Error parsing CSV", ioe);
+      throw new RuntimeException(ioe);
+    }
+
+  }
+
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/student/{courseUserId}/drop",
+      method = PUT)
+  public List<CourseUser> drop(@PathVariable("courseId") String courseId,
+      @PathVariable("courseUserId") String courseUserId, Principal principal) {
+
+    //acl.enforceInCourse(principal.getName(), courseId);
+    acl.enforceHasRoleInCourse(courseUserId, courseId,
+        Arrays.asList(CourseUser.CourseRole.STUDENT, CourseUser.CourseRole.TA));
+
+    userManagementService.updateCourseUserStatus(courseUserId, false);
+    
+    return courseService.getClassList(courseId, Arrays.asList(CourseUser.CourseRole.INSTRUCTOR,
+        CourseUser.CourseRole.TA, CourseUser.CourseRole.STUDENT));
   }
 
 }
