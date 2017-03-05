@@ -10,7 +10,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -220,7 +219,7 @@ public class CourseController {
   public List<CourseUser> drop(@PathVariable("courseId") String courseId,
       @PathVariable("courseUserId") String courseUserId, Principal principal) {
 
-    //acl.enforceInCourse(principal.getName(), courseId);
+    acl.enforceInCourse(principal.getName(), courseId);
     acl.enforceHasRoleInCourse(courseUserId, courseId,
         Arrays.asList(CourseUser.CourseRole.STUDENT, CourseUser.CourseRole.TA));
 
