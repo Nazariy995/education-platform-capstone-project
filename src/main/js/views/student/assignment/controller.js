@@ -1,6 +1,7 @@
 
 function Controller($scope, $state, $stateParams, AssignmentService, GroupService){
     "ngInject";
+    this._$scope = $scope;
     this._$state = $state;
     this.pageName = "Assignment";
     this.courseId = $stateParams.courseId;
@@ -10,14 +11,44 @@ function Controller($scope, $state, $stateParams, AssignmentService, GroupServic
     this._GroupService = GroupService;
     this.assignment = {};
     this.assignmentMembers = [];
-    this.finalized = true;
+    this.finalized = null;
+    this.canStart = false;
+    this.canCreateGroup = false;
+
     this.init();
 };
 
 Controller.prototype.init = function(){
     var self = this;
+    //watch finalized to set canStart and canCreateGroup accordingly
+    self.setFinalized();
+    //get Assignment Details
     self.getAssignmentDetails();
+    //get Group Details
+    self.getGroup();
 };
+
+//Watch finalized variable from the API
+Controller.prototype.setFinalized = function(){
+    var self = this;
+    self._$scope.$watch(
+        function watchFinalized( scope ){
+            return (self.finalized);
+        },
+        function handleFinalized(newFinalized){
+            //finalized, they can start the assignment
+            //else they still have to create the group
+            if(newFinalized == true){
+                self.canStart = true;
+                self.canCreateGroup = false;
+            } else if(newFinalized == false){
+                self.canStart = false;
+                self.canCreateGroup = true;
+            }
+
+        }
+    )
+}
 
 Controller.prototype.getAssignmentDetails = function(){
     var self = this;
@@ -26,8 +57,6 @@ Controller.prototype.getAssignmentDetails = function(){
             self.assignment = payload;
             self.pageName = payload.moduleTitle;
             self._AssignmentService.assignmentDetails = payload;
-            console.log("Got the Assignment Details");
-            self.getGroup(); //Uncommented it for right now because currently it is giving me an error
     }, function(err){
        self.error = err;
     });
@@ -49,14 +78,14 @@ Controller.prototype.getGroup = function(){
 
 Controller.prototype.navToGroup = function(){
     var self = this;
-    if(!self.finalized){
+    if(self.canCreateGroup){
         self._$state.go('app.course.assignment.group',{groupId:self.groupId});
     }
 };
 
 Controller.prototype.navToLogin = function(){
     var self = this;
-    if(self.finalized){
+    if(self.canStart){
         self._$state.go('app.course.assignment.login',{groupId:self.groupId});
     }
 }
