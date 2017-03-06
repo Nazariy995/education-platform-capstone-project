@@ -1,8 +1,23 @@
 
-function onStateChange($rootScope, $state, AuthService, SessionService){
+function onStateChange($rootScope, $state, AuthService, SessionService, GroupService){
     "ngInject";
 
     $rootScope.$on('$stateChangeStart', function(evt, toState, toParams, fromState, fromParams){
+        if(fromState
+            && fromState.name == 'app.course.assignment.questions'
+            && toState.name != fromState.name){
+            console.log("Checkout");
+            GroupService.groupCheckout(
+                fromParams.courseId,
+                fromParams.moduleId,
+                fromParams.groupId
+            ).then(function(payload){
+                //succees checkout happened
+            }, function(err){
+
+            })
+        }
+
         //redirect to default state, the courses page
         if(toState.redirectTo){
             evt.preventDefault();
