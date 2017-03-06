@@ -1,4 +1,19 @@
-<h2>{{ assignmentDetails.pageName }}</h2>
+<div class="assignmentHeader">
+    <div class="headerName">
+        <h2>{{ assignmentDetails.pageName }}</h2>
+    </div>
+    <div class="headerDetail">
+        <h4>
+            Questions: {{ assignmentDetails.assignment.numQuestion }}
+        </h4>
+    </div>
+    <div class="headerDetail">
+        <h4>Sections: {{ assignmentDetails.assignment.numPages }}</h4>
+    </div>
+    <div class="headerDetail">
+        <h4>Points: {{ assignmentDetails.assignment.points }}</h4>
+    </div>
+</div>
 
 <div ui-view="assignmentContent" ></div>
 
