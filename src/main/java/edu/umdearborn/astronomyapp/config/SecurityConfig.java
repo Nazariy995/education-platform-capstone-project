@@ -5,9 +5,9 @@ import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.INSTRUCTOR
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.LOGOUT_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.LOGOUT_SUCCESS_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.REST_PATH_PREFIX;
-import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.SESSION_EXPIRED_PATH;
-import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.SESSION_INVALID_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.STUDENT_PATH;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.boot.autoconfigure.security.Http401AuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
@@ -59,10 +59,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers(REST_PATH_PREFIX + STUDENT_PATH + "/**").hasRole("USER")
         .and()
       .sessionManagement()
-        .invalidSessionUrl(SESSION_INVALID_PATH)
+        .invalidSessionStrategy((request, response) -> {
+          response.setHeader("session", "invalid");
+          response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "session is not valid");
+        })
         .sessionFixation().changeSessionId()
-        .maximumSessions(1)
-        .expiredUrl(SESSION_EXPIRED_PATH);
+        .maximumSessions(1);
     // @formatter:on
   }
 

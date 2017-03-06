@@ -16,12 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,15 +66,6 @@ public class CommonResourceController {
 
     logger.debug("Starting file upload to AWS for file '{}'", file.getOriginalFilename());
     return fileUploadService.upload(file.getInputStream(), file.getSize(), file.getContentType());
-  }
-
-  @RequestMapping(value = "/session-{status}")
-  public ResponseEntity<Void> sessionError(@PathVariable("status") String sessionStatus) {
-    MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-
-    headers.add("session", sessionStatus);
-
-    return new ResponseEntity<>(headers, HttpStatus.UNAUTHORIZED);
   }
 
 }
