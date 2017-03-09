@@ -1,16 +1,19 @@
 
-function Controller($scope, $state, $stateParams, AssignmentService, QuestionService, appSettings){
+function Controller($scope, $state, $stateParams, lock,  AssignmentService, QuestionService, appSettings){
     "ngInject";
 
     this.pageName = "Questions";
     this.maxPage = 1;
     this.minPage = 1;
     this.currentPage = 1;
+    this.lock = lock;
+    this.editable = false;
     this.pages = [];
     this._$scope = $scope;
     this._appSettings = appSettings;
     this.courseId = $stateParams.courseId;
     this.moduleId = $stateParams.moduleId;
+    this.groupId = $stateParams.groupId;
     this.data = {};
     this.questions = [];
     this._AssignmentService = AssignmentService;
@@ -20,6 +23,10 @@ function Controller($scope, $state, $stateParams, AssignmentService, QuestionSer
 
 Controller.prototype.init = function(){
     var self = this;
+
+    if(self.lock.hasLock && self.lock.isModuleEditable){
+        self.editable = true;
+    }
     self._$scope.assignmentService = self._AssignmentService;
     self._$scope.$watch('assignmentService.assignmentDetails', function(newAssignmentDetails){
        if(newAssignmentDetails){
@@ -30,6 +37,7 @@ Controller.prototype.init = function(){
     self.getQuestions(self.currentPage);
 };
 
+//Get Questions for the assignment
 Controller.prototype.getQuestions = function(newPage){
     var self = this;
     self._QuestionService.getQuestions(self.courseId, self.moduleId, newPage)
@@ -44,6 +52,16 @@ Controller.prototype.getQuestions = function(newPage){
     });
 };
 
+Controller.prototype.saveAnswers = function(newPage){
+    var self = this;
+    self._QuestionService.saveAnswers(self.courseId, self.moduleId, self.groupId, self.data)
+        .then(function(payload){
+            self.getQuestions(newPage);
+    }, function(err){
+       self.error = err;
+    });
+}
+
 Controller.prototype.submit = function(){
     var self = this;
     console.log(self.data);
@@ -52,7 +70,7 @@ Controller.prototype.submit = function(){
 Controller.prototype.nextPage = function(){
     var self = this;
     if(self.currentPage <  self.maxPage){
-        self.getQuestions(self.currentPage+1);
+        self.saveAnswers(self.currentPage+1);
     }
 };
 

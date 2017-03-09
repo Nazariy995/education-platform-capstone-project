@@ -1,5 +1,5 @@
 <h2>{{ assignmentQuestions.pageName }}</h2>
-<form name="quizForm" ng-submit="assignmentQuestions.submit()" >
+<form name="quizForm" ng-submit="assignmentQuestions.submit()" novalidate >
     <div ng-form="answerEntryForm"
          ng-repeat="field in assignmentQuestions.questions
                     | orderBy: 'order'
@@ -10,15 +10,18 @@
         </div>
         <div ng-switch="field.questionType">
             <div ng-switch-when="MULTIPLE_CHOICE">
-              <app-student-multiple-choice field="field" model="assignmentQuestions.data[field.id]">
+              <app-student-multiple-choice field="field" model="assignmentQuestions.data[field.id]"
+                                           editable="assignmentQuestions.editable">
               </app-student-multiple-choice>
             </div>
             <div ng-switch-when="NUMERIC">
-              <app-student-numeric field="field" model="assignmentQuestions.data[field.id]">
+              <app-student-numeric field="field" model="assignmentQuestions.data[field.id]"
+                                   editable="assignmentQuestions.editable">
               </app-student-numeric>
             </div>
             <div ng-switch-when="FREE_RESPONSE">
-              <app-student-free-response field="field" model="assignmentQuestions.data[field.id]">
+              <app-student-free-response field="field" model="assignmentQuestions.data[field.id]"
+                                         editable="assignmentQuestions.editable">
               </app-student-free-response>
             </div>
         </div>
@@ -26,16 +29,23 @@
 
     <nav aria-label="Page navigation" class="questionsPaging">
       <ul class="pagination">
-        <li ng-switch="assignmentQuestions.currentPage > assignmentQuestions.minPage">
+        <li ng-switch="assignmentQuestions.currentPage > assignmentQuestions.minPage" ng-if="assignmentQuestions.editable">
             <a ng-switch-when="true" aria-label="Previous" ng-click="assignmentQuestions.previousPage()">
                 Save/Previous
             </a>
         </li>
         <li ng-repeat="n in assignmentQuestions.pages track by $index"
             ng-class="{active : $index+1 == assignmentQuestions.currentPage}">
-            <a> {{ $index +1 }} </a>
+            <span ng-switch="assignmentQuestions.editable">
+                <span ng-switch-when="true">
+                    {{ $index +1 }}
+                </span>
+                <span ng-switch-when="false" ng-click="assignmentQuestions.getPage($index+1)" >
+                    {{ $index + 1 }}
+                </span>
+            </span>
         </li>
-        <li ng-switch="assignmentQuestions.currentPage < assignmentQuestions.maxPage">
+        <li ng-switch="assignmentQuestions.currentPage < assignmentQuestions.maxPage" ng-if="assignmentQuestions.editable">
             <a ng-switch-when="true" aria-label="Next" ng-click="assignmentQuestions.nextPage()">
                 Save/Next
             </a>
