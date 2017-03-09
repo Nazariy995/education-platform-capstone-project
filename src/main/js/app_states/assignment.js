@@ -85,13 +85,7 @@ var states = [
                 var courseId = $stateParams.courseId;
                 var moduleId = $stateParams.moduleId;
                 var groupId = $stateParams.groupId;
-                return GroupService.getLock(courseId, moduleId, groupId)
-                    .then(function(payload){
-                    return payload;
-                }, function(err){
-                        $state.go('app.course.assignment', {moduleId : moduleId});
-                    return err;
-                });
+                return GroupService.getLock(courseId, moduleId, groupId);
             }]
         }
     }

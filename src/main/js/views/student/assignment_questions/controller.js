@@ -1,7 +1,6 @@
 
-function Controller($scope, $state, $stateParams, lock,  AssignmentService, QuestionService, appSettings){
+function Controller($scope, $state, $stateParams, lock, AssignmentService, QuestionService, appSettings){
     "ngInject";
-
     this.pageName = "Questions";
     this.maxPage = 1;
     this.minPage = 1;
@@ -23,10 +22,7 @@ function Controller($scope, $state, $stateParams, lock,  AssignmentService, Ques
 
 Controller.prototype.init = function(){
     var self = this;
-
-    if(self.lock.hasLock && self.lock.isModuleEditable){
-        self.editable = true;
-    }
+    self.getLock();
     self._$scope.assignmentService = self._AssignmentService;
     self._$scope.$watch('assignmentService.assignmentDetails', function(newAssignmentDetails){
        if(newAssignmentDetails){
@@ -35,6 +31,13 @@ Controller.prototype.init = function(){
        }
     });
     self.getQuestions(self.currentPage);
+};
+
+Controller.prototype.getLock = function(){
+    var self = this;
+    if(self.lock.hasLock && self.lock.isModuleEditable){
+        self.editable = true;
+    }
 };
 
 //Get Questions for the assignment
