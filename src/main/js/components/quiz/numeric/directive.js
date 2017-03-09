@@ -15,6 +15,7 @@ function Directive($state){
         link : link,
         scope: {
             model: '=',
+            editable : '=',
             field: '='
         }
     }

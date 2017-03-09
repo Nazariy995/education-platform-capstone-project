@@ -2,7 +2,10 @@
     <legend>{{ componentCtrl.data.humanReadableText }}</legend>
     <div class="form-check" ng-repeat="possibleAnswer in componentCtrl.data.options">
       <label class="form-check-label">
-        <input type="radio" ng-model="$parent.model.answer" name="{{ componentCtrl.data.id }}" value="{{ possibleAnswer.id }}">
+        <input type="radio" ng-model="$parent.model.answer"
+               name="{{ componentCtrl.data.id }}"
+               value="{{ possibleAnswer.id }}"
+               ng-disabled="!$parent.editable">
         {{ possibleAnswer.humanReadableText }}
       </label>
     </div>
