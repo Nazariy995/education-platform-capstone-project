@@ -9,7 +9,6 @@ function Service($http, appSettings, SessionService){
     this._appSettings = appSettings;
     this.userRoles = appSettings.ROLES;
     this._SessionService = SessionService;
-    this.user = SessionService.getUser();
     this.init();
 }
 
@@ -81,11 +80,13 @@ Service.prototype.addCourse = function(payload){
     });
 };
 
+//Retrieve the correct API URL based on the user role
 Service.prototype.getUrl = function(url){
     var self = this;
-    if(self.user.roles.indexOf(self.userRoles.user) != -1){
+    var user = self._SessionService.getUser();
+    if(user.roles.indexOf(self.userRoles.user) != -1){
         return url[self.userRoles.user]
-    } else if (self.user.roles.indexOf(self.userRoles.instructor) != -1){
+    } else if (user.roles.indexOf(self.userRoles.instructor) != -1){
         return url[self.userRoles.instructor]
     }
 }
