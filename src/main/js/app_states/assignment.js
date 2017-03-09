@@ -28,7 +28,7 @@ var states = [
                 if(!$stateParams.groupId){
                     var courseId = $stateParams.courseId;
                     var moduleId = $stateParams.moduleId;
-                    GroupService.initialize(courseId, moduleId)
+                    return GroupService.initialize(courseId, moduleId)
                         .then(function(payload){
                             $state.go($state.current, {groupId:payload.id});
                         return payload.id;
@@ -51,6 +51,23 @@ var states = [
                 controller : 'Student.AssignmentLoginCtrl',
                 controllerAs : 'assignmentLogin'
             }
+        },
+        resolve : {
+            lock : ['GroupService','$stateParams','$state', function(GroupService, $stateParams, $state){
+                var courseId = $stateParams.courseId;
+                var moduleId = $stateParams.moduleId;
+                var groupId = $stateParams.groupId;
+                return GroupService.getLock(courseId, moduleId, groupId)
+                    .then(function(payload){
+                        if(payload.hasLock) {
+                            $state.go('app.course.assignment.questions', { groupId : groupId});
+                        }
+                    return payload;
+                }, function(err){
+                        $state.go('app.course.assignment', {moduleId : moduleId});
+                    return err;
+                });
+            }]
         }
     },
     {
@@ -68,11 +85,8 @@ var states = [
                 var courseId = $stateParams.courseId;
                 var moduleId = $stateParams.moduleId;
                 var groupId = $stateParams.groupId;
-                GroupService.getLock(courseId, moduleId, groupId)
+                return GroupService.getLock(courseId, moduleId, groupId)
                     .then(function(payload){
-                        if(!payload){
-                            $state.go('app.course.assignment', {moduleId : moduleId});
-                        }
                     return payload;
                 }, function(err){
                         $state.go('app.course.assignment', {moduleId : moduleId});
