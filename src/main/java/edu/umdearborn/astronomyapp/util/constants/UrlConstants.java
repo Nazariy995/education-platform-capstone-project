@@ -4,7 +4,7 @@ public final class UrlConstants {
 
   public static final String[] PUBLIC_PATH_PATTERNS =
       {"/", "/login", "/index.html", "/app.js", "/app.css", "/app**.js", "/views/**", "/models/**",
-          "/assets/**", "/components/**", "/dist/**"};
+          "/assets/**", "/components/**", "/dist/**", "/logout",};
 
   public static final String REST_PATH_PREFIX = "/rest";
 
@@ -17,7 +17,5 @@ public final class UrlConstants {
   public static final String LOGIN_FAILURE_PATH   = LOGIN_PATH + "?error";
   public static final String LOGOUT_PATH          = "/logout";
   public static final String LOGOUT_SUCCESS_PATH  = LOGIN_PATH + "?logout";
-  public static final String SESSION_EXPIRED_PATH = LOGIN_PATH + "?session-expired";
-  public static final String SESSION_INVALID_PATH = LOGIN_PATH + "?session-invalid";
 
 }
