@@ -19,9 +19,14 @@ public interface AclService {
   public void enforeceModuleInCourse(String courseId, String moduleId);
 
   public void enforceGroupInCourse(String groupId, String courseId);
-  
+
   public void enforceHasLock(String groupId, List<String> checkedIn);
-  
+
   public void enforceGroupLocked(String groupId, boolean shouldBeLocked);
+
+  public void enforceModuleOpen(String moduleId);
+
+  public void enforceHasRoleInCourse(String courseUserId, String courseId,
+      List<CourseUser.CourseRole> role);
 
 }

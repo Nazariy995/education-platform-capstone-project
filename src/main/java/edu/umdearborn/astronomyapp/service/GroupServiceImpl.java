@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import edu.umdearborn.astronomyapp.controller.exception.GroupAlterationException;
+import edu.umdearborn.astronomyapp.controller.exception.UpdateException;
 import edu.umdearborn.astronomyapp.entity.Answer;
 import edu.umdearborn.astronomyapp.entity.CourseUser;
 import edu.umdearborn.astronomyapp.entity.GroupMember;
@@ -181,21 +182,34 @@ public class GroupServiceImpl implements GroupService {
   }
 
   @Override
-  public List<Answer> saveAnswers(Map<String, String> answers, String groupId) {
+  public List<Answer> saveAnswers(Map<String, Map<String, String>> answers, String groupId) {
 
     logger.debug("Saving answers for group: '{}'", groupId);
     List<Answer> savedAnswers = getAnswers(groupId, true);
     if (ResultListUtil.hasResult(savedAnswers)) {
 
-      ModuleGroup group = new ModuleGroup();
-      group.setId(groupId);
+      savedAnswers.stream().forEach(e -> {
+        Map<String, String> ans = answers.get(e.getQuestion().getId());
 
-      for (String key : answers.keySet()) {
-        savedAnswers.parallelStream().filter(a -> a.getQuestion().getId() == key).findAny()
-            .ifPresent(a -> {
-              a.setValue(answers.get(key));
-            });
-      }
+        if (ans != null && ans.containsKey("answer")) {
+          logger.debug("Saving answer: '{}'", e.getQuestion().getId());
+          if (ans.containsKey("unit")) {
+            e.setValue(new StringBuilder("#").append(ans.get("answer")).append("&")
+                .append(ans.get("unit")).toString());
+          } else {
+            e.setValue(ans.get("answer"));
+          }
+
+          int actualCount = entityManager
+              .createQuery("update Answer set value = :value where id = :id")
+              .setParameter("value", e.getValue()).setParameter("id", e.getId()).executeUpdate();
+
+          if (1 != actualCount) {
+            throw new UpdateException("Update expected to alter 1 rows, but actually altered "
+                + actualCount + " actual rows");
+          }
+        }
+      });
 
       return getAnswers(groupId, true);
     }

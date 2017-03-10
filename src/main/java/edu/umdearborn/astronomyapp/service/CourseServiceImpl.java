@@ -161,6 +161,11 @@ public class CourseServiceImpl implements CourseService {
   public List<Course> getCourses() {
     return entityManager.createQuery("select c from Course c", Course.class).getResultList();
   }
+  
+  @Override
+  public Course getCourse(String id) {
+    return entityManager.find(Course.class, id);
+  }
 
   private void migrate(Course course, List<Module> modules, List<Page> pages,
       List<PageItem> pageItems) {

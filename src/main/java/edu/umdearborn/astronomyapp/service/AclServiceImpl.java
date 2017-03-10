@@ -13,6 +13,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import edu.umdearborn.astronomyapp.entity.CourseUser;
+import edu.umdearborn.astronomyapp.entity.CourseUser.CourseRole;
 import edu.umdearborn.astronomyapp.repository.CourseUserRepository;
 import edu.umdearborn.astronomyapp.repository.ModuleGroupRepository;
 
@@ -133,6 +134,25 @@ public class AclServiceImpl implements AclService {
 
   @Cacheable
   @Override
+  public void enforceModuleOpen(String moduleId) {
+
+    TypedQuery<Boolean> query =
+        entityManager.createQuery("select count (m) > 0 from Module m where m.id = :moduleId and "
+            + "m.openTimestamp <= current_timestamp()", Boolean.class);
+    query.setParameter("moduleId", moduleId);
+    boolean result = query.getSingleResult();
+
+    if (!result) {
+      logger.debug("Cannot open module: '{}'", moduleId);
+      throw new AccessDeniedException("Cannot open module: " + moduleId);
+    }
+
+    logger.debug("Can perform actions for module: '{}'", moduleId);
+
+  }
+
+  @Cacheable
+  @Override
   public void enforeceModuleInCourse(String courseId, String moduleId) {
 
     TypedQuery<Boolean> query =
@@ -202,8 +222,29 @@ public class AclServiceImpl implements AclService {
       logger.debug("Group: '{}' finalized status not valid", groupId);
       throw new AccessDeniedException("Group: " + groupId + " finalized status not valid");
     }
-    
+
     logger.debug("Group: '{}' finalized status is valid", groupId);
+  }
+
+  @Cacheable
+  @Override
+  public void enforceHasRoleInCourse(String courseUserId, String courseId, List<CourseRole> role) {
+    TypedQuery<Boolean> query = entityManager.createQuery(
+        "select count(cu) > 0 from CourseUser cu join cu.course c "
+            + "where c.id = :courseId and cu.id = :courseUserId and cu.role in (:role)",
+        Boolean.class);
+    query.setParameter("courseUserId", courseUserId).setParameter("courseId", courseId)
+        .setParameter("role", role);
+    boolean result = query.getSingleResult();
+
+    if (!result) {
+      logger.debug("{} does not have any role in {} in course: '{}'", courseUserId, role, courseId);
+      throw new AccessDeniedException(
+          courseUserId + " is not a " + role + " in course " + courseId);
+    }
+
+    logger.debug("{} does have any role in {} in course: '{}'", courseUserId, role, courseId);
+
   }
 
 }
