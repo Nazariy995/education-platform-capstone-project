@@ -1,8 +1,9 @@
 
 
-function Controller($scope, $state, $window, AuthService, ModalService, appSettings){
+function Controller($scope, $state, $window, $stateParams, AuthService, ModalService, appSettings){
     "ngInject";
     this._AuthService = AuthService;
+    this.sessionExpired = $stateParams.sessionExpired;
     this._$state = $state;
     this._$scope = $scope;
     this.error = null;
@@ -24,7 +25,6 @@ Controller.prototype.login = function(){
             self._$state.go("app.courses");
         }
     },function(err){
-        console.log("failed");
         self.error = err;
     });
 

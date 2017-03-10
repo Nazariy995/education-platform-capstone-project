@@ -7,15 +7,7 @@ function onStateChange($rootScope, $state, AuthService, SessionService, GroupSer
             && fromState.name == 'app.course.assignment.questions'
             && toState.name != fromState.name){
             console.log("Checkout");
-            GroupService.groupCheckout(
-                fromParams.courseId,
-                fromParams.moduleId,
-                fromParams.groupId
-            ).then(function(payload){
-                //succees checkout happened
-            }, function(err){
-
-            })
+            GroupService.groupCheckout(fromParams.courseId, fromParams.moduleId, fromParams.groupId)
         }
 
         //redirect to default state, the courses page

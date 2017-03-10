@@ -12,6 +12,9 @@ var states = [
     {
         name : 'app.login',
         url : 'login',
+        params : {
+            sessionExpired : false
+        },
         views : {
             'app@' : {
                 templateUrl : 'views/app/login/login.html',
