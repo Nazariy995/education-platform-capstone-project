@@ -10,17 +10,23 @@
         </div>
         <div ng-switch="field.questionType">
             <div ng-switch-when="MULTIPLE_CHOICE">
-              <app-student-multiple-choice field="field" model="assignmentQuestions.data[field.id]"
+              <app-student-multiple-choice field="field"
+                                           model="assignmentQuestions.data[field.id]"
+                                           saved-answers="assignmentQuestions.savedAnswers[field.id]"
                                            editable="assignmentQuestions.editable">
               </app-student-multiple-choice>
             </div>
             <div ng-switch-when="NUMERIC">
-              <app-student-numeric field="field" model="assignmentQuestions.data[field.id]"
+              <app-student-numeric field="field"
+                                   model="assignmentQuestions.data[field.id]"
+                                   saved-answers="assignmentQuestions.savedAnswers[field.id]"
                                    editable="assignmentQuestions.editable">
               </app-student-numeric>
             </div>
             <div ng-switch-when="FREE_RESPONSE">
-              <app-student-free-response field="field" model="assignmentQuestions.data[field.id]"
+              <app-student-free-response field="field"
+                                         model="assignmentQuestions.data[field.id]"
+                                         saved-answers="assignmentQuestions.savedAnswers[field.id]"
                                          editable="assignmentQuestions.editable">
               </app-student-free-response>
             </div>
@@ -35,12 +41,13 @@
             </a>
         </li>
         <li ng-repeat="n in assignmentQuestions.pages track by $index"
-            ng-class="{active : $index+1 == assignmentQuestions.currentPage}">
+            ng-class="{active : $index+1 == assignmentQuestions.currentPage}"
+            ng-click="assignmentQuestions.getPage($index+1)">
             <span ng-switch="assignmentQuestions.editable">
                 <span ng-switch-when="true">
                     {{ $index +1 }}
                 </span>
-                <span ng-switch-when="false" ng-click="assignmentQuestions.getPage($index+1)" >
+                <span ng-switch-when="false">
                     {{ $index + 1 }}
                 </span>
             </span>

@@ -15,6 +15,7 @@ function Controller($scope, $state, $stateParams, lock, AssignmentService, Quest
     this.groupId = $stateParams.groupId;
     this.data = {};
     this.questions = [];
+    this.savedAnswers = {};
     this._AssignmentService = AssignmentService;
     this._QuestionService = QuestionService;
     this.init();
@@ -30,6 +31,7 @@ Controller.prototype.init = function(){
            self.pages = new Array(self.maxPage);
        }
     });
+    self.getAnswers();
     self.getQuestions(self.currentPage);
 };
 
@@ -59,11 +61,22 @@ Controller.prototype.saveAnswers = function(newPage){
     var self = this;
     self._QuestionService.saveAnswers(self.courseId, self.moduleId, self.groupId, self.data)
         .then(function(payload){
+            self.savedAnswers = payload;
             self.getQuestions(newPage);
     }, function(err){
        self.error = err;
     });
-}
+};
+
+Controller.prototype.getAnswers = function(newPage){
+    var self = this;
+    self._QuestionService.getAnswers(self.courseId, self.moduleId, self.groupId)
+        .then(function(payload){
+            self.savedAnswers = payload;
+    }, function(err){
+       self.error = err;
+    });
+};
 
 Controller.prototype.submit = function(){
     var self = this;
@@ -80,7 +93,7 @@ Controller.prototype.nextPage = function(){
 Controller.prototype.previousPage = function(){
     var self = this;
     if(self.currentPage > self.minPage){
-        self.getQuestions(self.currentPage-1);
+        self.saveAnswers(self.currentPage-1);
     }
 };
 

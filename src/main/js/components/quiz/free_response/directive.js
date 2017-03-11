@@ -7,6 +7,17 @@ function Directive($state){
             type : scope.field.questionType
         };
 
+        setAnswer(scope);
+
+    }
+
+    function setAnswer( scope ){
+        var _scope = scope;
+        scope.$watch('savedAnswers', function(newAnswer){
+            if(newAnswer && "value" in newAnswer){
+                _scope.model.answer = newAnswer.value.answer;
+            }
+        });
     }
 
     var directive = {
@@ -16,6 +27,7 @@ function Directive($state){
         link : link,
         scope: {
             model: '=',
+            savedAnswers : '=',
             editable : '=',
             field: '='
         }

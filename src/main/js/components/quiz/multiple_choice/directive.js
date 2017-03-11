@@ -2,10 +2,22 @@ function Directive($state){
     "ngInject";
 
     function link(scope, element, attributes){
+        var _scope = scope;
         scope.model = {
             type : scope.field.questionType
         };
+        //set the answer if available
+        setAnswer(scope);
 
+    }
+
+    function setAnswer( scope ){
+        var _scope = scope;
+        scope.$watch('savedAnswers', function(newAnswer){
+            if(newAnswer && "value" in newAnswer){
+                _scope.model.answer = newAnswer.value.answer;
+            }
+        });
     }
 
     var directive = {
@@ -15,6 +27,7 @@ function Directive($state){
         link : link,
         scope: {
             model: '=',
+            savedAnswers : '=',
             editable : '=',
             field: '='
         }
