@@ -22,9 +22,11 @@ function Interceptor($injector, $q, SessionService){
             return response;
         },
         responseError : function(response) {
+            console.log("I'm inside response error");
             if(response.status == 401){
                 SessionService.destroy();
-                $injector.get('$state').go('app.login', { sessionExpired : true }, { reload : true });
+                $injector.get('$state').transitionTo('app.login', { sessionExpired : true }, { reload : true });
+                return;
             }
             return $q.reject(response);
         }
