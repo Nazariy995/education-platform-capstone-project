@@ -4,8 +4,7 @@ function Interceptor($injector, $q, SessionService){
 
     var sessionInjector = {
         request: function(config) {
-            console.log("Sent request");
-            if(SessionService.getAccessToken() != null) {
+            if(SessionService.getAccessToken() != null ) {
                 //set the auth token for session
                 config.headers['X-Auth-Token'] = SessionService.getAccessToken();
             }
@@ -14,7 +13,7 @@ function Interceptor($injector, $q, SessionService){
         },
         response: function(response) {
             var authToken = response.headers("x-auth-token");
-            if( authToken != null ) {
+            if( authToken != null && authToken != "") {
                 //set a new access token if it is availbale from the request
                 SessionService.setAccessToken(authToken);
             }
@@ -22,10 +21,9 @@ function Interceptor($injector, $q, SessionService){
             return response;
         },
         responseError : function(response) {
-            console.log("I'm inside response error");
             if(response.status == 401){
                 SessionService.destroy();
-                $injector.get('$state').transitionTo('app.login', { sessionExpired : true }, { reload : true });
+                $injector.get('$state').transitionTo('app.login', { sessionExpired : true }, {reload : true})   ;
                 return;
             }
             return $q.reject(response);
