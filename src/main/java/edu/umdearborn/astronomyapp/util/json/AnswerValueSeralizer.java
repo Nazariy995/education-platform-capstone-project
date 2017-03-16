@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 public class AnswerValueSeralizer extends JsonSerializer<String> {
 
   private static final Pattern NUMERIC_PATTERN = Pattern.compile("^#-?\\d+\\.?\\d*((e|E)-?\\d+)?&[\\s\\S]+$");
-  
+
   @Override
   public void serialize(String value, JsonGenerator gen, SerializerProvider serializers)
       throws IOException, JsonProcessingException {

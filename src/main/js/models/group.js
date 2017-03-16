@@ -94,13 +94,30 @@ GroupService.prototype.groupCheckin = function(courseId, moduleId, groupId, logi
     });
 };
 
+GroupService.prototype.groupCheckout = function(courseId, moduleId, groupId){
+    var self = this;
+    self.getConfig();
+    var url = self._appSettings.API.basePath + '/rest/student/course/'+
+        courseId+ '/module/'
+        + moduleId + "/group/"
+        + groupId + "/checkin-reset";
+    url = encodeURI(url);
+    return self._$http
+        .post(url, null, self.config)
+        .then(function(res){
+            console.log("Group Reset");
+            console.log(res);
+        return res.data;
+    });
+};
+
 GroupService.prototype.getLock = function(courseId, moduleId, groupId){
     var self = this;
     self.getConfig();
     var url = self._appSettings.API.basePath + '/rest/student/course/'+
         courseId+ '/module/'
         + moduleId + "/group/"
-        + groupId + "/lock";
+        + groupId + "/canEdit";
     url = encodeURI(url);
     return self._$http
         .get(url, self.config)
@@ -145,6 +162,8 @@ GroupService.prototype.finalize = function(courseId, moduleId, groupId){
     });
 };
 
+//Initialize the group
+//Automatically add the first person to the group
 GroupService.prototype.initialize = function(courseId, moduleId){
     var self = this;
     self.getConfig();

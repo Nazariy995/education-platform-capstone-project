@@ -7,7 +7,7 @@ cache:
 branches:
   only:
     - master
-before_deploy: 
+before_deploy:
   - chmod +x ./ci.sh
   - ./ci.sh
 deploy:

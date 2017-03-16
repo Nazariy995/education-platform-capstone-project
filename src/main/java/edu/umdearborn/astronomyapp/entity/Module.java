@@ -143,13 +143,13 @@ public class Module extends AbstractGeneratedId {
   public String toString() {
     return ToStringBuilder.reflectionToString(this);
   }
-  
+
   @PrePersist
   public void prePersist() {
     super.prePersist();
     preUpdate();
   }
-  
+
   public void preUpdate() {
     closeTimestamp = dueDate;
     visibleTimestamp = openTimestamp;

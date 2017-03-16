@@ -9,6 +9,7 @@ function AssignmentService($http, appSettings, SessionService){
     this._appSettings = appSettings;
     this._SessionService = SessionService;
     this.courseUserIdKey = appSettings.API.PARAMS.courseUserId;
+    this.assignmentDetails = {};
     this.init();
 }
 
@@ -41,15 +42,15 @@ AssignmentService.prototype.getAssignments = function(courseId){
           });
 }
 
+//Get Assignment details
 AssignmentService.prototype.getAssignmentDetails = function(courseId, moduleId){
     var self = this;
     self.getConfig();
     var url = self._appSettings.API.basePath + '/rest/student/course/'+ courseId+ '/module/' + moduleId;
+    self.config.cache = true;
     return self._$http
         .get(url, self.config)
         .then(function(res){
-        console.log("Get Assignment Details");
-        console.log(res);
         return res.data;
     })
 };

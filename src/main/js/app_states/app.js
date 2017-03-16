@@ -6,11 +6,15 @@ var states = [
             'app' : {
                 templateUrl : 'views/app/home/home.html'
             }
-        }
+        },
+        redirectTo : 'app.courses'
     },
     {
         name : 'app.login',
         url : 'login',
+        params : {
+            sessionExpired : false
+        },
         views : {
             'app@' : {
                 templateUrl : 'views/app/login/login.html',
@@ -35,9 +39,9 @@ var states = [
         url : 'courses',
         views : {
             'mainContent@app' : {
-                templateUrl: 'views/student/courses/home.html',
-                controller: 'Student.HomeCtrl',
-                controllerAs: 'studentHome'
+                templateUrl: 'views/app/courses/home.html',
+                controller: 'CoursesCtrl',
+                controllerAs: 'coursesCtrl'
             }
         }
     }
