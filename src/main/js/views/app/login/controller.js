@@ -1,6 +1,6 @@
 
 
-function Controller($scope, $state, $window, $stateParams, AuthService, ModalService, appSettings){
+function Controller($scope, $state, $window, $stateParams, AuthService, appSettings){
     "ngInject";
     this._AuthService = AuthService;
     this.sessionExpired = $stateParams.sessionExpired;
