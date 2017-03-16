@@ -1,5 +1,5 @@
 
-function Controller($scope, $state, $stateParams, AssignmentService, GroupService){
+function Controller($scope, $state, $stateParams, AssignmentService, ConfirmationService, GroupService){
     "ngInject";
 
     this.pageName = "Create/Edit Group";
@@ -7,6 +7,7 @@ function Controller($scope, $state, $stateParams, AssignmentService, GroupServic
     this.moduleId = $stateParams.moduleId;
     this.groupId = $stateParams.groupId;
     this._$state = $state;
+    this._ConfirmationService = ConfirmationService;
     this._AssignmentService = AssignmentService;
     this._GroupService = GroupService;
     this.groupMembers = [];
@@ -75,11 +76,18 @@ Controller.prototype.removeGroupMember = function(memberToBeRemovedId){
 
 Controller.prototype.finalize = function(){
     var self= this;
-    self._GroupService.finalize(self.courseId, self.moduleId, self.groupId)
-        .then(function(payload){
-            self._$state.go('app.course.assignment', {moduleId:self.moduleId}, { reload:true });
-    }, function(err){
-       self.error = err;
+    var confirmation = "Are you sure you want to finalize the group?";
+    var footNote = "Once finalized, the group cannot be changed!";
+    var modalInstance = self._ConfirmationService.open("", confirmation, footNote);
+    modalInstance.result.then(function(){
+        self._GroupService.finalize(self.courseId, self.moduleId, self.groupId)
+            .then(function(payload){
+                self._$state.go('app.course.assignment', {moduleId:self.moduleId}, { reload:true });
+        }, function(err){
+           self.error = err;
+        });
+    }, function(){
+        console.log("They said no");
     });
 }
 

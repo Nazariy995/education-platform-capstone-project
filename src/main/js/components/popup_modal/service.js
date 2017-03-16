@@ -6,15 +6,25 @@ function Service($uibModal, $document){
     this._$document = $document;
 }
 
-Service.prototype.open = function(size){
+Service.prototype.open = function(size, confirmationText, footnoteText){
     var self = this;
     var modalInstance = self._$uibModal.open({
         animation: true,
         templateUrl: 'components/popup_modal/template.html',
         controller:  'PopupModalController',
         controllerAs: '$modalCtrl',
-        size: size
+        size: size,
+        resolve : {
+            confirmationText : function(){
+                return confirmationText;
+            },
+            footnoteText : function() {
+                return footnoteText;
+            }
+        }
     });
+
+    return modalInstance;
 }
 
 module.exports = Service;

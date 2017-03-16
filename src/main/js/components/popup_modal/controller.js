@@ -1,19 +1,23 @@
 
-function Controller($state, $uibModal, $uibModalInstance){
+function Controller($state, $uibModalInstance, confirmationText, footnoteText){
     "ngInject";
     this._$uibModalInstance = $uibModalInstance;
     this._$state = $state;
+    this.text = confirmationText;
+    this.footnoteText = footnoteText;
 }
 
-Controller.prototype.goBack = function(){
+Controller.prototype.confirm = function(){
     var self = this;
-    console.log("I cicked ok");
+    console.log("I cicked Yes");
     self._$uibModalInstance.close();
 };
 
-Controller.prototype.reload = function(){
+Controller.prototype.reject = function(){
     var self = this;
-    console.log("I clicked Reload");
+    console.log("I clicked No");
+    self._$uibModalInstance.dismiss('cancel');
+
 }
 
 module.exports = Controller;
