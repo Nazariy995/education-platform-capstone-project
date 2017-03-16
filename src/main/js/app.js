@@ -6,6 +6,7 @@ require('angular');
 require('angular-ui-router');
 require('angular-ui-bootstrap');
 require('angular-animate');
+require('ng-file-upload');
 
 //Internal
 var views = require('./views/module');
@@ -22,6 +23,7 @@ var appModule = angular.module("app", [
     'ui.router',
     'ui.bootstrap',
     'ngAnimate',
+    'ngFileUpload',
 
     //Internal
     appSettings.name,
