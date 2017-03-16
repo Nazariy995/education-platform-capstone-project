@@ -6,7 +6,7 @@ function Controller($scope, $state, $stateParams, AssignmentService, GroupServic
     this.pageName = "Assignment";
     this.courseId = $stateParams.courseId;
     this.moduleId = $stateParams.moduleId;
-    this.groupId = null;
+    this.groupId = "";
     this._AssignmentService = AssignmentService;
     this._GroupService = GroupService;
     this.assignment = {};
@@ -66,9 +66,13 @@ Controller.prototype.getGroup = function(){
     var self = this;
     self._GroupService.getGroupMembers(self.courseId, self.moduleId)
         .then(function(payload){
-            self.assignmentMembers = payload.members;
-            self.groupId = payload.id;
-            self.finalized = payload.isFinalized;
+            if("isFinalized" in payload) {
+                self.assignmentMembers = payload.members;
+                self.groupId = payload.id;
+                self.finalized = payload.isFinalized;
+            } else {
+                self.finalized = false;
+            }
             console.log("Got the Assignment Group Data");
             console.log(payload);
     }, function(err){
@@ -79,7 +83,7 @@ Controller.prototype.getGroup = function(){
 Controller.prototype.navToGroup = function(){
     var self = this;
     if(self.canCreateGroup){
-        self._$state.go('app.course.assignment.group',{groupId:self.groupId});
+        self._$state.go('app.course.assignment.group',{ groupId:self.groupId });
     }
 };
 
