@@ -222,8 +222,8 @@ public class GroupServiceImpl implements GroupService {
 
     logger.debug("Getting submission number for groupId: '{}'", groupId);
     TypedQuery<Long> query = entityManager.createQuery(
-        "select max(a.submissionNumber) from Answer a join a.group g join g.module m where "
-            + "g.groupId = :groupId",
+        "select max(a.submissionNumber) from Answer a join a.group g where "
+            + "g.id = :groupId",
         Long.class);
     query.setParameter("groupId", groupId);
     List<Long> result = query.getResultList();

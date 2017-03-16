@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 
 import edu.umdearborn.astronomyapp.entity.CourseUser;
 import edu.umdearborn.astronomyapp.entity.CourseUser.CourseRole;
-import edu.umdearborn.astronomyapp.repository.CourseUserRepository;
-import edu.umdearborn.astronomyapp.repository.ModuleGroupRepository;
 
 @Service
 @Transactional
@@ -25,8 +23,7 @@ public class AclServiceImpl implements AclService {
 
   private EntityManager entityManager;
 
-  public AclServiceImpl(EntityManager entityManager, CourseUserRepository courseUserRepository,
-      ModuleGroupRepository moduleGroupRepository) {
+  public AclServiceImpl(EntityManager entityManager) {
     this.entityManager = entityManager;
   }
 
@@ -245,6 +242,39 @@ public class AclServiceImpl implements AclService {
 
     logger.debug("{} does have any role in {} in course: '{}'", courseUserId, role, courseId);
 
+  }
+
+  @Override
+  public void enforceCourseNotOpen(String courseId) {
+    TypedQuery<Boolean> query = entityManager.createQuery(
+        "select count(c) > 0 from Course c where c.openTimestamp > now() and c.id = :id",
+        Boolean.class);
+    query.setParameter("id", courseId);
+    boolean result = query.getSingleResult();
+
+    if (!result) {
+      logger.debug("Course: '{}' is already open", courseId);
+      throw new AccessDeniedException("Course: " + courseId + " is already open");
+    }
+
+    logger.debug("Course: '{}' is not open", courseId);
+  }
+
+  @Override
+  public void enforceModuleNotOpen(String moduleId) {
+    TypedQuery<Boolean> query = entityManager.createQuery(
+        "select count(m) > 0 from Module m where m.openTimestamp > now() and m.id = :id or "
+            + "m.openTimestamp is null",
+        Boolean.class);
+    query.setParameter("id", moduleId);
+    boolean result = query.getSingleResult();
+
+    if (!result) {
+      logger.debug("Module: '{}' is already open", moduleId);
+      throw new AccessDeniedException("Module: " + moduleId + " is already open");
+    }
+
+    logger.debug("Module: '{}' is not open", moduleId);
   }
 
 }

@@ -4,6 +4,7 @@ import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.GRADER_PAT
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.INSTRUCTOR_PATH;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.REST_PATH_PREFIX;
 import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.STUDENT_PATH;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
@@ -29,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.google.common.collect.ImmutableMap;
 
 import edu.umdearborn.astronomyapp.entity.AstroAppUser;
 import edu.umdearborn.astronomyapp.entity.Course;
@@ -105,14 +108,25 @@ public class CourseController {
 
   @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}", method = PUT)
   public Course updateCourse(@Valid @RequestBody Course course, Errors errors,
-      @PathVariable("courseId") String courseId,
-      @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
+      @PathVariable("courseId") String courseId, Principal principal) {
 
-    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
+    acl.enforceInCourse(principal.getName(), courseId);
+    acl.enforceCourseNotOpen(courseId);
 
     ValidAssert.isValid(errors);
     course.setId(courseId);
     return courseService.updateCourse(course);
+  }
+
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}", method = DELETE)
+  public List<Course> deleteCourse(@PathVariable("courseId") String courseId, Principal principal) {
+
+    acl.enforceInCourse(principal.getName(), courseId);
+    acl.enforceCourseNotOpen(courseId);
+
+    courseService.deleteCourse(courseId);
+
+    return courseService.getCourses(principal.getName(), false, false);
   }
 
   @RequestMapping(value = {STUDENT_PATH + "/course/{courseId}/users",
@@ -170,7 +184,7 @@ public class CourseController {
   }
 
   @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/bulk-students", method = POST)
-  public List<CourseUser> addStudentsToCourse(@PathVariable("courseId") String courseId,
+  public Map<String, Integer> addStudentsToCourse(@PathVariable("courseId") String courseId,
       @RequestParam("file") MultipartFile file, Principal principal) {
     MimeType fileType = MimeType.valueOf(file.getContentType());
     logger.debug("Recieved filetype: '{}'", fileType);
@@ -186,8 +200,7 @@ public class CourseController {
       if (parsed.isEmpty()) {
         logger.info("No valid results. Not changing anything");
 
-        return courseService.getClassList(courseId, Arrays.asList(CourseUser.CourseRole.INSTRUCTOR,
-            CourseUser.CourseRole.TA, CourseUser.CourseRole.STUDENT));
+        return ImmutableMap.of("added", 0);
       }
 
       logger.debug("Parsed {} records correctly", parsed.size());
@@ -204,9 +217,7 @@ public class CourseController {
         return cu;
       }).toArray(CourseUser[]::new);
 
-      userManagementService.addUsersToCourse(courseId, users);
-      return courseService.getClassList(courseId, Arrays.asList(CourseUser.CourseRole.INSTRUCTOR,
-          CourseUser.CourseRole.TA, CourseUser.CourseRole.STUDENT));
+      return ImmutableMap.of("added", userManagementService.addUsersToCourse(courseId, users).size());
     } catch (IOException ioe) {
       logger.error("Error parsing CSV", ioe);
       throw new RuntimeException(ioe);
@@ -224,7 +235,7 @@ public class CourseController {
         Arrays.asList(CourseUser.CourseRole.STUDENT, CourseUser.CourseRole.TA));
 
     userManagementService.updateCourseUserStatus(courseUserId, false);
-    
+
     return courseService.getClassList(courseId, Arrays.asList(CourseUser.CourseRole.INSTRUCTOR,
         CourseUser.CourseRole.TA, CourseUser.CourseRole.STUDENT));
   }

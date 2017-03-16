@@ -61,7 +61,7 @@ public class Question extends PageItem {
   @JsonView(View.Student.class)
   @NotNull
   @Enumerated(EnumType.STRING)
-  @Column(length = 15)
+  @Column(length = 20)
   private QuestionType questionType;
 
   @Override
