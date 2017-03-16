@@ -30,7 +30,7 @@ var states = [
                     var moduleId = $stateParams.moduleId;
                     return GroupService.initialize(courseId, moduleId)
                         .then(function(payload){
-                            $state.go($state.current, {groupId:payload.id});
+                            $stateParams.groupId = payload.id;
                         return payload.id;
                     }, function(err){
                             $state.go('app.course.assignment', {moduleId : moduleId});
