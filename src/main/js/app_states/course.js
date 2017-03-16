@@ -59,6 +59,28 @@ var states = [
         }
     },
     {
+        name : 'app.course.members',
+        url : '/members',
+        views : {
+            'childContent' : {
+                templateUrl : 'views/instructor/course_members/home.html',
+                controller : 'Instructor.CourseMembers',
+                controllerAs : 'courseMembersCtrl'
+            }
+        }
+    },
+    {
+        name : 'app.course.members_add',
+        url : '/members/add',
+        views : {
+            'childContent' : {
+                templateUrl : 'views/instructor/course_members_add/home.html',
+                controller : 'Instructor.CourseMembersAdd',
+                controllerAs : 'courseMembersAddCtrl'
+            }
+        }
+    },
+    {
         name : 'app.course.grades',
         url : '/grades',
         views : {
