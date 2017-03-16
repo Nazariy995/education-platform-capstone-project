@@ -66,6 +66,11 @@ module.exports = angular.module('app.settings', [])
                 "name" : "Grades",
                 "state" : "app.course.grades",
                 "icon" : "glyphicon glyphicon-book"
+            },
+            {
+                "name" : "Members",
+                "state" : "app.course.members",
+                "icon" : "glyphicon glyphicon-th"
             }
         ],
         "quizComponentTemplates" : {
