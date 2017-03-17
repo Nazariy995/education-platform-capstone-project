@@ -20,6 +20,7 @@ gulp.task('browserify', [ 'clean' ], function() {
 		paths : [ 'src/main/js/' ]
 	}).bundle().on('error', function(e) {
 		gutil.log(e);
+		process.exit(1);
 	}).pipe(source('src/main/js/dist/bundle.js')).pipe(gulp.dest('.'));
 
 });
