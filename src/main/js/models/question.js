@@ -33,6 +33,7 @@ Service.prototype.getQuestions = function(courseId, moduleId, pageNumber){
     + '/rest/student/course/'+ courseId
     +'/module/' + moduleId
     + '?page=' + pageNumber;
+    self.config.cache = true;
     return this._$http
           .get(url, self.config)
           .then(function (res) {
@@ -40,7 +41,37 @@ Service.prototype.getQuestions = function(courseId, moduleId, pageNumber){
           });
 };
 
+Service.prototype.saveAnswers = function(courseId, moduleId, groupId, payload){
+    var self = this;
+    self.getConfig();
+    var url = self._appSettings.API.basePath + '/rest/student/course/'+
+    courseId+ '/module/'
+    + moduleId + "/group/"
+    + groupId + "/answers/save";
+    return this._$http
+        .post(url, payload, self.config)
+        .then(function (res) {
+            console.log("Save all the answers");
+            console.log(res.data);
+            return res.data;
+        });
+}
 
+Service.prototype.getAnswers = function(courseId, moduleId, groupId){
+    var self = this;
+    self.getConfig();
+    var url = self._appSettings.API.basePath + '/rest/student/course/'+
+    courseId+ '/module/'
+    + moduleId + "/group/"
+    + groupId + "/answers/?showSaved=true";
+    return this._$http
+        .get(url, self.config)
+        .then(function (res) {
+            console.log("Get all answers");
+            console.log(res.data);
+            return res.data;
+        });
+};
 
 module.exports = angular.module('app.models.question', [
     'app.settings'

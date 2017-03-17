@@ -1,5 +1,5 @@
 
-function Controller($scope, $state, $stateParams, AssignmentService, GroupService){
+function Controller($scope, $state, $stateParams, $q, AssignmentService, GroupService){
     "ngInject";
 
     this.pageName = "Login";
@@ -7,6 +7,7 @@ function Controller($scope, $state, $stateParams, AssignmentService, GroupServic
     this.moduleId = $stateParams.moduleId;
     this.groupId = $stateParams.groupId;
     this._$state = $state;
+    this._$q = $q;
     this._GroupService = GroupService;
     this.groupMembersCount = 0;
     this.membersLoginInfo = [];
@@ -33,30 +34,36 @@ Controller.prototype.getGroupMembersCount = function(){
 Controller.prototype.groupCheckin = function(){
     var self = this;
     var loginError = false;
-    angular.forEach(self.membersLoginInfo, function(memberLogin, key){
-        //Delete error field so that it is not passed to the API
-        if('error' in memberLogin) delete memberLogin.error;
 
-        //Check user validity
-        self._GroupService.groupCheckin(self.courseId, self.moduleId, self.groupId, memberLogin)
-        .then(function(payload){
-            if(key == (self.membersLoginInfo.length-1)){
-                self.navToQuestions(loginError);
-            };
-        }, function(err){
-            console.log("There was an error");
-            console.log(err);
-            memberLogin.error = "Incorrect Username/Password";
-            console.log(self.membersLoginInfo);
-            loginError = true;
-        });
+    var promise = self._$q.all(null);
+
+    //loop through all of the members
+    angular.forEach(self.membersLoginInfo, function(memberLogin, key){
+        promise = promise.then(function(){
+            //Delete error field so that it is not passed to the API
+            if('error' in memberLogin) delete memberLogin.error;
+
+            return self._GroupService.groupCheckin(self.courseId, self.moduleId, self.groupId, memberLogin)
+            .then(function(payload){
+                console.log("Response from Group Checkin");
+            }, function(err){
+                console.log("There was an error");
+                console.log(err);
+                memberLogin.error = "Incorrect Username/Password";
+                loginError = true;
+            });
+        })
     });
-    console.log("After For each");
+
+    //when all of the requests have finished navigate to the questions page
+    promise.then(function(){
+        self.navToQuestions(loginError);
+    })
+
 };
 
 Controller.prototype.navToQuestions = function(loginError){
     var self = this;
-    console.log("Inside NavToQuestions");
     if(!loginError){
         self._$state.go('app.course.assignment.questions', { groupId:self.groupId});
     };

@@ -1,0 +1,30 @@
+
+<h2 >
+    {{ courseMembersAddCtrl.pageName }}
+</h2>
+<div class="row">
+    <div class="col-md-6">
+        <div class="alert alert-success" ng-show="csvFile.result" >
+            <strong>Success!</strong> Upload Complete!
+        </div>
+        <div class="alert alert-danger" ng-show="courseMembersAddCtrl.error">
+            <strong>Sorry!</strong> There was a problem uploading.
+        </div>
+        <form name="courseMembersForm" novalidate>
+            <div class="form-group">
+                <label for="file" >Select File</label>
+                <input type="file"
+                        ngf-select
+                        ng-model="csvFile"
+                        accept=".csv, text/csv"
+                        ngf-model-invalid="errorFile"
+                        required >
+                <p class="help-block">.CSV</p>
+            </div>
+            <button type="submit" class="btn btn-primary"
+                    ng-disabled="!courseMembersForm.$valid"
+                    ng-click="courseMembersAddCtrl.uploadMembers(csvFile)">Submit</button>
+        </form>
+    </div>
+</div>
+

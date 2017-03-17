@@ -1,0 +1,13 @@
+
+.assignmentHeader {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-items: flex-end;
+	align-content: flex-start;
+}
+
+.headerDetail {
+	padding-left: 2em;
+}

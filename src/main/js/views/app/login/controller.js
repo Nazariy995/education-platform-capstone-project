@@ -1,11 +1,13 @@
 
 
-function Controller($scope, $state, $window, AuthService, ModalService){
+function Controller($scope, $state, $window, $stateParams, AuthService, ModalService, appSettings){
     "ngInject";
     this._AuthService = AuthService;
+    this.sessionExpired = $stateParams.sessionExpired;
     this._$state = $state;
     this._$scope = $scope;
-    this._$scope.error = null;
+    this.error = null;
+    this.userRoles = appSettings.ROLES;
 
     this.credentials = {
         username: '',
@@ -17,14 +19,13 @@ Controller.prototype.login = function(){
     var self = this;
     self._AuthService.login(self.credentials).then(function(user){
 
-        if(user.roles.indexOf("USER") != -1){
+        if(user.roles.indexOf(self.userRoles.user) != -1){
             self._$state.go("app.courses");
-        } else if(user.roles.indexOf("INSTRUCTOR") != -1) {
-            self._$state.go("home.teacher");
+        } else if(user.roles.indexOf(self.userRoles.instructor) != -1) {
+            self._$state.go("app.courses");
         }
     },function(err){
-        console.log("failed");
-        self._$scope.error = err;
+        self.error = err;
     });
 
 }

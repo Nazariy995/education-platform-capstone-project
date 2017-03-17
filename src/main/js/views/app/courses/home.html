@@ -1,21 +1,31 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-xs-12">
             <h1 class="page-header">
                 {{ pageName }}
             </h1>
-
+        </div>
+    </div>
+    <div class="row" restrict access="INSTRUCTOR">
+        <div class="col-xs-12">
+            <a ui-sref="app.courses.add_edit({courseId:'new'})"><button class="btn btn-primary">+ New Course</button></a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <table class="table table-hover">
             <thead>
                 <tr>
                 <th>Name</th>
                 <th>Term</th>
+                <th restrict access="INSTRUCTOR">Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="course in courses">
                     <td><a ui-sref="app.course.assignments({courseId:'{{course.id}}'})"> {{  course.courseTitle }} </a></td>
                     <td> {{ course.subjectCode }} </td>
+                    <td restrict access="INSTRUCTOR"><a ui-sref="app.courses.add_edit({courseId:'{{course.id}}'})">Edit</a></td>
                 </tr>
             </tbody>
             </table>

@@ -33,13 +33,14 @@ SessionService.prototype.setUser = function(user){
 
 SessionService.prototype.getAccessToken = function(){
     var self = this;
-    return this._accessToken;
+    return self._accessToken;
 }
 
 SessionService.prototype.setAccessToken = function(accessToken){
-    this._accessToken = accessToken;
-    this._$window.localStorage.setItem('session.accessToken', JSON.stringify(accessToken));
-    return this;
+    var self = this;
+    self._accessToken = accessToken;
+    self._$window.localStorage.setItem('session.accessToken', JSON.stringify(accessToken));
+    return self;
 }
 
 SessionService.prototype.destroy = function(){

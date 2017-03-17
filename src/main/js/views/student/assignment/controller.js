@@ -1,27 +1,62 @@
 
 function Controller($scope, $state, $stateParams, AssignmentService, GroupService){
     "ngInject";
+    this._$scope = $scope;
     this._$state = $state;
     this.pageName = "Assignment";
     this.courseId = $stateParams.courseId;
     this.moduleId = $stateParams.moduleId;
-    this.groupId = null;
+    this.groupId = "";
     this._AssignmentService = AssignmentService;
     this._GroupService = GroupService;
     this.assignment = {};
     this.assignmentMembers = [];
-    this.finalized = true;
+    this.finalized = null;
+    this.canStart = false;
+    this.canCreateGroup = false;
+
     this.init();
 };
 
 Controller.prototype.init = function(){
     var self = this;
+    //watch finalized to set canStart and canCreateGroup accordingly
+    self.setFinalized();
+    //get Assignment Details
+    self.getAssignmentDetails();
+    //get Group Details
+    self.getGroup();
+};
+
+//Watch finalized variable from the API
+Controller.prototype.setFinalized = function(){
+    var self = this;
+    self._$scope.$watch(
+        function watchFinalized( scope ){
+            return (self.finalized);
+        },
+        function handleFinalized(newFinalized){
+            //finalized, they can start the assignment
+            //else they still have to create the group
+            if(newFinalized == true){
+                self.canStart = true;
+                self.canCreateGroup = false;
+            } else if(newFinalized == false){
+                self.canStart = false;
+                self.canCreateGroup = true;
+            }
+
+        }
+    )
+}
+
+Controller.prototype.getAssignmentDetails = function(){
+    var self = this;
     self._AssignmentService.getAssignmentDetails(self.courseId, self.moduleId)
         .then(function(payload){
             self.assignment = payload;
             self.pageName = payload.moduleTitle;
-            console.log("Got the Assignment Details");
-            self.getGroup(); //Uncommented it for right now because currently it is giving me an error
+            self._AssignmentService.assignmentDetails = payload;
     }, function(err){
        self.error = err;
     });
@@ -31,9 +66,13 @@ Controller.prototype.getGroup = function(){
     var self = this;
     self._GroupService.getGroupMembers(self.courseId, self.moduleId)
         .then(function(payload){
-            self.assignmentMembers = payload.members;
-            self.groupId = payload.id;
-            self.finalized = payload.isFinalized;
+            if("isFinalized" in payload) {
+                self.assignmentMembers = payload.members;
+                self.groupId = payload.id;
+                self.finalized = payload.isFinalized;
+            } else {
+                self.finalized = false;
+            }
             console.log("Got the Assignment Group Data");
             console.log(payload);
     }, function(err){
@@ -43,14 +82,14 @@ Controller.prototype.getGroup = function(){
 
 Controller.prototype.navToGroup = function(){
     var self = this;
-    if(!self.finalized){
-        self._$state.go('app.course.assignment.group',{groupId:self.groupId});
+    if(self.canCreateGroup){
+        self._$state.go('app.course.assignment.group',{ groupId:self.groupId });
     }
 };
 
 Controller.prototype.navToLogin = function(){
     var self = this;
-    if(self.finalized){
+    if(self.canStart){
         self._$state.go('app.course.assignment.login',{groupId:self.groupId});
     }
 }

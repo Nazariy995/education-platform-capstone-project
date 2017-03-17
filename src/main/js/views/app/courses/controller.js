@@ -17,6 +17,6 @@ Controller.prototype.init = function(){
     });
 }
 
-module.exports = angular.module('app.views.student.home.controller', [ ])
-.controller('Student.HomeCtrl', Controller);
+module.exports = angular.module('app.views.app.courses.controller', [ ])
+.controller('CoursesCtrl', Controller);
 

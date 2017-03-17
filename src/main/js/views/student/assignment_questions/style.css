@@ -1,0 +1,10 @@
+
+nav.questionsPaging {
+    text-align: center;
+}
+
+.pagination  > li {
+    cursor: pointer;
+}
+
+
