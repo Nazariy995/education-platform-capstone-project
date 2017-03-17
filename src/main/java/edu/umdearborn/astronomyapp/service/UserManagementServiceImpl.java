@@ -86,7 +86,6 @@ public class UserManagementServiceImpl implements UserManagementService {
   @Override
   public AstroAppUser persistNewUser(AstroAppUser user) {
 
-    user.setPasswordNonExpired(false);
     user.setPassword(RandomStringUtils.randomAlphanumeric(12));
 
     Map<String, String> context =
