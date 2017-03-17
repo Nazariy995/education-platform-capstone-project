@@ -57,10 +57,9 @@ public class ModuleController {
   }
 
   @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/modules", method = GET)
-  public List<Module> getModules(@PathVariable("courseId") String courseId,
-      @RequestParam(name = "courseUserId") String courseUserId, Principal principal) {
+  public List<Module> getModules(@PathVariable("courseId") String courseId, Principal principal) {
 
-    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
+    acl.enforceInCourse(principal.getName(), courseId);
 
     return moduleService.getModules(courseId, false);
   }
@@ -83,7 +82,7 @@ public class ModuleController {
 
     acl.enforceInCourse(principal.getName(), courseId, courseUserId);
     acl.enforeceModuleInCourse(courseId, moduleId);
-    acl.enforceModuleVisible(moduleId);
+    acl.enforceModuleOpen(moduleId);
 
     return moduleService.getModuleDetails(moduleId);
   }
@@ -98,7 +97,7 @@ public class ModuleController {
 
     acl.enforceInCourse(principal.getName(), courseId);
     acl.enforeceModuleInCourse(courseId, moduleId);
-    acl.enforceModuleVisible(moduleId);
+    acl.enforceModuleOpen(moduleId);
 
     return moduleService.getPage(moduleId, pageNumber);
   }

@@ -66,7 +66,7 @@ public class ModuleServiceImpl implements ModuleService {
 
     if (showVisibleOnly) {
       logger.debug("Hiding not yet visible modules");
-      jpql.append(" and m.visibleTimestamp <= current_timestamp()");
+      jpql.append(" and m.openTimestamp <= current_timestamp()");
     }
 
     logger.debug("Resuting JPQL: {}", jpql.toString());
