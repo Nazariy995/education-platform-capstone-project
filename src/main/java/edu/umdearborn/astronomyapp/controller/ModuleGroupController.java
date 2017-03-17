@@ -327,7 +327,7 @@ public class ModuleGroupController {
       method = POST)
   public List<Answer> submitAnswers(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
-      @RequestBody Map<String, String> answers, HttpSession session, Principal principal) {
+      HttpSession session, Principal principal) {
 
     String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 

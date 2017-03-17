@@ -20,4 +20,10 @@ public interface ModuleService {
   public List<PageItem> getPage(String moduleId, int pageNumber);
   
   public BigDecimal getMaxPoints(String moduleId);
+  
+  public void deletePage(String moduleId, int pageNumber);
+  
+  public PageItem createPageItem(PageItem item, String moduleId, int pageNum);
+  
+  public void deletePageItem(String pageItemId);
 }

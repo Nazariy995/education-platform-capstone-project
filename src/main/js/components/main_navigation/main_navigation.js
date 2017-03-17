@@ -3,16 +3,20 @@ function Directive($state, appSettings, SessionService){
 
     function link(scope, element){
 
-        var roles = SessionService.getUser().roles;
-        if (roles.indexOf("USER") != -1){
-            var role = "USER";
-            scope.navigationLinks = appSettings[role]["mainNavigationLinks"];
+        var roles = appSettings.ROLES;
+
+        var user = SessionService.getUser();
+        if (user.roles.indexOf(roles.user) != -1){
+            scope.navigationLinks = appSettings[roles.user]["mainNavigationLinks"];
+        } else if(user.roles.indexOf(roles.instructor) != -1) {
+            scope.navigationLinks = appSettings[roles.instructor]["mainNavigationLinks"];
         }
 
 
         scope.logout = function(){
             SessionService.destroy();
             $state.go('app.login');
+            window.location.reload();
         }
 
     }

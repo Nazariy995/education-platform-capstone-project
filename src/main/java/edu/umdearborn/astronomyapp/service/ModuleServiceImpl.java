@@ -9,9 +9,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
@@ -20,11 +23,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import edu.umdearborn.astronomyapp.controller.exception.UpdateException;
 import edu.umdearborn.astronomyapp.entity.Module;
 import edu.umdearborn.astronomyapp.entity.MultipleChoiceQuestion;
 import edu.umdearborn.astronomyapp.entity.NumericQuestion;
+import edu.umdearborn.astronomyapp.entity.Page;
 import edu.umdearborn.astronomyapp.entity.PageItem;
+import edu.umdearborn.astronomyapp.entity.PageItem.PageItemType;
 import edu.umdearborn.astronomyapp.entity.Question;
+import edu.umdearborn.astronomyapp.entity.Question.QuestionType;
 import edu.umdearborn.astronomyapp.util.ResultListUtil;
 import edu.umdearborn.astronomyapp.util.json.JsonDecorator;
 
@@ -95,7 +102,7 @@ public class ModuleServiceImpl implements ModuleService {
               + "p.module m where m.id = :moduleId group by m.id", Long.class);
       questionCountQuery.setParameter("moduleId", moduleId);
       decorator.addProperty("numQuestion", questionCountQuery.getSingleResult());
-      
+
       decorator.addProperty("points", getMaxPoints(moduleId));
 
       return decorator;
@@ -161,12 +168,162 @@ public class ModuleServiceImpl implements ModuleService {
 
   @Override
   public BigDecimal getMaxPoints(String moduleId) {
-    
+
     TypedQuery<BigDecimal> query =
         entityManager.createQuery("select sum(q.points) from Question q join q.page p join "
             + "p.module m where m.id = :moduleId group by m.id", BigDecimal.class);
     query.setParameter("moduleId", moduleId);
-    
+
     return query.getSingleResult();
+  }
+
+  @Override
+  public void deletePage(String moduleId, int pageNumber) {
+    List<Page> results = entityManager
+        .createQuery(
+            "select p from Page p join p.module m where m.id = :moduleId and p.order = :pageNumber",
+            Page.class)
+        .setParameter("moduleId", moduleId).setParameter("pageNumber", pageNumber).getResultList();
+
+    if (ResultListUtil.hasResult(results)) {
+      entityManager.remove(results.get(0));
+
+      logger.debug("Re-ordering remaining pages");
+      entityManager
+          .createQuery("update Page p set p.order = p.order - 1 "
+              + "where p.order > :pageNumber and p.module.id = :moduleId")
+          .setParameter("pageNumber", pageNumber).setParameter("moduleId", moduleId)
+          .executeUpdate();
+    }
+
+  }
+
+  @Override
+  public PageItem createPageItem(PageItem item, String moduleId, int pageNum) {
+    item.prePersist();
+
+    List<String> results = entityManager
+        .createQuery(
+            "select p.id from Page p join p.module m where m.id = :moduleId and p.order = :pageNum",
+            String.class)
+        .setParameter("moduleId", moduleId).setParameter("pageNum", pageNum).getResultList();
+
+    if (ResultListUtil.hasResult(results)) {
+      insertPageItem(item, results.get(0));
+
+      if (PageItemType.QUESTION.equals(item.getPageItemType())) {
+        insertQuestion((Question) item);
+
+        if (QuestionType.MULTIPLE_CHOICE.equals(((Question) item).getQuestionType())) {
+          insertMultipleChoice((MultipleChoiceQuestion) item);
+        } else if (QuestionType.NUMERIC.equals(((Question) item).getQuestionType())) {
+          insertNumeric((NumericQuestion) item);
+        }
+      }
+
+      return item;
+
+    } else {
+      logger.error("Page number: '{}' does not exist for module: '{}'", pageNum, moduleId);
+
+      throw new UpdateException(
+          "Cannot insert item into page number: " + pageNum + " for in module: " + moduleId);
+    }
+  }
+
+  private void insertPageItem(PageItem item, String pageId) {
+    logger.debug("Inserting into page_item");
+
+    entityManager
+        .createNativeQuery(
+            "insert into page_item(page_item_id, page_item_type, item_order, human_readable_text, page_id) "
+                + "values (?, ?, (select max(item_order) + 1 from page_item where page_id = ?), ?, ?)")
+        .setParameter(1, item.getId()).setParameter(2, item.getPageItemType().toString())
+        .setParameter(3, pageId).setParameter(4, item.getHumanReadableText())
+        .setParameter(5, pageId).executeUpdate();
+  }
+
+  private void insertQuestion(Question question) {
+    logger.debug("Inserting into question");
+    entityManager
+        .createNativeQuery(
+            "insert into question(question_id, question_type, default_comment, is_gatekeeper, points) "
+                + "values (?, ?, ?, ?, ?)")
+        .setParameter(1, question.getId()).setParameter(2, question.getQuestionType().toString())
+        .setParameter(3, question.getDefaultComment()).setParameter(4, question.isGatekeeper())
+        .setParameter(5, question.getPoints()).executeUpdate();
+  }
+
+  private void insertMultipleChoice(MultipleChoiceQuestion question) {
+    logger.debug("Inserting into multiple_choice_question");
+    entityManager
+        .createNativeQuery(
+            "insert into multiple_choice_question( multiple_choice_question_id) values (?)")
+        .setParameter(1, question.getId()).executeUpdate();
+
+    logger.debug("Inserting into multiple_choice_question options");
+
+    StringBuilder builder = new StringBuilder(
+        "insert into multiple_choice_option(multiple_choice_option_id, is_correct_option, "
+            + "human_readable_text, option_question_id) values");
+    List<Object> params = question.getOptions().stream().flatMap(o -> {
+      builder.append("(?, ?, ?, ?),");
+      o.prePersist();
+      return Arrays
+          .asList(o.getId(), o.isCorrectOption(), o.getHumanReadableText(), question.getId())
+          .stream();
+    }).collect(Collectors.toList());
+
+    Query query =
+        entityManager.createNativeQuery(builder.deleteCharAt(builder.length() - 1).toString());
+
+    IntStream.rangeClosed(1, params.size()).forEach(i -> query.setParameter(i, params.get(--i)));
+
+    query.executeUpdate();
+  }
+
+  private void insertNumeric(NumericQuestion question) {
+    logger.debug("Inserting into numeric_question");
+    entityManager
+        .createNativeQuery(
+            "insert into numeric_question(numeric_question_id, allowed_coefficient_spread, "
+                + "allowed_exponenet_spread, correct_coefficient, correct_exponenet, requires_scale) "
+                + "values (?, ?, ?, ?, ?, ?)")
+        .setParameter(1, question.getId()).setParameter(2, question.getAllowedCoefficientSpread())
+        .setParameter(3, question.getAllowedExponenetSpread())
+        .setParameter(4, question.getCorrectCoefficient())
+        .setParameter(5, question.getRequiresScale()).setParameter(6, question.getRequiresScale())
+        .executeUpdate();
+
+    logger.debug("Inserting into numeric_question options");
+    StringBuilder builder = new StringBuilder(
+        "insert into unit_option(unit_option_id, is_correct_option, option_question_id, "
+            + "help_text, human_readable_text) values");
+    List<Object> params = question.getOptions().stream().flatMap(o -> {
+      builder.append("(?, ?, ?, ?, ?),");
+      o.prePersist();
+      return Arrays.asList(o.getId(), o.isCorrectOption(), question.getId(), o.getHelpText(),
+          o.getHumanReadableText()).stream();
+    }).collect(Collectors.toList());
+
+    Query query =
+        entityManager.createNativeQuery(builder.deleteCharAt(builder.length() - 1).toString());
+
+    IntStream.rangeClosed(1, params.size()).forEach(i -> query.setParameter(i, params.get(--i)));
+
+    query.executeUpdate();
+  }
+
+  @Override
+  public void deletePageItem(String pageItemId) {
+    List<PageItem> results = entityManager
+        .createQuery("select item from PageItem item where item.id = :id", PageItem.class)
+        .setParameter("id", pageItemId).getResultList();
+
+    if (ResultListUtil.hasResult(results)) {
+      entityManager.remove(results.get(0));
+    } else {
+      throw new UpdateException("Item with id: " + pageItemId + " does not exist");
+    }
   }
 }

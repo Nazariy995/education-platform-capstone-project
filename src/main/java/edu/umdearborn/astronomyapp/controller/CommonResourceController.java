@@ -48,7 +48,7 @@ public class CommonResourceController {
     AstroAppUser user = commonResourceService.findByEmail(principal.getName());
     Map<String, String> courseUserSummary =
         commonResourceService.getCourseUserSummary(principal.getName());
-    
+
     logger.debug("Storing values into session");
     if (courseUserSummary != null && !courseUserSummary.isEmpty()) {
       HttpSessionUtil.putCourseUsers(session, courseUserSummary);

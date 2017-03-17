@@ -97,8 +97,10 @@ public class CourseServiceImpl implements CourseService {
 
   @Override
   public Course updateCourse(Course course) {
-    entityManager.merge(course);
-    return course;
+    Course old = entityManager.find(Course.class, course.getId());
+    old = course;
+    entityManager.merge(old);
+    return old;
   }
 
   @Override
@@ -161,7 +163,7 @@ public class CourseServiceImpl implements CourseService {
   public List<Course> getCourses() {
     return entityManager.createQuery("select c from Course c", Course.class).getResultList();
   }
-  
+
   @Override
   public Course getCourse(String id) {
     return entityManager.find(Course.class, id);
@@ -290,9 +292,10 @@ public class CourseServiceImpl implements CourseService {
               f.prePersist();
               entityManager
                   .createNativeQuery("INSERT INTO unit_option(unit_option_id, is_correct_option, "
-                      + "unit_id, option_question_id) VALUES (?, ?, ?, ?)")
+                      + "option_question_id, help_text, human_readable_text) VALUES (?, ?, ?, ?, ?)")
                   .setParameter(1, f.getId()).setParameter(2, f.isCorrectOption())
-                  .setParameter(3, f.getUnit().getId()).setParameter(4, e.getId()).executeUpdate();
+                  .setParameter(3, e.getId()).setParameter(4, f.getHelpText())
+                  .setParameter(5, f.getHumanReadableText()).executeUpdate();
             });
 
             break;
@@ -306,6 +309,11 @@ public class CourseServiceImpl implements CourseService {
 
   private List<String> getIds(List<? extends AbstractGeneratedId> entities) {
     return entities.parallelStream().map(e -> e.getId()).collect(Collectors.toList());
+  }
+
+  @Override
+  public void deleteCourse(String id) {
+    entityManager.remove(entityManager.find(Course.class, id));
   }
 
 }

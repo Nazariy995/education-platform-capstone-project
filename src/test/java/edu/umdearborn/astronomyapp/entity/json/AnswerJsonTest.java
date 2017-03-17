@@ -27,18 +27,18 @@ public class AnswerJsonTest extends JsonTestHelper<Answer> {
     answer.setValue("#3.5&unit-id");
     JsonContent<?> json = super.writeSafely(answer);
     logger.info("Json string:\n{}", json.getJson());
-    
+
     answer.setValue("#3.5e59&unit-id");
     json = super.writeSafely(answer);
     logger.info("Json string:\n{}", json.getJson());
   }
-  
+
   @Test
   public void testNonNumeric() {
     answer.setValue("some answer....");
     JsonContent<?> json = super.writeSafely(answer);
     logger.info("Json string:\n{}", json.getJson());
-    
+
     answer.setValue("t#3.5e59&unit-id");
     json = super.writeSafely(answer);
     logger.info("Json string:\n{}", json.getJson());

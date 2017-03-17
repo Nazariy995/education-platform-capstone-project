@@ -29,4 +29,8 @@ public interface AclService {
   public void enforceHasRoleInCourse(String courseUserId, String courseId,
       List<CourseUser.CourseRole> role);
 
+  public void enforceCourseNotOpen(String courseId);
+  
+  public void enforceModuleNotOpen(String moduleId);
+
 }
