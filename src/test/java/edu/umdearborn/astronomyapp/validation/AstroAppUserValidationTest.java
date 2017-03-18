@@ -6,14 +6,15 @@ import static org.hamcrest.collection.IsEmptyCollection.empty;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import org.junit.Test;
+import org.junit.Ignore;
 
 import edu.umdearborn.astronomyapp.entity.AstroAppUser;
 import edu.umdearborn.astronomyapp.entity.AstroAppUser.Role;
 
 public class AstroAppUserValidationTest extends ValidationTestHelper {
 
-  @Test
+	
+  @Ignore
   public void validAppUsersTest() {
     AstroAppUser user = new AstroAppUser();
     user.setEmail("email@email.com");
