@@ -1,7 +1,6 @@
 
-function Controller($scope, $state, $stateParams, AssignmentService, ConfirmationService, GroupService){
+function Controller($scope, $state, $stateParams, AssignmentService, ConfirmationService, GroupService, groupId){
     "ngInject";
-
     this.pageName = "Create/Edit Group";
     this.courseId = $stateParams.courseId;
     this.moduleId = $stateParams.moduleId;
@@ -20,7 +19,6 @@ Controller.prototype.init = function(){
     var self = this;
     self.getGroupMembers();
     self.getAssignmentMembers();
-    console.log(self.groupId);
 }
 
 Controller.prototype.getGroupMembers = function(){
@@ -40,8 +38,6 @@ Controller.prototype.getAssignmentMembers = function(){
     self._AssignmentService.getAssignmentMembers(self.courseId, self.moduleId)
         .then(function(payload){
             self.assignmentMembers = payload;
-            console.log("Get Assignment Members");
-            console.log(self.assignmentMembers);
     }, function(err){
        self.error = err;
     });
