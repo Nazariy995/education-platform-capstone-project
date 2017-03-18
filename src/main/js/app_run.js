@@ -1,5 +1,5 @@
 
-function onStateChange($rootScope, $state, AuthService, SessionService, GroupService){
+function onStateChange($rootScope, $state, $q, AuthService, SessionService, GroupService){
     "ngInject";
 
     $rootScope.$on('$stateChangeStart', function(evt, toState, toParams, fromState, fromParams){
@@ -37,7 +37,11 @@ function onStateChange($rootScope, $state, AuthService, SessionService, GroupSer
                 $state.go('app.login');
             }
         }
-    })
+    });
+
+    $rootScope.$on('$stateChangeError', function (evt, toState, toParams, fromState, fromParams, error) {
+        console.log(error);
+    });
 }
 
 module.exports = onStateChange;
