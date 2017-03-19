@@ -26,4 +26,6 @@ public interface ModuleService {
   public PageItem createPageItem(PageItem item, String moduleId, int pageNum);
   
   public void deletePageItem(String pageItemId);
+  
+  public int addPage(String moduleId);
 }
