@@ -6,16 +6,19 @@ import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.STUDENT_PA
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 import java.security.Principal;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +30,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import edu.umdearborn.astronomyapp.entity.Course;
 import edu.umdearborn.astronomyapp.entity.Module;
 import edu.umdearborn.astronomyapp.entity.MultipleChoiceQuestion;
 import edu.umdearborn.astronomyapp.entity.NumericQuestion;
@@ -102,6 +106,46 @@ public class ModuleController {
     return moduleService.getPage(moduleId, pageNumber);
   }
 
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module", method = POST)
+  public Module createModule(@PathVariable("courseId") String courseId,
+      @Valid @RequestBody Module module, Errors errors, HttpSession session, Principal principal) {
+
+    acl.enforceInCourse(principal.getName(), courseId);
+
+    Course course = new Course();
+    course.setId(courseId);
+    module.setCourse(course);
+
+    return moduleService.createModule(module);
+  }
+
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}", method = PUT)
+  public Module updateModule(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId, @Valid @RequestBody Module module, Errors errors,
+      HttpSession session, Principal principal) {
+
+    acl.enforceInCourse(principal.getName(), courseId);
+    acl.enforeceModuleInCourse(courseId, moduleId);
+    acl.enforceModuleNotOpen(moduleId);
+
+    Course course = new Course();
+    course.setId(courseId);
+    module.setCourse(course);
+
+    return moduleService.updateModule(module);
+  }
+
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}",
+      params = "!page", method = GET)
+  public JsonDecorator<Module> getModuleDetails(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId, HttpSession session, Principal principal) {
+
+    acl.enforceInCourse(principal.getName(), courseId);
+    acl.enforeceModuleInCourse(courseId, moduleId);
+
+    return moduleService.getModuleDetails(moduleId);
+  }
+
   @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}", params = "page",
       method = GET)
   public List<PageItem> getModulePage(@PathVariable("courseId") String courseId,
@@ -129,6 +173,18 @@ public class ModuleController {
     moduleService.deletePage(moduleId, pageNumber);
 
     return new ResponseEntity<Void>(HttpStatus.OK);
+  }
+
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}/add-page",
+      method = POST)
+  public int addPage(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId, HttpSession session, Principal principal) {
+
+    acl.enforceInCourse(principal.getName(), courseId);
+    acl.enforeceModuleInCourse(courseId, moduleId);
+    acl.enforceModuleNotOpen(moduleId);
+
+    return moduleService.addPage(moduleId);
   }
 
   @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}", params = "page",

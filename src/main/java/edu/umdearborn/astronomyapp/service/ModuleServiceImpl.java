@@ -92,14 +92,14 @@ public class ModuleServiceImpl implements ModuleService {
       decorator.setPayload(resultList.get(0));
 
       TypedQuery<Long> pageCountQuery = entityManager.createQuery(
-          "select count(p) from Page p join p.module m where m.id = :moduleId group by m.id",
+          "select count(p) from Page p join p.module m where m.id = :moduleId",
           Long.class);
       pageCountQuery.setParameter("moduleId", moduleId);
       decorator.addProperty("numPages", pageCountQuery.getSingleResult());
 
       TypedQuery<Long> questionCountQuery =
           entityManager.createQuery("select count(q) from Question q join q.page p join "
-              + "p.module m where m.id = :moduleId group by m.id", Long.class);
+              + "p.module m where m.id = :moduleId", Long.class);
       questionCountQuery.setParameter("moduleId", moduleId);
       decorator.addProperty("numQuestion", questionCountQuery.getSingleResult());
 
@@ -170,8 +170,8 @@ public class ModuleServiceImpl implements ModuleService {
   public BigDecimal getMaxPoints(String moduleId) {
 
     TypedQuery<BigDecimal> query =
-        entityManager.createQuery("select sum(q.points) from Question q join q.page p join "
-            + "p.module m where m.id = :moduleId group by m.id", BigDecimal.class);
+        entityManager.createQuery("select coalesce(sum(q.points), 0) from Question q join q.page p join "
+            + "p.module m where m.id = :moduleId", BigDecimal.class);
     query.setParameter("moduleId", moduleId);
 
     return query.getSingleResult();
@@ -196,6 +196,24 @@ public class ModuleServiceImpl implements ModuleService {
           .executeUpdate();
     }
 
+  }
+
+  @Override
+  public int addPage(String moduleId) {
+    int order = entityManager
+        .createQuery("select count(p) + 1 from Page p join p.module m where m.id = :moduleId",
+            Long.class)
+        .setParameter("moduleId", moduleId).getSingleResult().intValue();
+
+    Module module = new Module();
+    module.setId(moduleId);
+
+    Page page = new Page();
+    page.setOrder(order);
+    page.setModule(module);
+
+    entityManager.persist(page);
+    return page.getOrder();
   }
 
   @Override
