@@ -1,5 +1,5 @@
 
-function onStateChange($rootScope, $state, AuthService, SessionService, GroupService){
+function onStateChange($rootScope, $state, $q, AuthService, SessionService, GroupService, AuthService){
     "ngInject";
 
     $rootScope.$on('$stateChangeStart', function(evt, toState, toParams, fromState, fromParams){
@@ -34,10 +34,14 @@ function onStateChange($rootScope, $state, AuthService, SessionService, GroupSer
             console.log("Inside state change for not logged in ");
             if(toState.name != 'app.login' ){
                 evt.preventDefault();
-                $state.go('app.login');
+                AuthService.logout();
             }
         }
-    })
+    });
+
+    $rootScope.$on('$stateChangeError', function (evt, toState, toParams, fromState, fromParams, error) {
+        console.log(error);
+    });
 }
 
 module.exports = onStateChange;

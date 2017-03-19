@@ -34,8 +34,9 @@ var appModule = angular.module("app", [
 .controller('AppController', appController)
 .factory('SessionInjector', appAuthInterceptor)
 .config(appRouter)
-.config(['$httpProvider', function($httpProvider) {
+.config(['$httpProvider','$qProvider', function($httpProvider, $qProvider) {
     $httpProvider.interceptors.push('SessionInjector');
+    $qProvider.errorOnUnhandledRejections(false);
 }])
 .run(appRun);
 

@@ -20,12 +20,12 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="member in courseMembersCtrl.members">
+            <tr ng-repeat="member in courseMembersCtrl.members track by $index">
                 <td> {{ member.firstName }}</td>
                 <td> {{ member.lastName }} </td>
                 <td> {{ member.email }} </td>
                 <td> {{ member.courseRole }} </td>
-                <td>Delete</td>
+                <td><a ng-click="courseMembersCtrl.dropMember($index)" href="">Delete</a></td>
             </tr>
         </tbody>
         </table>
