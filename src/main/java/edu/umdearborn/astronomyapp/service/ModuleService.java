@@ -14,6 +14,8 @@ public interface ModuleService {
   public Module createModule(Module module);
 
   public Module updateModule(Module module);
+  
+  public void deleteModule(String moduleId);
 
   public JsonDecorator<Module> getModuleDetails(String moduleId);
   
