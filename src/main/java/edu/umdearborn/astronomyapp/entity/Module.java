@@ -36,7 +36,7 @@ public class Module extends AbstractGeneratedId {
   @Future
   @Temporal(TemporalType.TIMESTAMP)
   private Date closeTimestamp;
-  
+
   @JsonIgnore
   @Valid
   @NotNull
@@ -151,7 +151,7 @@ public class Module extends AbstractGeneratedId {
   }
 
   public void preUpdate() {
-    closeTimestamp = dueDate;
+    dueDate = closeTimestamp;
     visibleTimestamp = openTimestamp;
   }
 
