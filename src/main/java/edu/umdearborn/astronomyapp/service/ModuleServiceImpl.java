@@ -92,8 +92,7 @@ public class ModuleServiceImpl implements ModuleService {
       decorator.setPayload(resultList.get(0));
 
       TypedQuery<Long> pageCountQuery = entityManager.createQuery(
-          "select count(p) from Page p join p.module m where m.id = :moduleId",
-          Long.class);
+          "select count(p) from Page p join p.module m where m.id = :moduleId", Long.class);
       pageCountQuery.setParameter("moduleId", moduleId);
       decorator.addProperty("numPages", pageCountQuery.getSingleResult());
 
@@ -169,8 +168,8 @@ public class ModuleServiceImpl implements ModuleService {
   @Override
   public BigDecimal getMaxPoints(String moduleId) {
 
-    TypedQuery<BigDecimal> query =
-        entityManager.createQuery("select coalesce(sum(q.points), 0) from Question q join q.page p join "
+    TypedQuery<BigDecimal> query = entityManager
+        .createQuery("select coalesce(sum(q.points), 0) from Question q join q.page p join "
             + "p.module m where m.id = :moduleId", BigDecimal.class);
     query.setParameter("moduleId", moduleId);
 
@@ -343,5 +342,11 @@ public class ModuleServiceImpl implements ModuleService {
     } else {
       throw new UpdateException("Item with id: " + pageItemId + " does not exist");
     }
+  }
+
+  @Override
+  public void deleteModule(String moduleId) {
+    entityManager.remove(entityManager.find(Module.class, moduleId));
+
   }
 }

@@ -136,6 +136,20 @@ public class ModuleController {
     return moduleService.updateModule(module);
   }
 
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}", method = DELETE)
+  public ResponseEntity<?> deleteModule(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId, @Valid @RequestBody Module module, Errors errors,
+      HttpSession session, Principal principal) {
+
+    acl.enforceInCourse(principal.getName(), courseId);
+    acl.enforeceModuleInCourse(courseId, moduleId);
+    acl.enforceModuleNotOpen(moduleId);
+
+    moduleService.deleteModule(moduleId);
+
+    return new ResponseEntity<Void>(HttpStatus.OK);
+  }
+
   @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}",
       params = "!page", method = GET)
   public JsonDecorator<Module> getModuleDetails(@PathVariable("courseId") String courseId,
