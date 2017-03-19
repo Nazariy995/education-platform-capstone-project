@@ -131,6 +131,7 @@ public class ModuleController {
     Course course = new Course();
     course.setId(courseId);
     module.setCourse(course);
+    module.setId(moduleId);
 
     return moduleService.updateModule(module);
   }
