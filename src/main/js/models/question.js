@@ -2,10 +2,11 @@
 Description: Add, Get, Post questions to assignments
 */
 
-function Service($http, appSettings, SessionService){
+function Service($http, appSettings, SessionService, Upload){
     "ngInject";
     var self = this;
     this._$http = $http;
+    this._Upload = Upload;
     this._appSettings = appSettings;
     this._SessionService = SessionService;
     this.courseUserIdKey = appSettings.API.PARAMS.courseUserId;
@@ -71,6 +72,21 @@ Service.prototype.getAnswers = function(courseId, moduleId, groupId){
             console.log(res.data);
             return res.data;
         });
+};
+
+Service.prototype.uploadImage = function(file){
+    var self = this;
+    self.getConfig();
+    var url = self._appSettings.API.basePath
+    + 'rest/student/upload';
+    var data = {};
+    data["file"] = file;
+    return self._Upload.upload({url, data })
+          .then(function (res) {
+            console.log("Uploaded Image");
+            console.log(res);
+            return res.data;
+          });
 };
 
 module.exports = angular.module('app.models.question', [
