@@ -1,4 +1,4 @@
-function Directive($state, appSettings, SessionService){
+function Directive($state, appSettings, SessionService, AuthService){
     "ngInject";
 
     function link(scope, element){
@@ -14,9 +14,7 @@ function Directive($state, appSettings, SessionService){
 
 
         scope.logout = function(){
-            SessionService.destroy();
-            $state.go('app.login');
-            window.location.reload();
+            AuthService.logout();
         }
 
     }
