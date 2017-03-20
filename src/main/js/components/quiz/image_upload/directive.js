@@ -3,11 +3,15 @@ function Directive($state, QuestionService){
 
     function link(scope, element, attributes){
 
+        scope.uploaded = false;
+        scope.error = false;
+
         scope.model = {
             type : scope.field.questionType
         };
 
-//        setAnswer(scope);
+        setAnswer(scope);
+
         scope.uploadImage = function(file){
             fileUpload(file, scope);
         }
@@ -15,10 +19,12 @@ function Directive($state, QuestionService){
     }
 
     function fileUpload( file, scope ) {
+        var _scope = scope;
         QuestionService.uploadImage(file).then(function(res){
-            console.log("done Uploading");
-
+            _scope.uploaded = true;
+            _scope.model.answer = res;
         }, function(err){
+            _scope.error = true;
             console.log(err);
         })
 

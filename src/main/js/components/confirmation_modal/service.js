@@ -10,7 +10,7 @@ Service.prototype.open = function(size, confirmationText, footnoteText){
     var self = this;
     var modalInstance = self._$uibModal.open({
         animation: true,
-        templateUrl: 'components/popup_modal/template.html',
+        templateUrl: 'components/confirmation_modal/template.html',
         controller:  'ConfirmationModalController',
         controllerAs: '$modalCtrl',
         size: size,
