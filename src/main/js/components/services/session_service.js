@@ -4,9 +4,16 @@ function SessionService($window){
     "ngInject";
 
     this._$window = $window;
-    this._user = JSON.parse(localStorage.getItem('session.user'));
-    this._accessToken = JSON.parse(localStorage.getItem('session.accessToken'));
-    this._courseUserId = JSON.parse(localStorage.getItem('session.courseUserId'));
+    try {
+    	this._user = JSON.parse(localStorage.getItem('session.user'));
+        this._accessToken = JSON.parse(localStorage.getItem('session.accessToken'));
+        this._courseUserId = JSON.parse(localStorage.getItem('session.courseUserId'));
+    } catch(e) {
+    	this._user = null;
+    	this._accessToken = null;
+    	this._courseUserId = null;
+    }
+    
 }
 
 SessionService.prototype.getUser = function(){

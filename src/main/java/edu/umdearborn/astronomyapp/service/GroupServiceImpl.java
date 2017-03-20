@@ -1,8 +1,10 @@
 package edu.umdearborn.astronomyapp.service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -20,6 +22,7 @@ import edu.umdearborn.astronomyapp.entity.CourseUser;
 import edu.umdearborn.astronomyapp.entity.GroupMember;
 import edu.umdearborn.astronomyapp.entity.Module;
 import edu.umdearborn.astronomyapp.entity.ModuleGroup;
+import edu.umdearborn.astronomyapp.entity.MultipleChoiceQuestion;
 import edu.umdearborn.astronomyapp.entity.Question;
 import edu.umdearborn.astronomyapp.util.ResultListUtil;
 
@@ -29,12 +32,15 @@ public class GroupServiceImpl implements GroupService {
 
   private static final Logger logger = LoggerFactory.getLogger(GroupServiceImpl.class);
 
-  private EntityManager   entityManager;
-  private PasswordEncoder passwordEncoder;
+  private EntityManager    entityManager;
+  private PasswordEncoder  passwordEncoder;
+  private AutoGradeService autoGradeService;
 
-  public GroupServiceImpl(EntityManager entityManager, PasswordEncoder passwordEncoder) {
+  public GroupServiceImpl(EntityManager entityManager, PasswordEncoder passwordEncoder,
+      AutoGradeService autoGradeService) {
     this.entityManager = entityManager;
     this.passwordEncoder = passwordEncoder;
+    this.autoGradeService = autoGradeService;
   }
 
   @Override
@@ -211,7 +217,22 @@ public class GroupServiceImpl implements GroupService {
         }
       });
 
-      return getAnswers(groupId, true);
+      List<Answer> answerList = getAnswers(groupId, true).stream()
+          .sorted(
+              (e1, e2) -> Integer.compare(e2.getQuestion().getOrder(), e1.getQuestion().getOrder()))
+          .collect(Collectors.toList());
+
+      if (!answerList.isEmpty() && answerList.get(0).getQuestion().isMachineGradeable()
+          && answerList.get(0).getQuestion().isGatekeeper()) {
+        Answer checked = answerList.get(0);
+        checked.setPointesEarned(BigDecimal.ZERO);
+        if (autoGradeService.checkAnswer(checked.getId())) {
+          checked.setPointesEarned(checked.getQuestion().getPoints());
+        }
+        entityManager.merge(checked);
+      }
+
+      return answerList;
     }
 
     return null;
@@ -222,8 +243,7 @@ public class GroupServiceImpl implements GroupService {
 
     logger.debug("Getting submission number for groupId: '{}'", groupId);
     TypedQuery<Long> query = entityManager.createQuery(
-        "select max(a.submissionNumber) from Answer a join a.group g where "
-            + "g.id = :groupId",
+        "select max(a.submissionNumber) from Answer a join a.group g where " + "g.id = :groupId",
         Long.class);
     query.setParameter("groupId", groupId);
     List<Long> result = query.getResultList();
@@ -350,4 +370,5 @@ public class GroupServiceImpl implements GroupService {
 
     return query.getResultList();
   }
+
 }
