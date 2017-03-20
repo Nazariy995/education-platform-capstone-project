@@ -1,9 +1,12 @@
 package edu.umdearborn.astronomyapp.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -191,6 +194,14 @@ public class GroupServiceImpl implements GroupService {
 
     logger.debug("Saving answers for group: '{}'", groupId);
     List<Answer> savedAnswers = getAnswers(groupId, true);
+    List<String> gatekeeperIds =
+        Optional.ofNullable(autoGradeService
+            .getGatekeepers(entityManager.find(ModuleGroup.class, groupId).getModule().getId(),
+                Integer.MAX_VALUE)
+            .parallelStream().map(e -> e.getId()).collect(Collectors.toList()))
+            .orElse(new ArrayList<String>());
+
+    logger.debug("Gatekeepers: {}", Arrays.toString(gatekeeperIds.toArray()));
     if (ResultListUtil.hasResult(savedAnswers)) {
 
       savedAnswers.stream().forEach(e -> {
@@ -213,25 +224,21 @@ public class GroupServiceImpl implements GroupService {
             throw new UpdateException("Update expected to alter 1 rows, but actually altered "
                 + actualCount + " actual rows");
           }
+
+          if (gatekeeperIds.contains(e.getQuestion().getId())) {
+            logger.info("Question: '{}' is a gatekeeper, checking answer: '{}'",
+                e.getQuestion().getId(), e.getId());
+            e.setPointesEarned(BigDecimal.ZERO);
+            if (autoGradeService.checkAnswer(e.getId())) {
+              logger.info("Answer: '{}' is correct", e.getId());
+              e.setPointesEarned(e.getQuestion().getPoints());
+            }
+            entityManager.merge(e);
+          }
         }
       });
 
-      List<Answer> answerList = getAnswers(groupId, true).stream()
-          .sorted(
-              (e1, e2) -> Integer.compare(e2.getQuestion().getOrder(), e1.getQuestion().getOrder()))
-          .collect(Collectors.toList());
-
-      if (!answerList.isEmpty() && answerList.get(0).getQuestion().isMachineGradeable()
-          && answerList.get(0).getQuestion().isGatekeeper()) {
-        Answer checked = answerList.get(0);
-        checked.setPointesEarned(BigDecimal.ZERO);
-        if (autoGradeService.checkAnswer(checked.getId())) {
-          checked.setPointesEarned(checked.getQuestion().getPoints());
-        }
-        entityManager.merge(checked);
-      }
-
-      return answerList;
+      return getAnswers(groupId, true);
     }
 
     return null;
