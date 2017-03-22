@@ -8,6 +8,9 @@
     </div>
     <div class="row">
         <div class="col-md-6">
+            <div class="alert alert-danger" ng-if="coursesEdit.error">
+                {{ coursesEdit.error }}
+            </div>
             <form name="courseForm" ng-submit="coursesEdit.addCourse(courseForm.$valid, coursesEdit.course)" novalidate>
                 <div class="form-group" ng-class="{ 'has-error' : courseForm.title.$invalid && !courseForm.title.$pristine }">
                     <label>Title</label>
@@ -17,15 +20,21 @@
                 </div>
                 <div class="form-group" ng-class="{ 'has-error' : courseForm.courseCode.$invalid && !courseForm.courseCode.$pristine }">
                     <label>Course Code</label>
-                    <input type="text" name="courseCode" class="form-control" placeholder="Course Code"
+                    <input type="text" name="courseCode" class="form-control"
+                           ng-minlength="1"
+                           ng-maxlength="6"
+                           placeholder="Course Code"
                            ng-model="coursesEdit.course.courseCode" required>
-                    <span ng-show="courseForm.courseCode.$invalid && !courseForm.courseCode.$pristine" class="help-block">Course Code is required</span>
+                    <span ng-show="courseForm.courseCode.$invalid && !courseForm.courseCode.$pristine" class="help-block">Course Code is required. Min Length: 1, Max Length: 6</span>
                 </div>
                 <div class="form-group" ng-class="{ 'has-error' : courseForm.subjectCode.$invalid && !courseForm.subjectCode.$pristine }">
                     <label>Subject Code</label>
-                    <input type="text" class="form-control" name="subjectCode" placeholder="Subject Code"
+                    <input type="text" class="form-control" name="subjectCode"
+                           ng-minlength="1"
+                           ng-maxlength="6"
+                           placeholder="Subject Code"
                            ng-model="coursesEdit.course.subjectCode" required>
-                    <span ng-show="courseForm.subjectCode.$invalid && !courseForm.subjectCode.$pristine" class="help-block">Course Code is required</span>
+                    <span ng-show="courseForm.subjectCode.$invalid && !courseForm.subjectCode.$pristine" class="help-block">Subject Code is required. Min Length: 1, Max Length: 6</span>
                 </div>
                 <div class="form-group" ng-class="{ 'has-error' : courseForm.openDate.$invalid && !courseForm.openDate.$pristine }">
                     <label>Open Date</label>
