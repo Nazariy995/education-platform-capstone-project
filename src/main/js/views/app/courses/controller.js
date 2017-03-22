@@ -1,19 +1,25 @@
 
-function Controller($scope, $state, CourseService){
+function Controller($state, $stateParams, CourseService){
     "ngInject";
-    this._$scope = $scope;
     this._$state = $state;
-    this._$scope.pageName = "Courses";
+    this.pageName = "Courses";
     this._CourseService = CourseService;
+    this.created_updated = $stateParams.created_updated;
     this.init();
 };
 
 Controller.prototype.init = function(){
     var self = this;
-    var courses = self._CourseService.getCourses().then(function(courses){
-        self._$scope.courses = courses;
+    self.getCourses();
+}
+
+Controller.prototype.getCourses = function(){
+    var self = this;
+    self._CourseService.getCourses().then(
+        function(payload){
+        self.courses = payload;
     }, function(err){
-        self._$scope.error = err;
+        self.error = "ERROR retrieving courses";
     });
 }
 

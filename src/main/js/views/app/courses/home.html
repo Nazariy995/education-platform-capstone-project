@@ -2,13 +2,20 @@
     <div class="row">
         <div class="col-xs-12">
             <h1 class="page-header">
-                {{ pageName }}
+                {{ coursesCtrl.pageName }}
             </h1>
         </div>
     </div>
     <div class="row" restrict access="INSTRUCTOR">
         <div class="col-xs-12">
             <a ui-sref="app.courses.add_edit({courseId:'new'})"><button class="btn btn-primary">+ New Course</button></a>
+        </div>
+    </div>
+    <div class="row" restrict access="INSTRUCTOR">
+        <div class="col-xs-12">
+            <div class="alert alert-success top-buffer" ng-if="coursesCtrl.created_updated" >
+                <strong>Success!</strong> Created/Updated the course!
+            </div>
         </div>
     </div>
     <div class="row">
@@ -23,7 +30,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="course in courses">
+                <tr ng-repeat="course in coursesCtrl.courses">
                     <td><a ui-sref="app.course.assignments({courseId:'{{course.id}}'})"> {{  course.courseTitle }} </a></td>
                     <td> {{ course.subjectCode }} </td>
                     <td> {{ course.courseCode }} </td>
