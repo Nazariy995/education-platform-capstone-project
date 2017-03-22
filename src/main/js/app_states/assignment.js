@@ -34,7 +34,7 @@ var states = [
                             $stateParams.groupId = payload.id;
                             deferred.resolve(payload.id);
                     }, function(err){
-                        deferred.reject("Could not initialize group");
+                        deferred.reject("ERROR Initializing the group");
                     });
                 } else {
                     deferred.resolve($stateParams.groupId);
@@ -73,7 +73,37 @@ var states = [
                 return GroupService.getLock(courseId, moduleId, groupId);
             }]
         }
-    }
+    },
+    {
+        name : 'app.course.assignments_add_edit',
+        url : '/{moduleId}/add_edit',
+        views : {
+            'childContent' : {
+                templateUrl : 'views/instructor/assignments_add_edit/home.html',
+                controller : 'Instructor.AssignmentsAddEdit',
+                controllerAs : 'assignmentsEditCtrl'
+            }
+        },
+        params  : {
+            isNew : false
+        },
+        resolve : {
+            assignment : ['AssignmentService','$q','$stateParams', '$state', function(AssignmentService, $q, $stateParams, $state){
+                var deferred = $q.defer();
+                if($stateParams.moduleId == "new"){
+                    deferred.resolve(null);
+                } else {
+                    AssignmentService.getAssignmentDetails($stateParams.courseId, $stateParams.moduleId)
+                        .then(function(payload){
+                        deferred.resolve(payload);
+                    }, function(err){
+                        deferred.reject("ERROR getting Assignmet Details");
+                    });
+                }
+                return deferred.promise;
+            }]
+        }
+    },
 ]
 
 module.exports = states;
