@@ -33,6 +33,9 @@
                 <td restrict access="INSTRUCTOR">
                     <a ui-sref="app.course.assignments_add_edit({moduleId: '{{ assignment.id }}', isNew : false})">
                     Edit Info
+                    </a> |
+                    <a ui-sref="app.course.assignments_add_edit_pages({moduleId: '{{ assignment.id }}'})">
+                    Edit Questions
                     </a>
                 </td>
             </tr>

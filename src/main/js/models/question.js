@@ -10,7 +10,6 @@ function Service($http, appSettings, SessionService, Upload){
     this._appSettings = appSettings;
     this._SessionService = SessionService;
     this.courseUserIdKey = appSettings.API.PARAMS.courseUserId;
-    this.init();
 };
 
 Service.prototype.getConfig = function(){
@@ -44,12 +43,32 @@ Service.prototype.getQuestions = function(courseId, moduleId, pageNumber){
 Service.prototype.addPage = function(courseId, moduleId){
     var self = this;
     var config = self.getConfig();
+
     var url = self._appSettings.API.basePath
-    + '/rest/instructor/course/'+ courseId
+    + '/rest/instructor/course/' + courseId
     +'/module/' + moduleId
-    + '/add-page';
+    +'/add-page';
+
     return this._$http
           .post(url, null, config)
+          .then(function (res) {
+            return res.data;
+          });
+};
+
+//Purpose: Drop a certain page of the assignment
+//Params: courseId - String, moduleId - String, pageNum - number
+Service.prototype.dropPage = function(courseId, moduleId, pageNum){
+    var self = this;
+    var config = self.getConfig();
+    config.params.page = pageNum;
+
+    var url = self._appSettings.API.basePath
+    + '/rest/instructor/course/' + courseId
+    +'/module/' + moduleId ;
+
+    return this._$http
+          .delete(url, config)
           .then(function (res) {
             return res.data;
           });

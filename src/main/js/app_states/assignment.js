@@ -104,6 +104,17 @@ var states = [
             }]
         }
     },
+    {
+        name : 'app.course.assignments_add_edit_pages',
+        url : '/{moduleId}/add_edit_pages',
+        views : {
+            'childContent' : {
+                templateUrl : 'views/instructor/assignments_add_edit_pages/home.html',
+                controller : 'Instructor.PagesAddEdit',
+                controllerAs : 'pagesEditCtrl'
+            }
+        }
+    },
 ]
 
 module.exports = states;
