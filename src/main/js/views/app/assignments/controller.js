@@ -6,6 +6,7 @@ function Controller($scope, $state, $stateParams, AssignmentService){
     this.courseId = $stateParams.courseId;
     this._AssignmentService = AssignmentService;
     this.assignments = [];
+    this.created_updated = $stateParams.created_updated;
     this.init();
 };
 
@@ -19,7 +20,7 @@ Controller.prototype.init = function(){
 
 }
 
-module.exports = angular.module('app.views.student.assignments.controller', [
+module.exports = angular.module('app.views.app.assignments.controller', [
     'app.models.assignment'
 ])
-.controller('Student.AssignmentsCtrl', Controller);
+.controller('AssignmentsCtrl', Controller);

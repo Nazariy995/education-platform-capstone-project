@@ -58,6 +58,22 @@ Service.prototype.addCourseMembers = function(courseId, file){
           });
 };
 
+Service.prototype.dropCourseMember = function(courseId, courseUserId){
+    var self = this;
+    self.getConfig();
+    var url = self._appSettings.API.basePath
+    + '/rest/instructor/course/'+ courseId
+    + '/student/' + courseUserId
+    + '/drop';
+    return this._$http
+          .put(url, self.config)
+          .then(function (res) {
+            console.log("Drop Course Member");
+            console.log(res);
+            return res.data;
+          });
+};
+
 
 module.exports = angular.module('app.models.course_members', [
     'app.settings'

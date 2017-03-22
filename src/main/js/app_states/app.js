@@ -37,6 +37,9 @@ var states = [
     {
         name : 'app.courses',
         url : 'courses',
+        params : {
+            created_updated : false
+        },
         views : {
             'mainContent@app' : {
                 templateUrl: 'views/app/courses/home.html',

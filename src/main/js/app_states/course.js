@@ -50,10 +50,13 @@ var states = [
     {
         name : 'app.course.assignments',
         url : '/assignments',
+        params : {
+            created_updated : false
+        },
         views : {
             'childContent' : {
-                templateUrl : 'views/student/assignments/home.html',
-                controller : 'Student.AssignmentsCtrl',
+                templateUrl : 'views/app/assignments/home.html',
+                controller : 'AssignmentsCtrl',
                 controllerAs : 'courseAssignments'
             }
         }

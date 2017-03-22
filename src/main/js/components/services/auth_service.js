@@ -1,10 +1,11 @@
 var appSettings = require("app_settings");
 var sessionService = require("./session_service");
 
-function AuthService($http, $window, appSettings, SessionService){
+function AuthService($http, $state, $window, appSettings, SessionService){
     "ngInject";
 
     this._$http = $http;
+    this._$state = $state;
     this._$window = $window;
     this._appSettings = appSettings;
     this._SessionService = SessionService;
@@ -35,8 +36,17 @@ AuthService.prototype.isAuthenticated = function(){
         });
 };
 
-AuthService.prototype.logout = function(){
-    this._SessionService.destroy();
+AuthService.prototype.logout = function(params, config){
+    var self = this;
+    if(config == undefined){
+        config = {};
+    }
+    if(params == undefined){
+        params = {};
+    }
+    config.reload = true;
+    self._SessionService.destroy();
+    self._$state.go('app.login', params, config);
 }
 
 module.exports = angular.module('app.components.services.auth_service', [
