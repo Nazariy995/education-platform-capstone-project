@@ -34,5 +34,7 @@ public interface AclService {
   public void enforceModuleNotOpen(String moduleId);
 
   public void enforceModuleClosed(String moduleId);
+  
+  public void enforeceCourseNotClosed(String courseId);
 
 }

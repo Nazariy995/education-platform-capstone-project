@@ -31,4 +31,6 @@ public interface ModuleService {
 
   public int addPage(String moduleId);
 
+  public void ensureValidDates(String courseId, Module module);
+
 }

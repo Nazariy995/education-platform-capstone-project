@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import edu.umdearborn.astronomyapp.controller.exception.UpdateException;
+import edu.umdearborn.astronomyapp.entity.Course;
 import edu.umdearborn.astronomyapp.entity.Module;
 import edu.umdearborn.astronomyapp.entity.MultipleChoiceQuestion;
 import edu.umdearborn.astronomyapp.entity.NumericQuestion;
@@ -353,11 +354,14 @@ public class ModuleServiceImpl implements ModuleService {
 
   }
 
-  public void getPageItem(String pageItemId) {
-
-  }
-
-  public void updatePageItem(String pageItemId) {
-
+  @Override
+  public void ensureValidDates(String courseId, Module module) {
+    Course course = entityManager.getReference(Course.class, courseId);
+    if (course.getCloseTimestamp() == null || course.getOpenTimestamp() == null
+        || module.getCloseTimestamp() == null || module.getOpenTimestamp() == null
+        || course.getCloseTimestamp().before(module.getCloseTimestamp())
+        || course.getOpenTimestamp().after(module.getOpenTimestamp())) {
+      throw new UpdateException("Module's open and close timestamp must be within the course");
+    }
   }
 }

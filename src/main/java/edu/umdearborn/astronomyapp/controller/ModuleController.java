@@ -114,6 +114,7 @@ public class ModuleController {
       @Valid @RequestBody Module module, Errors errors, HttpSession session, Principal principal) {
 
     acl.enforceInCourse(principal.getName(), courseId);
+    acl.enforeceCourseNotClosed(courseId);
 
     Course course = new Course();
     course.setId(courseId);
