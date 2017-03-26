@@ -253,8 +253,9 @@ public class ModuleServiceImpl implements ModuleService {
 
     entityManager
         .createNativeQuery(
-            "insert into page_item(page_item_id, page_item_type, item_order, human_readable_text, page_id) "
-                + "values (?, ?, (select max(item_order) + 1 from page_item where page_id = ?), ?, ?)")
+            "insert into page_item(page_item_id, page_item_type, item_order, human_readable_text, "
+                + "page_id) values (?, ?, "
+                + "(select coalesce(max(item_order), 0) + 1 from page_item where page_id = ?), ?, ?)")
         .setParameter(1, item.getId()).setParameter(2, item.getPageItemType().toString())
         .setParameter(3, pageId).setParameter(4, item.getHumanReadableText())
         .setParameter(5, pageId).executeUpdate();
@@ -332,13 +333,15 @@ public class ModuleServiceImpl implements ModuleService {
   }
 
   @Override
-  public void deletePageItem(String pageItemId) {
+  public List<PageItem> deletePageItem(String moduleId, String pageItemId) {
     List<PageItem> results = entityManager
         .createQuery("select item from PageItem item where item.id = :id", PageItem.class)
         .setParameter("id", pageItemId).getResultList();
 
     if (ResultListUtil.hasResult(results)) {
+      int pageNum = results.get(0).getPage().getOrder();
       entityManager.remove(results.get(0));
+      return getPage(moduleId, pageNum);
     } else {
       throw new UpdateException("Item with id: " + pageItemId + " does not exist");
     }
@@ -347,6 +350,14 @@ public class ModuleServiceImpl implements ModuleService {
   @Override
   public void deleteModule(String moduleId) {
     entityManager.remove(entityManager.find(Module.class, moduleId));
+
+  }
+
+  public void getPageItem(String pageItemId) {
+
+  }
+
+  public void updatePageItem(String pageItemId) {
 
   }
 }

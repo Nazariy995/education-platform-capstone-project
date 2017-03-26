@@ -404,6 +404,45 @@ public class ModuleGroupController {
     return ResponseEntity.ok().build();
   }
 
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}/groups",
+      method = GET)
+  public Map<String, List<CourseUser>> getGroups(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId, Principal principal) {
+
+    acl.enforceInCourse(principal.getName(), courseId);
+
+    return groupService.getGroups(moduleId);
+  }
+
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}",
+      method = GET)
+  public Map<String, Answer> getAnswers(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
+      Principal principal) {
+
+    acl.enforceInCourse(principal.getName(), courseId);
+    acl.enforceGroupInCourse(groupId, courseId);
+    acl.enforceModuleClosed(moduleId);
+
+    return Optional.ofNullable(groupService.getAnswers(groupId, false))
+        .orElse(new ArrayList<Answer>()).parallelStream()
+        .collect(Collectors.toMap(a -> a.getQuestion().getId(), a -> a));
+  }
+
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}",
+      method = POST)
+  public Map<String, Answer> gradeAnswers(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
+      Principal principal, @RequestBody Map<String, Map<String, String>> answers) {
+
+    acl.enforceInCourse(principal.getName(), courseId);
+    acl.enforceGroupInCourse(groupId, courseId);
+    acl.enforceModuleClosed(moduleId);
+
+    return Optional.ofNullable(groupService.gradeAnswers(answers)).orElse(new ArrayList<Answer>())
+        .parallelStream().collect(Collectors.toMap(a -> a.getQuestion().getId(), a -> a));
+  }
+
   private List<String> getCheckinSessionAttribute(HttpSession session, String groupId,
       String courseUserId) {
 

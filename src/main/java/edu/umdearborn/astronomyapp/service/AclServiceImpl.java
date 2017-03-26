@@ -277,4 +277,20 @@ public class AclServiceImpl implements AclService {
     logger.debug("Module: '{}' is not open", moduleId);
   }
 
+  @Override
+  public void enforceModuleClosed(String moduleId) {
+    TypedQuery<Boolean> query = entityManager.createQuery(
+        "select count(m) > 0 from Module m where m.closeTimestamp < now() and m.id = :id",
+        Boolean.class);
+    query.setParameter("id", moduleId);
+    boolean result = query.getSingleResult();
+
+    if (!result) {
+      logger.debug("Module: '{}' is still open", moduleId);
+      throw new AccessDeniedException("Module: " + moduleId + " is still open");
+    }
+
+    logger.debug("Module: '{}' is closed", moduleId);
+  }
+
 }
