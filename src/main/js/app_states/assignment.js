@@ -115,6 +115,17 @@ var states = [
             }
         }
     },
+    {
+        name : 'app.course.assignments_add_edit_questions',
+        url : '/{moduleId}/add_edit_questions/page/{pageNum}',
+        views : {
+            'childContent' : {
+                templateUrl : 'views/instructor/assignments_add_edit_questions/home.html',
+                controller : 'Instructor.QuestionsAddEdit',
+                controllerAs : 'questionsEditCtrl'
+            }
+        }
+    },
 ]
 
 module.exports = states;
