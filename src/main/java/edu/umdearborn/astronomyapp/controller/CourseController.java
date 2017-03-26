@@ -256,7 +256,7 @@ public class CourseController {
       @PathVariable("courseId") String courseUserId, Principal principal,
       HttpServletResponse response) throws IOException {
 
-    // acl.enforceInCourse(principal.getName(), courseId);
+    acl.enforceInCourse(principal.getName(), courseId);
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
