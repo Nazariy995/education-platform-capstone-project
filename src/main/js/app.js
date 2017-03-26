@@ -24,6 +24,7 @@ var appModule = angular.module("app", [
     'ui.bootstrap',
     'ngAnimate',
     'ngFileUpload',
+    'app.templates',
 
     //Internal
     appSettings.name,
