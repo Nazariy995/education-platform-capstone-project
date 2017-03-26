@@ -20,7 +20,11 @@
             <tr ng-repeat="page in pagesEditCtrl.pages">
                 <td> Page #{{ page }}</td>
                 <td>
-                    <a ng-click="pagesEditCtrl.dropPage(page)" href="">Edit</a> |
+                    <a ui-sref="app.course.assignments_add_edit_questions(
+                             {
+                            moduleId : '{{ pagesEditCtrl.moduleId }}',
+                            pageNum : '{{ page }}'
+                             })">Edit</a> |
                     <a ng-click="pagesEditCtrl.dropPage(page)" href="">Delete</a>
                 </td>
             </tr>
