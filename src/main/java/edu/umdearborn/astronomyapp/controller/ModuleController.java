@@ -10,6 +10,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -37,6 +38,7 @@ import edu.umdearborn.astronomyapp.entity.PageItem.PageItemType;
 import edu.umdearborn.astronomyapp.entity.Question;
 import edu.umdearborn.astronomyapp.entity.Question.QuestionType;
 import edu.umdearborn.astronomyapp.service.AclService;
+import edu.umdearborn.astronomyapp.service.GradeService;
 import edu.umdearborn.astronomyapp.service.ModuleService;
 import edu.umdearborn.astronomyapp.util.HttpSessionUtil;
 import edu.umdearborn.astronomyapp.util.ValidAssert;
@@ -56,11 +58,14 @@ public class ModuleController {
   private AclService    acl;
   private ModuleService moduleService;
   private ObjectMapper  objectMapper;
+  private GradeService  gradeService;
 
-  public ModuleController(AclService acl, ModuleService moduleService, ObjectMapper objectMapper) {
+  public ModuleController(AclService acl, ModuleService moduleService, ObjectMapper objectMapper,
+      GradeService gradeService) {
     this.acl = acl;
     this.moduleService = moduleService;
     this.objectMapper = objectMapper;
+    this.gradeService = gradeService;
   }
 
   @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/modules", method = GET)
@@ -236,7 +241,7 @@ public class ModuleController {
       item.setPageItemType(PageItem.PageItemType.QUESTION);
       new QuestionValidator().validate(item, errors);
     }
-    
+
     ValidAssert.isValid(errors);
 
     logger.debug("Creating: {}", item.toString());
@@ -254,6 +259,16 @@ public class ModuleController {
     acl.enforceModuleNotOpen(moduleId);
 
     return moduleService.deletePageItem(moduleId, itemId);
+  }
+
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}/grades",
+      method = GET)
+  public Map<String, Object> getGrades(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId, Principal principal) {
+    acl.enforceInCourse(principal.getName(), courseId);
+    acl.enforeceModuleInCourse(courseId, moduleId);
+
+    return gradeService.getGrades(courseId, moduleId);
   }
 
 }

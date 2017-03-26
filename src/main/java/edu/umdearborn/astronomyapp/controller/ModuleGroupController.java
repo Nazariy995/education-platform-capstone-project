@@ -33,6 +33,7 @@ import edu.umdearborn.astronomyapp.entity.Answer;
 import edu.umdearborn.astronomyapp.entity.CourseUser;
 import edu.umdearborn.astronomyapp.entity.ModuleGroup;
 import edu.umdearborn.astronomyapp.service.AclService;
+import edu.umdearborn.astronomyapp.service.GradeService;
 import edu.umdearborn.astronomyapp.service.GroupService;
 import edu.umdearborn.astronomyapp.util.HttpSessionUtil;
 import edu.umdearborn.astronomyapp.util.json.JsonDecorator;
@@ -46,10 +47,13 @@ public class ModuleGroupController {
 
   private AclService   acl;
   private GroupService groupService;
+  private GradeService gradeService;
 
-  public ModuleGroupController(AclService acl, GroupService groupService) {
+  public ModuleGroupController(AclService acl, GroupService groupService,
+      GradeService gradeService) {
     this.acl = acl;
     this.groupService = groupService;
+    this.gradeService = gradeService;
   }
 
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group",
@@ -441,6 +445,17 @@ public class ModuleGroupController {
 
     return Optional.ofNullable(groupService.gradeAnswers(answers)).orElse(new ArrayList<Answer>())
         .parallelStream().collect(Collectors.toMap(a -> a.getQuestion().getId(), a -> a));
+  }
+
+  @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/grade", method = GET)
+  public Map<String, Object> getGrade(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId, Principal principal) {
+
+    acl.enforceInCourse(principal.getName(), courseId);
+    acl.enforceIsCourseRole(principal.getName(), courseId,
+        Arrays.asList(CourseUser.CourseRole.STUDENT));
+
+    return gradeService.getGrade(principal.getName(), moduleId);
   }
 
   private List<String> getCheckinSessionAttribute(HttpSession session, String groupId,

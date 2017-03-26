@@ -10,17 +10,23 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.http.client.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.util.Assert;
 import org.springframework.util.MimeType;
 import org.springframework.validation.Errors;
@@ -40,6 +46,7 @@ import edu.umdearborn.astronomyapp.entity.CourseUser.CourseRole;
 import edu.umdearborn.astronomyapp.service.AclService;
 import edu.umdearborn.astronomyapp.service.CourseService;
 import edu.umdearborn.astronomyapp.service.CsvParserService;
+import edu.umdearborn.astronomyapp.service.GradeService;
 import edu.umdearborn.astronomyapp.service.UserManagementService;
 import edu.umdearborn.astronomyapp.util.HttpSessionUtil;
 import edu.umdearborn.astronomyapp.util.ValidAssert;
@@ -55,13 +62,16 @@ public class CourseController {
   private CourseService         courseService;
   private UserManagementService userManagementService;
   private CsvParserService      csvParserService;
+  private GradeService          gradeService;
 
   public CourseController(AclService acl, CourseService courseService,
-      UserManagementService userManagementService, CsvParserService csvParserService) {
+      UserManagementService userManagementService, CsvParserService csvParserService,
+      GradeService gradeService) {
     this.acl = acl;
     this.courseService = courseService;
     this.userManagementService = userManagementService;
     this.csvParserService = csvParserService;
+    this.gradeService = gradeService;
   }
 
   @RequestMapping(value = {INSTRUCTOR_PATH + "/courses", STUDENT_PATH + "/courses"}, method = GET)
@@ -217,7 +227,8 @@ public class CourseController {
         return cu;
       }).toArray(CourseUser[]::new);
 
-      return ImmutableMap.of("added", userManagementService.addUsersToCourse(courseId, users).size());
+      return ImmutableMap.of("added",
+          userManagementService.addUsersToCourse(courseId, users).size());
     } catch (IOException ioe) {
       logger.error("Error parsing CSV", ioe);
       throw new RuntimeException(ioe);
@@ -238,6 +249,30 @@ public class CourseController {
 
     return courseService.getClassList(courseId, Arrays.asList(CourseUser.CourseRole.INSTRUCTOR,
         CourseUser.CourseRole.TA, CourseUser.CourseRole.STUDENT));
+  }
+
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/grades", method = GET)
+  public void downloadGrades(@PathVariable("courseId") String courseId,
+      @PathVariable("courseId") String courseUserId, Principal principal,
+      HttpServletResponse response) throws IOException {
+
+    // acl.enforceInCourse(principal.getName(), courseId);
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+    headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + courseId + "-grades-"
+        + DateUtils.formatDate(new Date(), DateUtils.PATTERN_RFC1123).replace(" ", "_") + ".csv");
+
+    response.setContentType("text/csv");
+    response.addHeader(HttpHeaders.CONTENT_DISPOSITION,
+        "attachment; filename=" + courseId + "-grades-"
+            + DateUtils.formatDate(new Date(), DateUtils.PATTERN_RFC1123).replace(" ", "_")
+            + ".csv");
+    try (OutputStream outputStream = response.getOutputStream()) {
+      gradeService.exportGrades(courseId, outputStream);
+      outputStream.close();
+    }
+
   }
 
 }
