@@ -8,6 +8,7 @@ function Service($http, appSettings, SessionService, Upload){
     this._$http = $http;
     this._Upload = Upload;
     this._appSettings = appSettings;
+    this.userRoles = appSettings.ROLES;
     this._SessionService = SessionService;
     this.courseUserIdKey = appSettings.API.PARAMS.courseUserId;
 };
@@ -19,18 +20,22 @@ Service.prototype.getConfig = function(){
     var config = {
         params : params
     };
-
     return config
 };
 
 Service.prototype.getQuestions = function(courseId, moduleId, pageNumber){
     var self = this;
     var config = self.getConfig();
-    var url = self._appSettings.API.basePath
-    + '/rest/student/course/'+ courseId
-    +'/module/' + moduleId
+
+    var url = {};
+    url[self.userRoles.user] = self._appSettings.API.basePath
+    + '/rest/student/course/'+ courseId +'/module/' + moduleId
     + '?page=' + pageNumber;
-    config.cache = true;
+    url[self.userRoles.instructor] = self._appSettings.API.basePath
+    + '/rest/instructor/course/'+ courseId +'/module/' + moduleId
+    + '?page=' + pageNumber;
+    url = self.getUrl(url);
+
     return this._$http
           .get(url, config)
           .then(function (res) {
@@ -119,6 +124,17 @@ Service.prototype.uploadImage = function(file){
             console.log(res);
             return res.data;
           });
+};
+
+//Retrieve the correct API URL based on the user role
+Service.prototype.getUrl = function(url){
+    var self = this;
+    var user = self._SessionService.getUser();
+    if(user.roles.indexOf(self.userRoles.user) != -1){
+        return url[self.userRoles.user];
+    } else if (user.roles.indexOf(self.userRoles.instructor) != -1){
+        return url[self.userRoles.instructor];
+    }
 };
 
 module.exports = angular.module('app.models.question', [
