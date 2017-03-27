@@ -17,6 +17,7 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -216,29 +217,42 @@ public class ModuleController {
   public PageItem createItem(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @RequestBody ObjectNode json,
       @RequestParam(name = "page", defaultValue = "1") int pageNumber, HttpSession session,
-      Principal principal, Errors errors) throws JsonProcessingException {
+      Principal principal) throws JsonProcessingException {
 
     acl.enforceInCourse(principal.getName(), courseId);
     acl.enforeceModuleInCourse(courseId, moduleId);
     acl.enforceModuleNotOpen(moduleId);
 
+    Errors errors;
     PageItem item;
     if (PageItemType.TEXT.toString().equalsIgnoreCase(json.get("pageItemType").asText())) {
+      logger.debug("Is a text item");
       item = objectMapper.treeToValue(json, PageItem.class);
+      logger.debug("Value: {}", item);
+      errors = new BeanPropertyBindingResult(item, "pageItem");
       new PageItemValidator().validate(item, errors);
     } else if (QuestionType.MULTIPLE_CHOICE.toString()
         .equalsIgnoreCase(json.get("questionType").asText())) {
+      logger.debug("Is a multiple choice question");
       item = objectMapper.treeToValue(json, MultipleChoiceQuestion.class);
       item.setPageItemType(PageItem.PageItemType.QUESTION);
+      logger.debug("Value: {}", item);
+      errors = new BeanPropertyBindingResult(item, "multipleChoiceQuestion");
       new MultipleChoiceQuestionValidator().validate(item, errors);
     } else if (QuestionType.NUMERIC.toString()
         .equalsIgnoreCase(json.get("questionType").asText())) {
+      logger.debug("Is a numeric question");
       item = objectMapper.treeToValue(json, NumericQuestion.class);
       item.setPageItemType(PageItem.PageItemType.QUESTION);
+      logger.debug("Value: {}", item);
+      errors = new BeanPropertyBindingResult(item, "numericQuestion");
       new NumericQuestionValidator().validate(item, errors);
     } else {
+      logger.debug("Is a generic question");
       item = objectMapper.treeToValue(json, Question.class);
       item.setPageItemType(PageItem.PageItemType.QUESTION);
+      logger.debug("Value: {}", item);
+      errors = new BeanPropertyBindingResult(item, "question");
       new QuestionValidator().validate(item, errors);
     }
 
