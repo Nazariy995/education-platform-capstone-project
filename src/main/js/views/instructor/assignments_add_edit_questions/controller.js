@@ -11,6 +11,7 @@ function Controller($scope, $state, $stateParams, appSettings, AssignmentService
     this._AssignmentService = AssignmentService;
     this._QuestionService = QuestionService;
     this._ConfirmationService = ConfirmationService;
+    this.selectedQuestionType = "MULTIPLE_CHOICE";
     this.questions = [];
     this.init();
 };
@@ -39,33 +40,19 @@ Controller.prototype.createPagesStruct = function(number){
 }
 
 
-Controller.prototype.addPage = function(){
+Controller.prototype.addQuestion = function(){
     var self = this;
-    self._QuestionService.addPage(self.courseId, self.moduleId)
-    .then(function(payload){
-        self.pages.push(self.pages.length+1);
-    }, function(err){
-        self.error = "ERROR adding a page to the assignment";
-    });
-}
-
-Controller.prototype.dropPage = function(pageNum){
-    var self = this;
-    var confirmation = "Are you sure you want to delete page #" + pageNum + "?";
-    var footNote = "This cannot be undone!";
-    var modalInstance = self._ConfirmationService.open("", confirmation, footNote);
-
-    modalInstance.result.then(function(){
-        self._QuestionService.dropPage(self.courseId, self.moduleId, pageNum)
-        .then(function(payload){
-            self.pages = self.createPagesStruct(self.pages.length-1);
-        }, function(err){
-            self.error = "ERROR deleting a page from the assignment";
-        });
-    }, function(){
-        console.log("They said no");
-    });
-}
+    if(self.selectedQuestionType){
+        var params = {
+            moduleId : self.moduleId,
+            pageNum : self.pageNum,
+            questionId : "new",
+            questionType : self.selectedQuestionType,
+            isNew : true
+        }
+        self._$state.go('app.course.assignments_add_edit_question', params);
+    }
+};
 
 module.exports = angular.module('app.views.instructor.questions.add_edit', [])
 .controller('Instructor.QuestionsAddEdit', Controller);

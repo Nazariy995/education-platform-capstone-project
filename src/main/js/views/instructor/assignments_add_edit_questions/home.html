@@ -6,13 +6,16 @@
     <div class="col-xs-12">
         <form name="addQuestionForm" novalidate class="form-inline">
             <div class="form-group">
-                <select class="form-control" >
-                    <option ng-repeat="(key, value) in questionsEditCtrl.questionTypes" value="{{ key }}">
+                <select class="form-control"
+                        ng-model="questionsEditCtrl.selectedQuestionType"
+                        required>
+                    <option ng-repeat="(key, value) in questionsEditCtrl.questionTypes"
+                            value="{{ key }}">
                         {{ value }}
                     </option>
                 </select>
             </div>
-            <button class="btn btn-primary" ng-click="pagesEditCtrl.addPage()">+ Add Question</button>
+            <button class="btn btn-primary" ng-click="questionsEditCtrl.addQuestion()">+ Add Question</button>
         </form>
     </div>
 </div>

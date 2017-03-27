@@ -117,12 +117,27 @@ var states = [
     },
     {
         name : 'app.course.assignments_add_edit_questions',
-        url : '/{moduleId}/add_edit_questions/page/{pageNum}',
+        url : '/{moduleId}/add_edit_pages/{pageNum}/add_edit_questions',
         views : {
             'childContent' : {
                 templateUrl : 'views/instructor/assignments_add_edit_questions/home.html',
                 controller : 'Instructor.QuestionsAddEdit',
                 controllerAs : 'questionsEditCtrl'
+            }
+        }
+    },
+    {
+        name : 'app.course.assignments_add_edit_question',
+        url : '/{moduleId}/add_edit_pages/{pageNum}/add_edit_questions/{questionId}',
+        params : {
+            isNew : false,
+            questionType : null
+        },
+        views : {
+            'childContent' : {
+                templateUrl : 'views/instructor/assignments_add_edit_question/home.html',
+                controller : 'Instructor.QuestionAddEdit',
+                controllerAs : 'questionEditCtrl'
             }
         }
     },

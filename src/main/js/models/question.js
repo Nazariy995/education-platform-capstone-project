@@ -43,6 +43,24 @@ Service.prototype.getQuestions = function(courseId, moduleId, pageNumber){
           });
 };
 
+//Purpose: Add a new question to the assignment
+//Params: courseId - String, moduleId - String, pageNum - string
+Service.prototype.addQuestion = function(courseId, moduleId, pageNum, payload){
+    var self = this;
+    var config = self.getConfig();
+    config.params.page = pageNum;
+
+    var url = self._appSettings.API.basePath
+    + '/rest/instructor/course/' + courseId
+    +'/module/' + moduleId;
+
+    return this._$http
+          .post(url, payload, config)
+          .then(function (res) {
+            return res.data;
+          });
+};
+
 //Purpose: Add a new page to the assignment
 //Params: courseId - String, moduleId - String
 Service.prototype.addPage = function(courseId, moduleId){
