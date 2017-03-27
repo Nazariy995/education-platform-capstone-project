@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .clearAuthentication(true)
         .invalidateHttpSession(true)
         .and()
-      .authorizeRequests()
+      .authorizeRequests()//.antMatchers("*").permitAll()
         .filterSecurityInterceptorOncePerRequest(true)
         .antMatchers(REST_PATH_PREFIX).fullyAuthenticated()
         .antMatchers(REST_PATH_PREFIX + ADMIN_PATH + "/**").hasRole("ADMIN")

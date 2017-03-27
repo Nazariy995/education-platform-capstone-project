@@ -30,7 +30,11 @@ public interface AclService {
       List<CourseUser.CourseRole> role);
 
   public void enforceCourseNotOpen(String courseId);
-  
+
   public void enforceModuleNotOpen(String moduleId);
+
+  public void enforceModuleClosed(String moduleId);
+  
+  public void enforeceCourseNotClosed(String courseId);
 
 }

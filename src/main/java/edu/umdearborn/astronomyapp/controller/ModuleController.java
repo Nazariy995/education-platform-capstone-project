@@ -10,14 +10,13 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,10 +38,16 @@ import edu.umdearborn.astronomyapp.entity.PageItem.PageItemType;
 import edu.umdearborn.astronomyapp.entity.Question;
 import edu.umdearborn.astronomyapp.entity.Question.QuestionType;
 import edu.umdearborn.astronomyapp.service.AclService;
+import edu.umdearborn.astronomyapp.service.GradeService;
 import edu.umdearborn.astronomyapp.service.ModuleService;
 import edu.umdearborn.astronomyapp.util.HttpSessionUtil;
+import edu.umdearborn.astronomyapp.util.ValidAssert;
 import edu.umdearborn.astronomyapp.util.json.JsonDecorator;
 import edu.umdearborn.astronomyapp.util.json.View;
+import edu.umdearborn.astronomyapp.validation.validator.MultipleChoiceQuestionValidator;
+import edu.umdearborn.astronomyapp.validation.validator.NumericQuestionValidator;
+import edu.umdearborn.astronomyapp.validation.validator.PageItemValidator;
+import edu.umdearborn.astronomyapp.validation.validator.QuestionValidator;
 
 @RestController
 @RequestMapping(REST_PATH_PREFIX)
@@ -53,11 +58,14 @@ public class ModuleController {
   private AclService    acl;
   private ModuleService moduleService;
   private ObjectMapper  objectMapper;
+  private GradeService  gradeService;
 
-  public ModuleController(AclService acl, ModuleService moduleService, ObjectMapper objectMapper) {
+  public ModuleController(AclService acl, ModuleService moduleService, ObjectMapper objectMapper,
+      GradeService gradeService) {
     this.acl = acl;
     this.moduleService = moduleService;
     this.objectMapper = objectMapper;
+    this.gradeService = gradeService;
   }
 
   @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/modules", method = GET)
@@ -111,6 +119,7 @@ public class ModuleController {
       @Valid @RequestBody Module module, Errors errors, HttpSession session, Principal principal) {
 
     acl.enforceInCourse(principal.getName(), courseId);
+    acl.enforeceCourseNotClosed(courseId);
 
     Course course = new Course();
     course.setId(courseId);
@@ -137,7 +146,7 @@ public class ModuleController {
   }
 
   @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}", method = DELETE)
-  public ResponseEntity<?> deleteModule(@PathVariable("courseId") String courseId,
+  public List<Module> deleteModule(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @Valid @RequestBody Module module, Errors errors,
       HttpSession session, Principal principal) {
 
@@ -147,7 +156,7 @@ public class ModuleController {
 
     moduleService.deleteModule(moduleId);
 
-    return new ResponseEntity<Void>(HttpStatus.OK);
+    return moduleService.getModules(courseId, false);
   }
 
   @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}",
@@ -176,7 +185,7 @@ public class ModuleController {
 
   @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}", params = "page",
       method = DELETE)
-  public ResponseEntity<?> deleteModulePage(@PathVariable("courseId") String courseId,
+  public JsonDecorator<Module> deleteModulePage(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId,
       @RequestParam(name = "page", defaultValue = "1") int pageNumber, HttpSession session,
       Principal principal) {
@@ -187,7 +196,7 @@ public class ModuleController {
 
     moduleService.deletePage(moduleId, pageNumber);
 
-    return new ResponseEntity<Void>(HttpStatus.OK);
+    return moduleService.getModuleDetails(moduleId);
   }
 
   @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}/add-page",
@@ -207,26 +216,59 @@ public class ModuleController {
   public PageItem createItem(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @RequestBody ObjectNode json,
       @RequestParam(name = "page", defaultValue = "1") int pageNumber, HttpSession session,
-      Principal principal) throws JsonProcessingException {
+      Principal principal, Errors errors) throws JsonProcessingException {
 
     acl.enforceInCourse(principal.getName(), courseId);
     acl.enforeceModuleInCourse(courseId, moduleId);
+    acl.enforceModuleNotOpen(moduleId);
 
     PageItem item;
     if (PageItemType.TEXT.toString().equalsIgnoreCase(json.get("pageItemType").asText())) {
       item = objectMapper.treeToValue(json, PageItem.class);
+      new PageItemValidator().validate(item, errors);
     } else if (QuestionType.MULTIPLE_CHOICE.toString()
         .equalsIgnoreCase(json.get("questionType").asText())) {
       item = objectMapper.treeToValue(json, MultipleChoiceQuestion.class);
+      item.setPageItemType(PageItem.PageItemType.QUESTION);
+      new MultipleChoiceQuestionValidator().validate(item, errors);
     } else if (QuestionType.NUMERIC.toString()
         .equalsIgnoreCase(json.get("questionType").asText())) {
       item = objectMapper.treeToValue(json, NumericQuestion.class);
+      item.setPageItemType(PageItem.PageItemType.QUESTION);
+      new NumericQuestionValidator().validate(item, errors);
     } else {
       item = objectMapper.treeToValue(json, Question.class);
+      item.setPageItemType(PageItem.PageItemType.QUESTION);
+      new QuestionValidator().validate(item, errors);
     }
+
+    ValidAssert.isValid(errors);
 
     logger.debug("Creating: {}", item.toString());
 
     return moduleService.createPageItem(item, moduleId, pageNumber);
   }
+
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}/item/{itemId}",
+      method = DELETE)
+  public List<PageItem> deletePageItem(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId, @PathVariable("itemId") String itemId,
+      Principal principal) {
+    acl.enforceInCourse(principal.getName(), courseId);
+    acl.enforeceModuleInCourse(courseId, moduleId);
+    acl.enforceModuleNotOpen(moduleId);
+
+    return moduleService.deletePageItem(moduleId, itemId);
+  }
+
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}/grades",
+      method = GET)
+  public Map<String, Object> getGrades(@PathVariable("courseId") String courseId,
+      @PathVariable("moduleId") String moduleId, Principal principal) {
+    acl.enforceInCourse(principal.getName(), courseId);
+    acl.enforeceModuleInCourse(courseId, moduleId);
+
+    return gradeService.getGrades(courseId, moduleId);
+  }
+
 }
