@@ -344,7 +344,7 @@ public class GroupServiceImpl implements GroupService {
 
     if (ResultListUtil.hasResult(answers)) {
       Date date = new Date();
-      answers.parallelStream().map(a -> {
+      answers.stream().map(a -> {
         Answer submission = new Answer();
         submission.setSubmissionNumber(submissionNumber);
         submission.setSubmissionTimestamp(date);
