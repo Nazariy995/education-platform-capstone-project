@@ -11,8 +11,7 @@ import edu.umdearborn.astronomyapp.entity.NumericQuestion;
 
 public class NumericQuestionValidator extends QuestionValidator {
 
-  private static final Logger logger =
-      LoggerFactory.getLogger(NumericQuestionValidator.class);
+  private static final Logger logger = LoggerFactory.getLogger(NumericQuestionValidator.class);
 
   @Override
   public boolean supports(Class<?> clazz) {
@@ -33,7 +32,10 @@ public class NumericQuestionValidator extends QuestionValidator {
     if (cast.getOptions().parallelStream().filter(e -> e.isCorrectOption()).count() != 1L) {
       errors.rejectValue("options", "invalid", "One and only one option must be true");
     }
-    logger.debug("Errors: ", Arrays.toString(
-        errors.getAllErrors().parallelStream().map(e -> e.getDefaultMessage()).toArray()));
+
+    if (errors.hasErrors()) {
+      logger.debug("Errors: ", Arrays.toString(
+          errors.getAllErrors().parallelStream().map(e -> e.getDefaultMessage()).toArray()));
+    }
   }
 }

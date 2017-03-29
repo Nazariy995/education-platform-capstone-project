@@ -23,13 +23,15 @@ public class QuestionValidator extends PageItemValidator {
   public void validate(Object target, Errors errors) {
     super.validate(target, errors);
     Question cast = (Question) target;
-    if (cast.getPoints().compareTo(BigDecimal.ZERO) != -1) {
+    if (cast.getPoints().compareTo(BigDecimal.ZERO) == -1) {
       logger.debug("Points is less than 0");
       errors.rejectValue("points", "invalid", "points must not be less than 0");
     }
     ValidationUtils.rejectIfEmptyOrWhitespace(errors, "questionType", "invalid");
-    logger.debug("Errors: ", Arrays.toString(
-        errors.getAllErrors().parallelStream().map(e -> e.getDefaultMessage()).toArray()));
+    if (errors.hasErrors()) {
+      logger.debug("Errors: ", Arrays.toString(
+          errors.getAllErrors().parallelStream().map(e -> e.getDefaultMessage()).toArray()));
+    }
   }
 
 }

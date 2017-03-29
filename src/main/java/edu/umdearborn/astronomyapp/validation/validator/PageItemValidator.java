@@ -22,10 +22,13 @@ public class PageItemValidator implements Validator {
   @Override
   public void validate(Object target, Errors errors) {
     ValidationUtils.rejectIfEmptyOrWhitespace(errors, "humanReadableText", "required");
-    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "humanReadableText", "required");
     ValidationUtils.rejectIfEmpty(errors, "pageItemType", "required");
-    logger.debug("Errors: ", Arrays.toString(
-        errors.getAllErrors().parallelStream().map(e -> e.getDefaultMessage()).toArray()));
+
+    if (errors.hasErrors()) {
+      logger.debug("Errors: ", Arrays.toString(
+          errors.getAllErrors().parallelStream().map(e -> e.getDefaultMessage()).toArray()));
+    }
+
   }
 
 }
