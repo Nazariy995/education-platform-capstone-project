@@ -16,5 +16,9 @@ public interface UserManagementService {
   public boolean emailExists(String email);
   
   public CourseUser updateCourseUserStatus(String courseUserId, boolean isActive);
+  
+  public void resetPassword(String email);
+  
+  public void changePassword(String email, String password);
 
 }

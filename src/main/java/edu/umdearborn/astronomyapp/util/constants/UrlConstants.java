@@ -4,7 +4,7 @@ public final class UrlConstants {
 
   public static final String[] PUBLIC_PATH_PATTERNS = {"/", "/login", "/index.html", "/app.js",
       "/app.css", "/app**.js", "/views/**", "/models/**", "/assets/**", "/components/**",
-      "/dist/**", "/logout", "/login.html", "/views/app/login/login.html"};
+      "/dist/**", "/logout", "/login.html", "/views/app/login/login.html", "/self/password/reset"};
   public static final String   REST_PATH_PREFIX     = "/rest";
 
   public static final String ADMIN_PATH      = "/admin";
