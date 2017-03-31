@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.Gson;
 
 import edu.umdearborn.astronomyapp.entity.Course;
 import edu.umdearborn.astronomyapp.entity.Module;
@@ -225,6 +226,7 @@ public class ModuleController {
 
     Errors errors;
     PageItem item;
+    Gson gson = new Gson();
     if (PageItemType.TEXT.toString().equalsIgnoreCase(json.get("pageItemType").asText())) {
       logger.debug("Is a text item");
       item = objectMapper.treeToValue(json, PageItem.class);
@@ -234,7 +236,7 @@ public class ModuleController {
     } else if (QuestionType.MULTIPLE_CHOICE.toString()
         .equalsIgnoreCase(json.get("questionType").asText())) {
       logger.debug("Is a multiple choice question");
-      item = objectMapper.treeToValue(json, MultipleChoiceQuestion.class);
+      item = gson.fromJson(json.toString(), MultipleChoiceQuestion.class);
       item.setPageItemType(PageItem.PageItemType.QUESTION);
       logger.debug("Value: {}", item);
       errors = new BeanPropertyBindingResult(item, "multipleChoiceQuestion");
@@ -242,7 +244,7 @@ public class ModuleController {
     } else if (QuestionType.NUMERIC.toString()
         .equalsIgnoreCase(json.get("questionType").asText())) {
       logger.debug("Is a numeric question");
-      item = objectMapper.treeToValue(json, NumericQuestion.class);
+      item = gson.fromJson(json.toString(), NumericQuestion.class);
       item.setPageItemType(PageItem.PageItemType.QUESTION);
       logger.debug("Value: {}", item);
       errors = new BeanPropertyBindingResult(item, "numericQuestion");
