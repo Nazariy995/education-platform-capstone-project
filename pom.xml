@@ -88,6 +88,11 @@
 			<version>${aws-java-sdk-s3.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-csv</artifactId>
 			<version>${commons-csv.version}</version>
