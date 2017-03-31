@@ -2,7 +2,6 @@ package edu.umdearborn.astronomyapp.service;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -22,7 +21,6 @@ import com.google.common.base.Predicates;
 import edu.umdearborn.astronomyapp.entity.AstroAppUser;
 import edu.umdearborn.astronomyapp.entity.Course;
 import edu.umdearborn.astronomyapp.entity.CourseUser;
-import edu.umdearborn.astronomyapp.util.email.NewUserEmailContextBuilder;
 
 @Service
 @Transactional
@@ -88,10 +86,9 @@ public class UserManagementServiceImpl implements UserManagementService {
 
     user.setPassword(RandomStringUtils.randomAlphanumeric(12));
 
-    Map<String, String> context =
-        emailService.buildEmailContext(new NewUserEmailContextBuilder(user));
+    emailService.send(user.getEmail(), "Welcome to AstroApp",
+        "Username: " + user.getEmail() + " Password: " + user.getPassword());
     user.setPassword(passwordEncoder.encode(user.getPassword()));
-    emailService.send(context);
 
     entityManager.persist(user);
 
@@ -114,8 +111,39 @@ public class UserManagementServiceImpl implements UserManagementService {
     CourseUser user = entityManager.find(CourseUser.class, courseUserId);
     user.setActive(isActive);
     entityManager.merge(user);
-    
+
     return user;
+  }
+
+  @Override
+  public void resetPassword(String email) {
+    AstroAppUser user = entityManager
+        .createQuery("select u from AstroAppUser u where lower(u.email) = lower(:email)",
+            AstroAppUser.class)
+        .setParameter("email", email).getSingleResult();
+
+    user.setPassword(RandomStringUtils.randomAlphanumeric(12));
+    emailService.send(user.getEmail(), "Astro App Password Reset",
+        "Your password was reset.\nUsername: " + user.getEmail() + " Password: "
+            + user.getPassword());
+    
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
+    entityManager.merge(user);
+
+  }
+
+  @Override
+  public void changePassword(String email, String password) {
+    AstroAppUser user = entityManager
+        .createQuery("select u from AstroAppUser u where lower(u.email) = lower(:email)",
+            AstroAppUser.class)
+        .setParameter("email", email).getSingleResult();
+
+    emailService.send(user.getEmail(), "Astro App Password Change",
+        "Your password has changed");
+    
+    user.setPassword(passwordEncoder.encode(password));
+    entityManager.merge(user);
   }
 
 }

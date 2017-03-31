@@ -53,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
       .authorizeRequests()//.antMatchers("*").permitAll()
         .filterSecurityInterceptorOncePerRequest(true)
+        .antMatchers("/rest/self/password/reset").anonymous()
         .antMatchers(REST_PATH_PREFIX).fullyAuthenticated()
         .antMatchers(REST_PATH_PREFIX + ADMIN_PATH + "/**").hasRole("ADMIN")
         .antMatchers(REST_PATH_PREFIX + INSTRUCTOR_PATH + "/**").hasRole("INSTRUCTOR")
