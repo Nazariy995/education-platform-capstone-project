@@ -29,7 +29,9 @@ public class NumericQuestionValidator extends QuestionValidator {
     if (cast.getOptions().isEmpty()) {
       errors.rejectValue("options", "invalid", "You must give options");
     }
-    if (cast.getOptions().parallelStream().filter(e -> e.isCorrectOption()).count() != 1L) {
+    logger.debug("Number of correct options: {}", cast.getOptions().stream()
+        .filter(e -> e.isCorrectOption()).peek(e -> logger.debug("{}", e)).count());
+    if (cast.getOptions().stream().filter(e -> e.isCorrectOption()).count() != 1L) {
       errors.rejectValue("options", "invalid", "One and only one option must be true");
     }
 

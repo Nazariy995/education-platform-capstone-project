@@ -27,7 +27,7 @@ public class MultipleChoiceQuestionValidator extends QuestionValidator {
     if (cast.getOptions().isEmpty()) {
       errors.rejectValue("options", "invalid", "You must give options");
     }
-    if (cast.getOptions().parallelStream().filter(e -> e.isCorrectOption()).count() != 1L) {
+    if (cast.getOptions().stream().filter(e -> e.isCorrectOption()).count() != 1L) {
       errors.rejectValue("options", "invalid", "One and only one option must be true");
     }
 
