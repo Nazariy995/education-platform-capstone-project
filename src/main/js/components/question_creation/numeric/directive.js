@@ -2,34 +2,40 @@ function Directive($state){
     "ngInject";
 
     function link(scope, element, attributes){
-        scope.model = {
-            type : scope.field.questionType
+        scope.model.pageItemType = "QUESTION";
+        if(!("isGatekeeper" in scope.model)){
+            scope.model.isGatekeeper = false;
+        }
+
+        if(!("options" in scope.model)){
+            scope.model.options = []
+        }
+
+        scope.addNewOption = function(option){
+            addOption(scope, option);
+        }
+
+        scope.removeOption = function(index){
+            scope.model.options.splice(index,1);
+        }
+
+    }
+
+    function addOption(scope, option){
+        var newOption = {
+            humanReadableText : option,
+            isCorrectOption :  false
         };
+        scope.model.options.push(newOption);
+        scope.newOption = "";
+    };
 
-        setAnswer(scope);
-
-    }
-
-    function setAnswer( scope ){
-        var _scope = scope;
-        scope.$watch('savedAnswers', function(newAnswer){
-            if(newAnswer && "value" in newAnswer){
-                _scope.model.answer = Number(newAnswer.value.answer);
-                _scope.model.unit = newAnswer.value.unit;
-            }
-        });
-    }
 
     var directive = {
-        controller: 'InputComponentController',
-        controllerAs: 'componentCtrl',
-        templateUrl: 'components/quiz/numeric/home.html',
+        templateUrl: 'components/question_creation/numeric/home.html',
         link : link,
         scope: {
             model: '=',
-            savedAnswers : '=',
-            editable : '=',
-            field: '='
         }
     }
 
