@@ -6,6 +6,7 @@ function Controller($scope, $state, $stateParams, appSettings, AssignmentService
     this.courseId = $stateParams.courseId;
     this.moduleId = $stateParams.moduleId;
     this.pageNum = $stateParams.pageNum;
+    this.created_updated = $stateParams.created_updated;
     this.questionTypes = appSettings.QUESTION_TYPES;
     this._$stateParams  = $stateParams;
     this._AssignmentService = AssignmentService;
@@ -25,9 +26,19 @@ Controller.prototype.getQuestions = function() {
     var self = this;
     self._QuestionService.getQuestions(self.courseId, self.moduleId, self.pageNum)
     .then(function(payload){
-        self.questions = payload
+        self.questions = payload;
     }, function(err){
-        self.error = "ERROR getting questions"
+        self.error = "ERROR getting questions";
+    });
+};
+
+Controller.prototype.dropQuestion = function(questionId) {
+    var self = this;
+    self._QuestionService.dropQuestion(self.courseId, self.moduleId, questionId)
+    .then(function(payload){
+        self.questions = payload;
+    }, function(err){
+        self.error = "ERROR deleting the question";
     });
 }
 
@@ -48,11 +59,25 @@ Controller.prototype.addQuestion = function(){
             pageNum : self.pageNum,
             questionId : "new",
             questionType : self.selectedQuestionType,
-            isNew : true
-        }
-        self._$state.go('app.course.assignments_add_edit_question', params);
+            isNew : true,
+            questionData : {}
+        };
+        self._$state.go('app.course.assignments_add_edit_question', params, {reload: true});
     }
 };
+
+Controller.prototype.viewQuestion = function(questionData){
+    var self = this;
+    var questionType = ("questionType" in questionData ? questionData.questionType : questionData.pageItemType);
+    var params = {
+        moduleId : self.moduleId,
+        pageNum : self.pageNum,
+        questionId : questionData.id,
+        questionType : questionType,
+        questionData : questionData
+    };
+    self._$state.go('app.course.assignments_add_edit_question', params, {reload : true});
+}
 
 module.exports = angular.module('app.views.instructor.questions.add_edit', [])
 .controller('Instructor.QuestionsAddEdit', Controller);

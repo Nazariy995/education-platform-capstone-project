@@ -2,8 +2,13 @@
 <h2>
     {{ questionsEditCtrl.pageName }}
 </h2>
+
+
 <div class="row">
     <div class="col-xs-12">
+        <div class="alert alert-success" ng-if="questionsEditCtrl.created_updated">
+            Question was successfully updated/created
+        </div>
         <form name="addQuestionForm" novalidate class="form-inline">
             <div class="form-group">
                 <select class="form-control"
@@ -25,7 +30,6 @@
         <thead>
             <tr>
                 <th></th>
-                <th>#</th>
                 <th>Text</th>
                 <th>Type</th>
                 <th>Q Type</th>
@@ -37,15 +41,15 @@
         </thead>
         <tbody>
             <tr ng-repeat="question in questionsEditCtrl.questions | orderBy:'order'">
-                <td> <span class="glyphicon glyphicon-search"></span> </td>
-                <td> {{ question.order }} </td>
+                <td> <a ng-click="questionsEditCtrl.viewQuestion(question)" class="pointer-cursor"><span class="glyphicon glyphicon-search"></span></a></td>
                 <td> {{ question.humanReadableText | limitTo:10 }}</td>
                 <td> {{ question.pageItemType }}</td>
                 <td> {{ question.questionType }}</td>
                 <td> {{ question.points }}</td>
                 <td> {{ question.isGatekeeper }}</td>
                 <td> {{ question.machineGradeable }}</td>
-                <td> Delete </td>
+                <td> <a href=""
+                        ng-click="questionsEditCtrl.dropQuestion(question.id)" >Delete</a> </td>
             </tr>
         </tbody>
         </table>

@@ -17,9 +17,29 @@
                                                  model="questionEditCtrl.questionData">
                       </new-question-free-response>
                     </div>
+                    <div ng-switch-when="IMAGE">
+                      <new-question-image-upload
+                                                 model="questionEditCtrl.questionData">
+                      </new-question-image-upload>
+                    </div>
+                    <div ng-switch-when="TEXT">
+                      <new-question-front-text
+                                                 model="questionEditCtrl.questionData">
+                      </new-question-front-text>
+                    </div>
+                    <div ng-switch-when="NUMERIC">
+                      <new-question-numeric
+                                                 model="questionEditCtrl.questionData">
+                      </new-question-numeric>
+                    </div>
+                    <div ng-switch-when="MULTIPLE_CHOICE">
+                        <new-question-multiple-choice
+                                                 model="questionEditCtrl.questionData">
+                        </new-question-multiple-choice>
+                    </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary" ng-disabled="!questionEditCtrl.isNew" >Submit</button>
             {{ questionEditCtrl.questionData | json }}
         </form>
     </div>
