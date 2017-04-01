@@ -118,6 +118,9 @@ var states = [
     {
         name : 'app.course.assignments_add_edit_questions',
         url : '/{moduleId}/add_edit_pages/{pageNum}/add_edit_questions',
+        params : {
+            created_updated : false
+        },
         views : {
             'childContent' : {
                 templateUrl : 'views/instructor/assignments_add_edit_questions/home.html',
@@ -131,7 +134,8 @@ var states = [
         url : '/{moduleId}/add_edit_pages/{pageNum}/add_edit_questions/{questionId}',
         params : {
             isNew : false,
-            questionType : null
+            questionType : null,
+            questionData : {}
         },
         views : {
             'childContent' : {
