@@ -15,6 +15,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import edu.umdearborn.astronomyapp.util.json.View;
 
@@ -25,6 +26,7 @@ public abstract class AbstractOptionsQuestion<T extends AbstractOption> extends 
   private static final long serialVersionUID = -3078009736538827491L;
 
   @JsonView(View.Student.class)
+  @JsonDeserialize(as = HashSet.class)
   @Valid
   @Size(min = 1)
   @OneToMany(cascade = CascadeType.ALL)

@@ -1,0 +1,25 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">Image Upload</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="alert alert-danger" ng-if="$modalCtrl.error">
+        {{ $modalCtrl.error }}
+    </div>
+    <div class="form-group">
+        <label for="file" >Select File</label>
+        <input type="file"
+                ngf-select
+                ng-model="imageFile"
+                accept="image/*"
+                ngf-model-invalid="errorFile"
+                required >
+        <p class="help-block">.PNG, .JPG</p>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary"
+        ng-click="$modalCtrl.uploadImage(imageFile)"
+        ng-disabled="!imageFile"
+        >Upload</button>
+    <button class="btn btn-warning" type="button" ng-click="$modalCtrl.reject()">Cancel</button>
+</div>

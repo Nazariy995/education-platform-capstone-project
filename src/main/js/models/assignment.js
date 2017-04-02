@@ -61,12 +61,12 @@ Service.prototype.editAssignment = function(courseId, moduleId, payload){
 Service.prototype.getAssignments = function(courseId){
     var self = this;
     self.getConfig();
-    console.log("This is the config");
-    console.log(self.config);
+
     var url = {};
     url[self.userRoles.user] = self._appSettings.API.basePath + '/rest/student/course/'+courseId+'/modules';
     url[self.userRoles.instructor] = self._appSettings.API.basePath + '/rest/instructor/course/'+courseId+'/modules';
     url = self.getUrl(url);
+
     return this._$http
           .get(url, self.config)
           .then(function (res) {

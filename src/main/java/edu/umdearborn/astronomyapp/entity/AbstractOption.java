@@ -7,11 +7,14 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @MappedSuperclass
 public abstract class AbstractOption extends AbstractGeneratedId {
 
   private static final long serialVersionUID = -8982150102570938109L;
 
+  @JsonProperty("isCorrectOption")
   @NotNull
   private boolean isCorrectOption = false;
 

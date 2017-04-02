@@ -10,6 +10,13 @@ module.exports = angular.module('app.settings', [])
             "courseUserId" : 'courseUserId'
         }
     },
+    "QUESTION_TYPES" : {
+        MULTIPLE_CHOICE : "Multiple Choice",
+        NUMERIC : "Numeric",
+        FREE_RESPONSE : "Free Response",
+        IMAGE : "Image Upload",
+        TEXT : "Front Text"
+    },
     "USER" : {
         "mainNavigationLinks" : [
             {

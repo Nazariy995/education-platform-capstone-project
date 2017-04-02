@@ -2,11 +2,14 @@
 
 
 //External
+//global.rangy = require('rangy');
 require('angular');
 require('angular-ui-router');
 require('angular-ui-bootstrap');
 require('angular-animate');
 require('ng-file-upload');
+require('textAngular/dist/textAngular-sanitize')
+require('textAngular');
 
 //Internal
 var views = require('./views/module');
@@ -17,6 +20,7 @@ var appRouter = require('./app_router');
 var appSettings = require('./app_settings');
 var appRun = require('./app_run');
 var appAuthInterceptor = require('./app_auth_interceptor');
+var appProvider = require('./app_provider');
 
 var appModule = angular.module("app", [
     //External
@@ -24,8 +28,10 @@ var appModule = angular.module("app", [
     'ui.bootstrap',
     'ngAnimate',
     'ngFileUpload',
+    'textAngular',
 
     //Internal
+    'app.templates',
     appSettings.name,
     models.name,
     components.name,
@@ -38,6 +44,7 @@ var appModule = angular.module("app", [
     $httpProvider.interceptors.push('SessionInjector');
     $qProvider.errorOnUnhandledRejections(false);
 }])
+.config(appProvider)
 .run(appRun);
 
 

@@ -2,16 +2,11 @@ var app_states = require("./app_states/app");
 var assignment_states = require("./app_states/assignment");
 var course_states = require("./app_states/course");
 
-function Router($stateProvider, $httpProvider, $locationProvider){
+function Router($stateProvider, $httpProvider, $locationProvider, $urlRouterProvider){
     "ngInject";
 
     //A fix for angular  1.6.1 because the hashPrefix got changed to ! so we needed to chane thay back
     $locationProvider.html5Mode(false).hashPrefix('');
-////    $locationProvider.html5Mode(true).hashPrefix('!');
-//    $locationProvider.html5Mode({
-//        enabled: true,
-//        requireBase: false
-//    }).hashPrefix('!');
 
     var states = []
     //Concatinate all of the states from app states folder
@@ -23,10 +18,9 @@ function Router($stateProvider, $httpProvider, $locationProvider){
         $stateProvider.state(state);
     });
 
-
+    $urlRouterProvider.otherwise("/");
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 
-//    Removing # from the urls
 }
 
 module.exports = Router;
