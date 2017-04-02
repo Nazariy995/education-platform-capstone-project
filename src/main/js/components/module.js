@@ -7,6 +7,7 @@ var questionCreation = require('./question_creation/module');
 var confirmationModal = require('./confirmation_modal/module');
 var restrictModal = require('./restrict/module');
 var dateFormat = require('./date_format/module');
+var editorImageUploadModal = require('./editor_image_upload_modal/module');
 
 module.exports = angular.module('app.components', [
     services.name,
@@ -16,5 +17,6 @@ module.exports = angular.module('app.components', [
     quiz.name,
     restrictModal.name,
     dateFormat.name,
-    questionCreation.name
+    questionCreation.name,
+    editorImageUploadModal.name
 ]);
