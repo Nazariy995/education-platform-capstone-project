@@ -150,8 +150,14 @@ Service.prototype.getAnswers = function(courseId, moduleId, groupId){
 Service.prototype.uploadImage = function(file){
     var self = this;
     var config = self.getConfig();
-    var url = self._appSettings.API.basePath
+
+    var url = {};
+    url[self.userRoles.user] = self._appSettings.API.basePath
     + 'rest/student/upload';
+    url[self.userRoles.instructor] = self._appSettings.API.basePath
+    + 'rest/instructor/upload';
+    url = self.getUrl(url);
+
     var data = {};
     data["file"] = file;
     return self._Upload.upload({url, data })
