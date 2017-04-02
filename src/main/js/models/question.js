@@ -160,7 +160,7 @@ Service.prototype.uploadImage = function(file){
 
     var data = {};
     data["file"] = file;
-    return self._Upload.upload({url, data })
+    return self._Upload.upload({ url: url, data : data })
           .then(function (res) {
             console.log("Uploaded Image");
             console.log(res);
