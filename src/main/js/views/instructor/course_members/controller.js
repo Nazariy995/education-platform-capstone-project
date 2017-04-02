@@ -30,8 +30,8 @@ Controller.prototype.getMembers = function() {
 //Drop the course member and get confirmation
 Controller.prototype.dropMember = function(memberIndex) {
     var self = this;
-    var selMember = self.members[memberIndex]
-    var confirmation = "Are you sure you want to delete the following user?"
+    var selMember = self.members[memberIndex];
+    var confirmation = "Are you sure you want to delete the following user?";
     var footNote = selMember.firstName + ", " + selMember.lastName;
     var modalInstance = self._ConfirmationService.open("", confirmation, footNote);
     modalInstance.result.then(function(){
