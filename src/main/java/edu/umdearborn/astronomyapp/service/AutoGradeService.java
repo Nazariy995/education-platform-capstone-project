@@ -9,6 +9,5 @@ public interface AutoGradeService {
   public List<Question> getGatekeepers(String moduleId, int pageNum);
   
   public boolean checkAnswer(String answerId);
-
   public boolean answeredGatekeepers(String moduleId, int pageNum, String groupId);
 }
