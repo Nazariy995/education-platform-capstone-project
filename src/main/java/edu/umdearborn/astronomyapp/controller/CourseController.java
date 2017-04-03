@@ -258,16 +258,8 @@ public class CourseController {
 
     acl.enforceInCourse(principal.getName(), courseId);
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-    headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + courseId + "-grades-"
-        + DateUtils.formatDate(new Date(), DateUtils.PATTERN_RFC1123).replace(" ", "_") + ".csv");
-
     response.setContentType("text/csv");
-    response.addHeader(HttpHeaders.CONTENT_DISPOSITION,
-        "attachment; filename=" + courseId + "-grades-"
-            + DateUtils.formatDate(new Date(), DateUtils.PATTERN_RFC1123).replace(" ", "_")
-            + ".csv");
+
     try (OutputStream outputStream = response.getOutputStream()) {
       gradeService.exportGrades(courseId, outputStream);
       outputStream.close();
