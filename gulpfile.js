@@ -21,7 +21,7 @@ gulp.task('templates', function(){
     return gulp.src([
         'src/main/js/**/*.html'
         ])
-        .pipe(htmlmin({collapseWhitespace: true}))
+        .pipe(htmlmin({collapseWhitespace: false}))
         .pipe(templateCache({
             module : 'app.templates',
             standalone : true

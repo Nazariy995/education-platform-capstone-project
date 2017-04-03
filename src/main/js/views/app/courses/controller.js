@@ -5,6 +5,7 @@ function Controller($state, $stateParams, CourseService){
     this.pageName = "Courses";
     this._CourseService = CourseService;
     this.created_updated = $stateParams.created_updated;
+    console.log("Inside Courses");
     this.init();
 };
 
@@ -23,6 +24,6 @@ Controller.prototype.getCourses = function(){
     });
 }
 
-module.exports = angular.module('app.views.app.courses.controller', [ ])
+module.exports = angular.module('app.views.app.courses.controller', [])
 .controller('CoursesCtrl', Controller);
 
