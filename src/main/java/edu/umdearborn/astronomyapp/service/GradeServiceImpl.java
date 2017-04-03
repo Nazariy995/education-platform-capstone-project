@@ -99,6 +99,7 @@ public class GradeServiceImpl implements GradeService {
 
   @Override
   public Map<String, Object> getGrade(String email, String moduleId) {
+    logger.debug("Getting groupdId for module: '{}'", moduleId);
     List<String> results = entityManager.createQuery(
         "select g.id from GroupMember gm join gm.moduleGroup g join g.module m "
             + "join gm.courseUser cu join cu.user u where lower(u.email) = lower(:email)",
@@ -152,5 +153,16 @@ public class GradeServiceImpl implements GradeService {
     logger.debug("User: '{}' has no grade for module: '{}'", email, moduleId);
     return ImmutableMap.of("pointsEarned", BigDecimal.ZERO, "submissionNumber", 0L,
         "finishedGrading", true);
+  }
+
+  @Override
+  public Map<String, Object> viewStudentGrades(String email, String courseId) {
+    return Optional
+        .ofNullable(entityManager
+            .createQuery("select m.id from Module m join m.course c where c.id = :courseId",
+                String.class)
+            .setParameter("courseId", courseId).getResultList())
+        .orElseGet(ArrayList<String>::new).stream()
+        .collect(Collectors.toMap(e -> e, e -> getGrade(email, e)));
   }
 }
