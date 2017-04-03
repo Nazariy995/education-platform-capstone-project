@@ -34,11 +34,18 @@ Controller.prototype.getQuestions = function() {
 
 Controller.prototype.dropQuestion = function(questionId) {
     var self = this;
-    self._QuestionService.dropQuestion(self.courseId, self.moduleId, questionId)
-    .then(function(payload){
-        self.questions = payload;
-    }, function(err){
-        self.error = "ERROR deleting the question";
+    var confirmation = "Are you sure you want to delete the Question?";
+    var footNote = "Once deleted, you can't get it back. ";
+    var modalInstance = self._ConfirmationService.open("", confirmation, footNote);
+    modalInstance.result.then(function(){
+        self._QuestionService.dropQuestion(self.courseId, self.moduleId, questionId)
+        .then(function(payload){
+            self.questions = payload;
+        }, function(err){
+            self.error = "ERROR deleting the question";
+        });
+    }, function(){
+        console.log("They said no");
     });
 }
 

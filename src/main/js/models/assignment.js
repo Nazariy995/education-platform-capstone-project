@@ -11,31 +11,26 @@ function Service($http, appSettings, SessionService){
     this._SessionService = SessionService;
     this.courseUserIdKey = appSettings.API.PARAMS.courseUserId;
     this.assignmentDetails = {};
-    this.init();
-}
-
-Service.prototype.init = function(){
-    var self = this;
-    self.getConfig();
 };
 
 Service.prototype.getConfig = function(){
     var self = this;
-    self.params = {};
-    self.params[self.courseUserIdKey] = self._SessionService.getCourseUserId();
-    self.config = {
-        params : self.params
+    var params = {};
+    params[self.courseUserIdKey] = self._SessionService.getCourseUserId();
+    var config = {
+        params : params
     };
+    return config;
 };
 
 //Purpose: Create a new assignment
 //Params: courseId - String, payload - json/assignment details
 Service.prototype.addAssignment = function(courseId, payload){
     var self = this;
-    self.getConfig();
+    var config = self.getConfig();
     var url = self._appSettings.API.basePath + '/rest/instructor/course/'+courseId+'/module'
     return this._$http
-          .post(url, payload, self.config)
+          .post(url, payload, config)
           .then(function (res) {
             console.log("Add Assignment");
             console.log(res);
@@ -47,20 +42,33 @@ Service.prototype.addAssignment = function(courseId, payload){
 //Params: courseId - String, moduleId - String, payload - json/assignment details
 Service.prototype.editAssignment = function(courseId, moduleId, payload){
     var self = this;
-    self.getConfig();
+    var config = self.getConfig();
     var url = self._appSettings.API.basePath + '/rest/instructor/course/'+courseId+ '/module/' + moduleId;
     return this._$http
-          .put(url, payload, self.config)
+          .put(url, payload, config)
           .then(function (res) {
             console.log("Edit Assignment");
             console.log(res);
+            return res.data;
+          });
+};
+
+//Purpose: Delete the current Assignment
+//Params: courseId - String, moduleId - String
+Service.prototype.dropAssignment = function(courseId, moduleId){
+    var self = this;
+    var config = self.getConfig();
+    var url = self._appSettings.API.basePath + '/rest/instructor/course/'+courseId+ '/module/' + moduleId;
+    return this._$http
+          .delete(url, config)
+          .then(function (res) {
             return res.data;
           });
 }
 
 Service.prototype.getAssignments = function(courseId){
     var self = this;
-    self.getConfig();
+    var config = self.getConfig();
 
     var url = {};
     url[self.userRoles.user] = self._appSettings.API.basePath + '/rest/student/course/'+courseId+'/modules';
@@ -68,7 +76,7 @@ Service.prototype.getAssignments = function(courseId){
     url = self.getUrl(url);
 
     return this._$http
-          .get(url, self.config)
+          .get(url, config)
           .then(function (res) {
             console.log("Got Assignments List");
             console.log(res);
@@ -79,14 +87,15 @@ Service.prototype.getAssignments = function(courseId){
 //Get Assignment details
 Service.prototype.getAssignmentDetails = function(courseId, moduleId){
     var self = this;
-    self.getConfig();
+    var config = self.getConfig();
+
     var url = {};
     url[self.userRoles.user] = self._appSettings.API.basePath + '/rest/student/course/'+ courseId+ '/module/' + moduleId;
     url[self.userRoles.instructor] = self._appSettings.API.basePath + '/rest/instructor/course/'+ courseId+ '/module/' + moduleId;
     url = self.getUrl(url);
-//    self.config.cache = true;
+
     return self._$http
-        .get(url, self.config)
+        .get(url, config)
         .then(function(res){
         return res.data;
     })
@@ -94,10 +103,10 @@ Service.prototype.getAssignmentDetails = function(courseId, moduleId){
 
 Service.prototype.getAssignmentMembers = function(courseId, moduleId){
     var self = this;
-    self.getConfig();
+    var config = self.getConfig();
     var url = self._appSettings.API.basePath + '/rest/student/course/'+ courseId+ '/module/' + moduleId + '/free';
     return self._$http
-        .get(url, self.config)
+        .get(url, config)
         .then(function(res){
         console.log("Get Assignment Members");
         console.log(res);
