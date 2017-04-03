@@ -66,6 +66,26 @@ Service.prototype.getCourse = function(courseId){
     });
 };
 
+Service.prototype.getCourseGrades = function(courseId){
+    var self = this;
+    var config = self.getConfig();
+
+    var url = {}
+    url[self.userRoles.user] = self._appSettings.API.basePath
+        + '/rest/student/course/'
+        + courseId + '/grades';
+    url[self.userRoles.instructor] = self._appSettings.API.basePath
+        + '/rest/instructor/course/'
+        + courseId + '/grades';
+    url = self.getUrl(url);
+
+    return self._$http
+        .get(url, config)
+        .then(function(res){
+            return res.data;
+    });
+};
+
 Service.prototype.addCourse = function(payload){
     var self = this;
     var config = self.getConfig();
