@@ -95,4 +95,15 @@ public class AutoGradeServiceImpl implements AutoGradeService {
     return correctUnit.equals(answer.getValue());
   }
 
+  @Override
+  public boolean answeredGatekeepers(String moduleId, int pageNum, String groupId) {
+    return entityManager
+        .createQuery(
+            "select count(*) = 0 from Answer a join a.question q join a.group g where g.id = :groupId and "
+                + "q.id in :questions and a.pointesEarned is null or a.pointesEarned != q.points",
+            Boolean.class)
+        .setParameter("groupId", groupId)
+        .setParameter("questions", getGatekeepers(moduleId, pageNum)).getSingleResult();
+  }
+
 }
