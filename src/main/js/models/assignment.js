@@ -101,6 +101,22 @@ Service.prototype.getAssignmentDetails = function(courseId, moduleId){
     })
 };
 
+//Get Assignment Grade
+Service.prototype.getAssignmentGrade = function(courseId, moduleId){
+    var self = this;
+    var config = self.getConfig();
+
+    var url = self._appSettings.API.basePath + '/rest/instructor/course/'
+    + courseId+ '/module/'
+    + moduleId + '/grades';
+
+    return self._$http
+        .get(url, config)
+        .then(function(res){
+        return res.data;
+    })
+};
+
 Service.prototype.getAssignmentMembers = function(courseId, moduleId){
     var self = this;
     var config = self.getConfig();
