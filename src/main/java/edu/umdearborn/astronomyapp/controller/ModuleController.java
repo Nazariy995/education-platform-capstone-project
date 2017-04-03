@@ -149,8 +149,7 @@ public class ModuleController {
 
   @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}", method = DELETE)
   public List<Module> deleteModule(@PathVariable("courseId") String courseId,
-      @PathVariable("moduleId") String moduleId, @Valid @RequestBody Module module, Errors errors,
-      HttpSession session, Principal principal) {
+      @PathVariable("moduleId") String moduleId, HttpSession session, Principal principal) {
 
     acl.enforceInCourse(principal.getName(), courseId);
     acl.enforeceModuleInCourse(courseId, moduleId);

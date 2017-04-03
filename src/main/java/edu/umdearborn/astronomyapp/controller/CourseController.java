@@ -275,4 +275,12 @@ public class CourseController {
 
   }
 
+  @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/grades", method = GET)
+  public Map<String, Object> viewGrades(@PathVariable("courseId") String courseId,
+      Principal principal) {
+    acl.enforceInCourse(principal.getName(), courseId);
+
+    return gradeService.viewStudentGrades(principal.getName(), courseId);
+  }
+
 }

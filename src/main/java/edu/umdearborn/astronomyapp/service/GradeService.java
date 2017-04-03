@@ -10,4 +10,6 @@ public interface GradeService {
   public Map<String, Object> getGrades(String courseId, String moduleId);
 
   public Map<String, Object> getGrade(String email, String moduleId);
+
+  public Map<String, Object> viewStudentGrades(String email, String courseId);
 }

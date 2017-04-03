@@ -33,6 +33,7 @@ import edu.umdearborn.astronomyapp.entity.Answer;
 import edu.umdearborn.astronomyapp.entity.CourseUser;
 import edu.umdearborn.astronomyapp.entity.ModuleGroup;
 import edu.umdearborn.astronomyapp.service.AclService;
+import edu.umdearborn.astronomyapp.service.AutoGradeService;
 import edu.umdearborn.astronomyapp.service.GradeService;
 import edu.umdearborn.astronomyapp.service.GroupService;
 import edu.umdearborn.astronomyapp.util.HttpSessionUtil;
@@ -45,15 +46,17 @@ public class ModuleGroupController {
 
   private static final Logger logger = LoggerFactory.getLogger(ModuleGroupController.class);
 
-  private AclService   acl;
-  private GroupService groupService;
-  private GradeService gradeService;
+  private AclService       acl;
+  private GroupService     groupService;
+  private GradeService     gradeService;
+  private AutoGradeService autoGradeService;
 
-  public ModuleGroupController(AclService acl, GroupService groupService,
-      GradeService gradeService) {
+  public ModuleGroupController(AclService acl, GroupService groupService, GradeService gradeService,
+      AutoGradeService autoGradeService) {
     this.acl = acl;
     this.groupService = groupService;
     this.gradeService = gradeService;
+    this.autoGradeService = autoGradeService;
   }
 
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group",
@@ -280,7 +283,8 @@ public class ModuleGroupController {
       method = GET)
   public Map<String, Boolean> hasLock(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
-      HttpSession session, Principal principal) {
+      @RequestParam(name = "page", defaultValue = "1") int pageNumber, HttpSession session,
+      Principal principal) {
 
     String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
 
@@ -295,7 +299,8 @@ public class ModuleGroupController {
     Map<String, Boolean> map = new HashMap<>();
     boolean hasLock = groupService.hasLock(groupId, checkedIn);
     map.put("hasLock", hasLock);
-    map.put("isModuleEditable", hasLock && true);
+    map.put("isModuleEditable",
+        hasLock && autoGradeService.answeredGatekeepers(moduleId, pageNumber, groupId));
 
     return map;
   }
