@@ -1,0 +1,71 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1 class="page-header">
+                {{ adminAddEditCtrl.pageName }}
+            </h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="alert alert-danger" ng-if="coursesEdit.error">
+                {{ coursesEdit.error }}
+            </div>
+            <form name="courseForm" ng-submit="coursesEdit.addCourse(courseForm.$valid, coursesEdit.course)" novalidate>
+                <div class="form-group" ng-class="{ 'has-error' : courseForm.title.$invalid && !courseForm.title.$pristine }">
+                    <label>Title</label>
+                    <input type="text" name="title" class="form-control" placeholder="Course Title"
+                           ng-model="coursesEdit.course.courseTitle" required>
+                    <span ng-show="courseForm.title.$invalid && !courseForm.title.$pristine" class="help-block">Title is required</span>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error' : courseForm.courseCode.$invalid && !courseForm.courseCode.$pristine }">
+                    <label>Course Code</label>
+                    <input type="text" name="courseCode" class="form-control"
+                           ng-minlength="1"
+                           ng-maxlength="6"
+                           placeholder="Course Code"
+                           ng-model="coursesEdit.course.courseCode" required>
+                    <span ng-show="courseForm.courseCode.$invalid && !courseForm.courseCode.$pristine" class="help-block">Course Code is required. Min Length: 1, Max Length: 6</span>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error' : courseForm.subjectCode.$invalid && !courseForm.subjectCode.$pristine }">
+                    <label>Subject Code</label>
+                    <input type="text" class="form-control" name="subjectCode"
+                           ng-minlength="1"
+                           ng-maxlength="6"
+                           placeholder="Subject Code"
+                           ng-model="coursesEdit.course.subjectCode" required>
+                    <span ng-show="courseForm.subjectCode.$invalid && !courseForm.subjectCode.$pristine" class="help-block">Subject Code is required. Min Length: 1, Max Length: 6</span>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error' : courseForm.openDate.$invalid && !courseForm.openDate.$pristine }">
+                    <label>Open Date</label>
+                    <input type="date" class="form-control" format-date
+                           name="openDate"
+                           ng-model="coursesEdit.course.openTimestamp"
+                           required>
+                    <span ng-show="courseForm.openDate.$invalid && !courseForm.openDate.$pristine" class="help-block">Open Date is required. The min date is today.</span>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error' : courseForm.closeDate.$invalid && !courseForm.closeDate.$pristine }">
+                    <label>Close Date</label>
+                    <input type="date" class="form-control" format-date
+                           name="closeDate"
+                           ng-model="coursesEdit.course.closeTimestamp"
+                           required>
+                    <span ng-show="courseForm.closeDate.$invalid && !courseForm.closeDate.$pristine" class="help-block">Close Date is required. The min date is today.</span>
+                </div>
+                <div class="form-group">
+                    <label>Clone Course</label>
+                    <select class="form-control"
+                            ng-model="coursesEdit.course.cloneCourseId"
+                            ng-disabled="!coursesEdit.cloneAllowed">
+                        <option ng-repeat="course in coursesEdit.allCourses"
+                                value="{{ course.id }}">
+                            {{ course.courseTitle }} {{ course.subjectCode }}
+                        </option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" ng-disabled="courseForm.$invalid">Submit</button>
+            </form>
+            {{ coursesEdit.course | json }}
+        </div>
+    </div>
+</div>

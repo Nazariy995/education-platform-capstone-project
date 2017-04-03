@@ -17,12 +17,15 @@ function Controller($scope, $state, $window, $stateParams, AuthService, appSetti
 
 Controller.prototype.login = function(){
     var self = this;
-    self._AuthService.login(self.credentials).then(function(user){
-
+    
+    self._AuthService.login(self.credentials).then(function (user) {
         if(user.roles.indexOf(self.userRoles.user) != -1){
             self._$state.go("app.courses");
         } else if(user.roles.indexOf(self.userRoles.instructor) != -1) {
             self._$state.go("app.courses");
+        } else if (user.roles.indexOf(self.userRoles.admin) != -1) {
+            console.log("You're an admin!");
+            self._$state.go("app.admin");
         }
     },function(err){
         self.error = err;

@@ -1,0 +1,45 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1 class="page-header">
+                {{ adminCtrl.pageName }}
+            </h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <a ui-sref="app.admin.add_edit"><button class="btn btn-primary">+ New User</button></a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="alert alert-success top-buffer" ng-if="adminCtrl.created_updated">
+                <strong>Success!</strong> Created/Updated the course!
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="admin in adminsCtrl.admins track by $index">
+                        <td> {{ admin.firstName }} </td>
+                        <td> {{ admin.lastName }} </td>
+                        <td> {{ admin.email }} </td>
+                        <td> {{ admin.role }} </td>
+                        <td> Edit </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

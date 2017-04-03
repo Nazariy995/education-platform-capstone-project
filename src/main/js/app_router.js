@@ -1,6 +1,7 @@
 var app_states = require("./app_states/app");
 var assignment_states = require("./app_states/assignment");
 var course_states = require("./app_states/course");
+var admin_states = require("./app_states/admin");
 
 function Router($stateProvider, $httpProvider, $locationProvider){
     "ngInject";
@@ -18,6 +19,7 @@ function Router($stateProvider, $httpProvider, $locationProvider){
     states = states.concat(app_states);
     states = states.concat(assignment_states);
     states = states.concat(course_states);
+    states = states.concat(admin_states);
 
     states.forEach(function(state) {
         $stateProvider.state(state);
