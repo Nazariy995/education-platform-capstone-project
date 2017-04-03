@@ -1,0 +1,35 @@
+
+<h2 >
+    {{ courseGradesCtrl.pageName }}
+</h2>
+<div class="row" restrict access="INSTRUCTOR">
+    <div class="col-xs-12">
+        <button ng-click="courseGradesCtrl.getGrades()" class="btn btn-primary">Download Now</button>
+    </div>
+</div>
+<div class="row" restrict access="USER" >
+    <div class="col-md-12">
+        <table class="table table-hover">
+        <thead>
+            <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="member in courseMembersCtrl.members track by $index">
+                <td> {{ member.firstName }}</td>
+                <td> {{ member.lastName }} </td>
+                <td> {{ member.email }} </td>
+                <td> {{ member.courseRole }} </td>
+                <td><a ng-click="courseMembersCtrl.dropMember($index)" href="">Delete</a></td>
+            </tr>
+        </tbody>
+        </table>
+
+    </div>
+</div>
+
