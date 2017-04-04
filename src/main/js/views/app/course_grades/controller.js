@@ -1,27 +1,47 @@
 
-function Controller($scope, $state, $stateParams, CourseMembersService, ConfirmationService){
+function Controller($scope, $state, $stateParams, CourseService, ConfirmationService, appSettings, SessionService){
     "ngInject";
     this._$state = $state;
     this.pageName = "Grades";
-    this._CourseMembersService = CourseMembersService;
+    this._SessionService = SessionService;
+    this.userRoles = appSettings.ROLES;
+    this._CourseService = CourseService;
     this._ConfirmationService = ConfirmationService;
     this.courseId = $stateParams.courseId;
-    this.members = [];
+    this.grades = {};
     this.init();
 
 };
 
 Controller.prototype.init = function(){
     var self = this;
+    var user = self._SessionService.getUser();
     //Allow cloning of course only if we are creating a new course
-//    self.getMembers();
+    if(user.roles.indexOf(self.userRoles.user) != -1){
+        self.getStudentCourseGrades();
+    }
 }
 
-Controller.prototype.getMembers = function() {
+Controller.prototype.getStudentCourseGrades  = function() {
     var self = this;
-    self._CourseMembersService.getCourseMembers(self.courseId)
+    self._CourseService.getCourseGrades(self.courseId)
         .then(function(payload){
-            self.members = payload;
+            self.grades = payload;
+    }, function(err){
+       self.error = err;
+    });
+};
+
+Controller.prototype.getInstructorCourseGrades  = function() {
+    var self = this;
+    self._CourseService.getCourseGrades(self.courseId)
+        .then(function(payload){
+        var anchor = angular.element('<a/>');
+        anchor.attr({
+                 href: 'data:attachment/csv;charset=utf-8,' + encodeURI(payload),
+                 target: '_blank',
+                 download: 'grades.csv'
+             })[0].click();
     }, function(err){
        self.error = err;
     });

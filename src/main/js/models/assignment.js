@@ -106,9 +106,9 @@ Service.prototype.getAssignmentGrade = function(courseId, moduleId){
     var self = this;
     var config = self.getConfig();
 
-    var url = self._appSettings.API.basePath + '/rest/instructor/course/'
+    var url = self._appSettings.API.basePath + '/rest/student/course/'
     + courseId+ '/module/'
-    + moduleId + '/grades';
+    + moduleId + '/grade';
 
     return self._$http
         .get(url, config)

@@ -4,7 +4,7 @@
 </h2>
 <div class="row" restrict access="INSTRUCTOR">
     <div class="col-xs-12">
-        <button ng-click="courseGradesCtrl.getGrades()" class="btn btn-primary">Download Now</button>
+        <button ng-click="courseGradesCtrl.getInstructorCourseGrades()" class="btn btn-primary">Download Now</button>
     </div>
 </div>
 <div class="row" restrict access="USER" >
@@ -12,24 +12,19 @@
         <table class="table table-hover">
         <thead>
             <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Action</th>
+            <th>Assignment</th>
+            <th>Points Earned</th>
+            <th># Submissions</th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="member in courseMembersCtrl.members track by $index">
-                <td> {{ member.firstName }}</td>
-                <td> {{ member.lastName }} </td>
-                <td> {{ member.email }} </td>
-                <td> {{ member.courseRole }} </td>
-                <td><a ng-click="courseMembersCtrl.dropMember($index)" href="">Delete</a></td>
+            <tr ng-repeat="(assignment, value) in courseGradesCtrl.grades" ng-if="value.finishedGrading">
+                <td> {{ assignment }}</td>
+                <td> {{ value.pointsEarned }} </td>
+                <td> {{ value.submissionNumber }} </td>
             </tr>
         </tbody>
         </table>
-
     </div>
 </div>
 
