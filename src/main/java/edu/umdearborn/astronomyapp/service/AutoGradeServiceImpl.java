@@ -97,7 +97,7 @@ public class AutoGradeServiceImpl implements AutoGradeService {
 
   @Override
   public boolean answeredGatekeepers(String moduleId, int pageNum, String groupId) {
-    return entityManager
+    return getGatekeepers(moduleId, pageNum).isEmpty() || entityManager
         .createQuery(
             "select count(*) = 0 from Answer a join a.question q join a.group g where g.id = :groupId and "
                 + "q.id in :questions and a.pointesEarned is null or a.pointesEarned != q.points",
