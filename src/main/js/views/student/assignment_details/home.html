@@ -1,5 +1,10 @@
 <h4>Description</h4>
 <p>{{ assignmentDetails.assignment.humanReadableText }}</p>
+<div ng-if="assignmentDetails.grade.finishedGrading">
+    <h4>Grade</h4>
+    <p>Points Earned: {{ assignmentDetails.grade.pointsEarned }} </p>
+    <p># Submissions: {{ assignmentDetails.grade.submissionNumber }} </p>
+</div>
 <button type="button"
         class="btn btn-primary"
         ng-disabled="!assignmentDetails.canStart"
