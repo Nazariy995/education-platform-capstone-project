@@ -5,8 +5,11 @@ import static edu.umdearborn.astronomyapp.util.constants.UrlConstants.REST_PATH_
 
 import java.security.Principal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.validation.Valid;
 
 import org.springframework.security.access.AccessDeniedException;
@@ -24,9 +27,17 @@ import edu.umdearborn.astronomyapp.service.UserManagementService;
 public class AdminController {
 
 	private UserManagementService userManagementService;
+	private EntityManager entityManager;
 
 	public AdminController(UserManagementService userManagementService) {
 		this.userManagementService = userManagementService;
+	}
+	
+	@RequestMapping(value = "user/list", method = RequestMethod.GET)
+	public List<AstroAppUser> getAdmins(){
+		
+		return entityManager.createQuery("select u from AstroAppUser u join u.role r "
+				+ "				where r.role in ('INSTRUCTOR', 'ADMIN')", AstroAppUser.class).getResultList();
 	}
 
 	@RequestMapping(value = "/user", method = RequestMethod.POST)
