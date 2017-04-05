@@ -107,6 +107,11 @@ Controller.prototype.navToLogin = function(){
     }
 }
 
+Controller.prototype.navToQuestions = function(){
+    var self = this;
+    self._$state.go('app.course.assignment.questions',{ viewOnly: true, groupId:self.groupId });
+}
+
 
 module.exports = angular.module('app.views.student.assignment.details.controller', [
     'app.models.assignment',
