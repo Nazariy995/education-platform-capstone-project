@@ -64,7 +64,28 @@ Service.prototype.dropAssignment = function(courseId, moduleId){
           .then(function (res) {
             return res.data;
           });
-}
+};
+
+//Purpose: Submit the assignment
+//Params: courseId - String, moduleId - String, groupId - String
+Service.prototype.submitAssignmentAnswers = function(courseId, moduleId, groupId){
+    var self = this;
+    var config = self.getConfig();
+
+    var url = self._appSettings.API.basePath
+    + '/rest/student/course/'
+    + courseId+'/module/'
+    + moduleId + '/group/'
+    + groupId + '/answers/submit';
+
+    return this._$http
+          .post(url, null, config)
+          .then(function (res) {
+            console.log("Submit Assignment");
+            console.log(res);
+            return res.data;
+          });
+};
 
 Service.prototype.getAssignments = function(courseId){
     var self = this;
@@ -88,6 +109,7 @@ Service.prototype.getAssignments = function(courseId){
 Service.prototype.getAssignmentDetails = function(courseId, moduleId){
     var self = this;
     var config = self.getConfig();
+    config.cache = true;
 
     var url = {};
     url[self.userRoles.user] = self._appSettings.API.basePath + '/rest/student/course/'+ courseId+ '/module/' + moduleId;
