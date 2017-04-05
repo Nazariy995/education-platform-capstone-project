@@ -14,6 +14,17 @@ var states = [
         }
     },
     {
+        name : 'app.course.assignment.groups',
+        url : '/groups',
+        views : {
+            'assignmentContent' : {
+                templateUrl : 'views/instructor/assignment_groups/home.html',
+                controller : 'Instructor.AssignmentGroups',
+                controllerAs : 'assignmentGroupsCtrl'
+            }
+        }
+    },
+    {
         name : 'app.course.assignment.group',
         url : '/group/{groupId}',
         views : {
@@ -65,12 +76,26 @@ var states = [
                 controllerAs : 'assignmentQuestions'
             }
         },
+        params : {
+            viewOnly : false,
+        },
         resolve : {
-            lock : ['GroupService','$stateParams','$state', function(GroupService, $stateParams, $state){
-                var courseId = $stateParams.courseId;
-                var moduleId = $stateParams.moduleId;
-                var groupId = $stateParams.groupId;
-                return GroupService.getLock(courseId, moduleId, groupId);
+            lock : ['GroupService','$stateParams','$state', '$q', function(GroupService, $stateParams, $state, $q){
+                var deferred = $q.defer();
+                if($stateParams.viewOnly){
+                    deferred.resolve(false);
+                } else {
+                    var courseId = $stateParams.courseId;
+                    var moduleId = $stateParams.moduleId;
+                    var groupId = $stateParams.groupId;
+                    GroupService.getLock(courseId, moduleId, groupId)
+                        .then(function(payload){
+                        deferred.resolve(payload);
+                    }, function(err){
+                        deferred.reject("ERROR getting the lock");
+                    })
+                }
+                return deferred.promise;
             }]
         }
     },
