@@ -1,9 +1,10 @@
 
-function Controller($state, $stateParams, CourseService){
+function Controller($state, $stateParams, CourseService, ConfirmationService){
     "ngInject";
     this._$state = $state;
     this.pageName = "Courses";
     this._CourseService = CourseService;
+    this._ConfirmationService = ConfirmationService;
     this.created_updated = $stateParams.created_updated;
     this.init();
 };
@@ -21,8 +22,25 @@ Controller.prototype.getCourses = function(){
     }, function(err){
         self.error = "ERROR retrieving courses";
     });
-}
+};
 
-module.exports = angular.module('app.views.app.courses.controller', [ ])
+Controller.prototype.dropCourse = function(course){
+    var self = this;
+    var confirmation = "Are you sure you want to delete the following Course?";
+    var footNote = course.courseTitle + ", " + course.courseCode;
+    var modalInstance = self._ConfirmationService.open("", confirmation, footNote);
+    modalInstance.result.then(function(){
+        self._CourseService.dropCourse(course.id)
+        .then(function(payload){
+            self.courses = payload;
+        }, function(err){
+            self.error = "ERROR deleting the Course";
+        });
+    }, function(){
+        console.log("They said no");
+    });
+};
+
+module.exports = angular.module('app.views.app.courses.controller', [])
 .controller('CoursesCtrl', Controller);
 

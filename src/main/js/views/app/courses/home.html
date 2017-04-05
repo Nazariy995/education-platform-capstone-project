@@ -13,6 +13,9 @@
     </div>
     <div class="row" restrict access="INSTRUCTOR">
         <div class="col-xs-12">
+            <div class="alert alert-danger top-buffer" ng-if="coursesCtrl.error">
+                {{ coursesCtrl.error }}
+            </div>
             <div class="alert alert-success top-buffer" ng-if="coursesCtrl.created_updated" >
                 <strong>Success!</strong> Created/Updated the course!
             </div>
@@ -27,6 +30,7 @@
                 <th>Subject Code</th>
                 <th>Course Code</th>
                 <th restrict access="INSTRUCTOR">Action</th>
+                <th restrict access="INSTRUCTOR"></th>
                 </tr>
             </thead>
             <tbody>
@@ -34,7 +38,17 @@
                     <td><a ui-sref="app.course.assignments({courseId:'{{course.id}}'})"> {{  course.courseTitle }} </a></td>
                     <td> {{ course.subjectCode }} </td>
                     <td> {{ course.courseCode }} </td>
-                    <td restrict access="INSTRUCTOR"><a ui-sref="app.courses.add_edit({courseId:'{{course.id}}'})">Edit</a></td>
+                    <td restrict access="INSTRUCTOR"><a ui-sref="app.courses.add_edit({courseId:'{{course.id}}'})">
+                        <button type="button" class="btn btn-xs btn-default">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+                        </a></td>
+                    <td restrict access="INSTRUCTOR">
+                        <button type="button" class="btn btn-xs btn-warning"
+                        ng-click="coursesCtrl.dropCourse(course)">
+                          <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                    </td>
                 </tr>
             </tbody>
             </table>

@@ -6,6 +6,7 @@
 node/
 node_modules/
 src/main/resources/static/
-src/main/js/dist/
+src/main/js/dist/templates.js
+src/main/js/dist/bundle.css
 deploy/
 deploy.zip

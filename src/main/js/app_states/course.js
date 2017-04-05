@@ -1,5 +1,16 @@
 var states = [
     {
+        name : 'app.course.grades',
+        url : '/grades',
+        views : {
+            'childContent' : {
+                templateUrl : 'views/app/course_grades/home.html',
+                controller : 'CourseGrades',
+                controllerAs : 'courseGradesCtrl'
+            }
+        }
+    },
+    {
         name : 'app.courses.add_edit',
         url : '/{courseId}/add_edit',
         views : {
@@ -80,17 +91,6 @@ var states = [
                 templateUrl : 'views/instructor/course_members_add/home.html',
                 controller : 'Instructor.CourseMembersAdd',
                 controllerAs : 'courseMembersAddCtrl'
-            }
-        }
-    },
-    {
-        name : 'app.course.grades',
-        url : '/grades',
-        views : {
-            'childContent' : {
-                templateUrl : 'views/student/grades/home.html',
-                controller : 'Student.GradesCtrl',
-                controllerAs : 'courseGrades'
             }
         }
     }

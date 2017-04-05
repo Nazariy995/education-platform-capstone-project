@@ -4,33 +4,41 @@
          ng-repeat="field in assignmentQuestions.questions
                     | orderBy: 'order'
                     track by $index ">
-        <div ng-if="field.pageItemType == 'TEXT'">
-            <legend>Front Text</legend>
-            {{ field.humanReadableText }}
+        <div ng-if="field.pageItemType == 'TEXT'" class="well well-sm">
+            <div ta-bind="text" ng-model="field.humanReadableText"></div>
         </div>
-        <div ng-switch="field.questionType">
-            <div ng-switch-when="MULTIPLE_CHOICE">
+        <div ng-switch="field.questionType" class="panel panel-default" ng-if="field.pageItemType != 'TEXT'">
+            <div class="panel-heading">
+                <div class="pull-left">
+                    Question {{ ($index + 1) }}
+                </div>
+                <div class="pull-right">
+                    Points: {{ field.points }}
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div ng-switch-when="MULTIPLE_CHOICE" class="panel-body">
               <app-student-multiple-choice field="field"
                                            model="assignmentQuestions.data[field.id]"
                                            saved-answers="assignmentQuestions.savedAnswers[field.id]"
                                            editable="assignmentQuestions.editable">
               </app-student-multiple-choice>
             </div>
-            <div ng-switch-when="NUMERIC">
+            <div ng-switch-when="NUMERIC" class="panel-body">
               <app-student-numeric field="field"
                                    model="assignmentQuestions.data[field.id]"
                                    saved-answers="assignmentQuestions.savedAnswers[field.id]"
                                    editable="assignmentQuestions.editable">
               </app-student-numeric>
             </div>
-            <div ng-switch-when="FREE_RESPONSE">
+            <div ng-switch-when="FREE_RESPONSE" class="panel-body">
               <app-student-free-response field="field"
                                          model="assignmentQuestions.data[field.id]"
                                          saved-answers="assignmentQuestions.savedAnswers[field.id]"
                                          editable="assignmentQuestions.editable">
               </app-student-free-response>
             </div>
-            <div ng-switch-when="IMAGE">
+            <div ng-switch-when="IMAGE" class="panel-body">
               <app-student-upload field="field"
                                          model="assignmentQuestions.data[field.id]"
                                          saved-answers="assignmentQuestions.savedAnswers[field.id]"
@@ -39,36 +47,42 @@
             </div>
         </div>
     </div>
-
+    <div class="row>">
+        <div class="col-md-12">
+            <div class="pull-left" ng-if="assignmentQuestions.lastSaved" >
+            Last Saved: {{ assignmentQuestions.lastSaved | date :"MM/dd/yyyy 'at' h:mm:ssa" }}
+            </div>
+        </div>
+    </div>
     <nav aria-label="Page navigation" class="questionsPaging">
-      <ul class="pagination">
-        <li ng-switch="assignmentQuestions.currentPage > assignmentQuestions.minPage" ng-if="assignmentQuestions.editable">
-            <a ng-switch-when="true" aria-label="Previous" ng-click="assignmentQuestions.previousPage()">
-                Save/Previous
-            </a>
-        </li>
-        <li ng-repeat="n in assignmentQuestions.pages track by $index"
-            ng-class="{active : $index+1 == assignmentQuestions.currentPage}"
-            ng-click="assignmentQuestions.getPage($index+1)">
-            <span ng-switch="assignmentQuestions.editable">
-                <span ng-switch-when="true">
-                    {{ $index +1 }}
+          <ul class="pagination">
+            <li ng-if="assignmentQuestions.editable" ng-click="assignmentQuestions.saveAnswers()">
+               <a aria-label="Save">
+                    Save
+                </a>
+            </li>
+            <li ng-repeat="n in assignmentQuestions.pages track by $index"
+                ng-class="{active : $index+1 == assignmentQuestions.currentPage}"
+                ng-click="assignmentQuestions.getPage($index+1)">
+                <span ng-switch="assignmentQuestions.editable">
+                    <span ng-switch-when="true">
+                        {{ $index +1 }}
+                    </span>
+                    <span ng-switch-when="false">
+                        {{ $index + 1 }}
+                    </span>
                 </span>
-                <span ng-switch-when="false">
-                    {{ $index + 1 }}
-                </span>
-            </span>
-        </li>
-        <li ng-switch="assignmentQuestions.currentPage < assignmentQuestions.maxPage" ng-if="assignmentQuestions.editable">
-            <a ng-switch-when="true" aria-label="Next" ng-click="assignmentQuestions.nextPage()">
-                Save/Next
-            </a>
-            <a ng-switch-when="false" aria-label="Submit" >
-                Submit
-            </a>
-        </li>
-      </ul>
+            </li>
+            <li ng-if="assignmentQuestions.editable" ng-click="assignmentQuestions.submit()">
+                <a aria-label="Submit">
+                    Submit
+                </a>
+            </li>
+          </ul>
     </nav>
+    <div style="text-align:center" ng-if="assignmentQuestions.editable">
+        <p class="help-block">Please Save before submitting or moving to the next page!</p>
+    </div>
 </form>
 <!--{{ assignmentQuestions.data | json }}-->
 
