@@ -36,10 +36,14 @@
                 <td> {{ assignment.maxStudents }} </td>
                 <td restrict access="INSTRUCTOR">
                     <a ui-sref="app.course.assignments_add_edit({moduleId: '{{ assignment.id }}', isNew : false})">
-                    Edit Info
-                    </a> |
+                        <button type="button" class="btn btn-xs btn-default">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button></a> |
                     <a ui-sref="app.course.assignments_add_edit_pages({moduleId: '{{ assignment.id }}'})">
                     Edit Questions
+                    </a> |
+                    <a ui-sref="app.course.assignment.groups({moduleId: '{{ assignment.id }}'})">
+                        Grade
                     </a>
                 </td>
                 <td restrict access="INSTRUCTOR">
