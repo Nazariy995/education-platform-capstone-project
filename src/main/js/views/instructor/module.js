@@ -6,6 +6,7 @@ var assignmentsAddEditController = require('./assignments_add_edit/controller');
 var assignmentsAddEditPages = require('./assignments_add_edit_pages/controller');
 var assignmentsAddEditQuestions = require('./assignments_add_edit_questions/controller');
 var assignmentsAddEditQuestion = require('./assignments_add_edit_question/controller');
+var assignmentGroupsController = require('./assignment_groups/controller');
 
 module.exports = angular.module('app.views.instructor', [
     coursesAddEditController.name,
@@ -14,5 +15,6 @@ module.exports = angular.module('app.views.instructor', [
     assignmentsAddEditController.name,
     assignmentsAddEditPages.name,
     assignmentsAddEditQuestions.name,
-    assignmentsAddEditQuestion.name
+    assignmentsAddEditQuestion.name,
+    assignmentGroupsController.name
 ]);
