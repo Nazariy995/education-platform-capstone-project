@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var templateCache = require('gulp-angular-templatecache');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var concatCss = require('gulp-concat-css');
@@ -9,9 +10,22 @@ var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var gutil = require('gulp-util');
 var del = require('del');
+var path = require('path');
 
 gulp.task('clean', function() {
 	return del['src/main/resources/static/**'];
+});
+
+gulp.task('templates', function(){
+    return gulp.src([
+        'src/main/js/**/*.html'
+        ])
+        .pipe(templateCache({
+            module : 'app.templates',
+            standalone : true
+        }))
+        .pipe(concat('templates.js'))
+        .pipe(gulp.dest('src/main/js/dist/'))
 });
 
 gulp.task('browserify', [ 'clean' ], function() {
@@ -34,7 +48,7 @@ gulp.task('css',function(){
         .pipe(gulp.dest('.'));
 });
 
-gulp.task('copy', [ 'browserify', 'css' ], function() {
+gulp.task('copy', [ 'browserify', 'css', 'templates' ], function() {
 	return gulp.src('src/main/js/**').pipe(
 			gulp.dest('src/main/resources/static/'));
 });

@@ -30,6 +30,13 @@
                                          editable="assignmentQuestions.editable">
               </app-student-free-response>
             </div>
+            <div ng-switch-when="IMAGE">
+              <app-student-upload field="field"
+                                         model="assignmentQuestions.data[field.id]"
+                                         saved-answers="assignmentQuestions.savedAnswers[field.id]"
+                                         editable="assignmentQuestions.editable">
+              </app-student-upload>
+            </div>
         </div>
     </div>
 
@@ -63,7 +70,7 @@
       </ul>
     </nav>
 </form>
-{{ assignmentQuestions.data | json }}
+<!--{{ assignmentQuestions.data | json }}-->
 
 
 

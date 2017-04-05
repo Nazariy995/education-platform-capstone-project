@@ -24,12 +24,12 @@ Controller.prototype.init = function(){
 Controller.prototype.addCourse= function(valid, course) {
     var self = this;
     if(valid){
+        self.error = null;
         self._CourseService.addCourse(course)
             .then(function(payload){
-                console.log("Success");
-                console.log(payload);
+                self._$state.go('app.courses', { created_updated : true });
         }, function(err){
-           self.error = err;
+           self.error = "ERROR creating/updating the course";
         });
     }
 };
