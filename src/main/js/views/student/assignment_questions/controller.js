@@ -7,7 +7,7 @@ function Controller($scope, $state, $stateParams, lock, AssignmentService, Quest
     this.currentPage = 1;
     this.lock = lock;
     this.editable = false;
-    this.lastSaved = false;
+    this.lastSaved = "Not Saved";
     this.pages = [];
     this._$state = $state;
     this._$scope = $scope;
@@ -15,7 +15,9 @@ function Controller($scope, $state, $stateParams, lock, AssignmentService, Quest
     this.courseId = $stateParams.courseId;
     this.moduleId = $stateParams.moduleId;
     this.groupId = $stateParams.groupId;
+    this.grading = $stateParams.grading;
     this.data = {};
+    this.questionGrades = {};
     this.questions = [];
     this.savedAnswers = {};
     this._AssignmentService = AssignmentService;
@@ -53,7 +55,7 @@ Controller.prototype.getQuestions = function(newPage){
             self.data = {};
             self.questions = payload;
             self.currentPage = newPage;
-            self.lastSaved = false;
+            self.lastSaved = "Not Saved";
     }, function(err){
        self.error = "ERROR getting the questions";
     });
@@ -62,6 +64,17 @@ Controller.prototype.getQuestions = function(newPage){
 Controller.prototype.saveAnswers = function(newPage){
     var self = this;
     self._QuestionService.saveAnswers(self.courseId, self.moduleId, self.groupId, self.data)
+        .then(function(payload){
+            self.savedAnswers = payload;
+            self.lastSaved = new Date();
+    }, function(err){
+       self.error = "ERROR saving the answers";
+    });
+};
+
+Controller.prototype.savePoints = function(){
+    var self = this;
+    self._QuestionService.savePoints(self.courseId, self.moduleId, self.groupId, self.questionGrades)
         .then(function(payload){
             self.savedAnswers = payload;
             self.lastSaved = new Date();

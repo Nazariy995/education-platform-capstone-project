@@ -4,15 +4,23 @@
          ng-repeat="field in assignmentQuestions.questions
                     | orderBy: 'order'
                     track by $index ">
-        <div ng-if="field.pageItemType == 'TEXT'" class="well well-sm">
+        <div ng-if="field.pageItemType == 'TEXT' && !assignmentQuestions.grading" class="well well-sm">
             <div ta-bind="text" ng-model="field.humanReadableText"></div>
         </div>
         <div ng-switch="field.questionType" class="panel panel-default" ng-if="field.pageItemType != 'TEXT'">
             <div class="panel-heading">
                 <div class="pull-left">
                     Question {{ ($index + 1) }}
+                    <span class="glyphicon glyphicon-lock" ng-if="field.isGatekeeper"></span>
                 </div>
-                <div class="pull-right">
+                <question-grading
+                        ng-if="assignmentQuestions.grading"
+                        field="field"
+                        is-grading="assignmentQuestions.grading"
+                        model="assignmentQuestions.questionGrades[assignmentQuestions.savedAnswers[field.id].id]"
+                        saved-answers="assignmentQuestions.savedAnswers[field.id]">
+                </question-grading>
+                <div class="pull-right" ng-if="!assignmentQuestions.grading">
                     Points: {{ field.points }}
                 </div>
                 <div class="clearfix"></div>
@@ -47,15 +55,20 @@
             </div>
         </div>
     </div>
-    <div class="row>">
+    <div class="row" ng-if="assignmentQuestions.editable || assignmentQuestions.grading">
         <div class="col-md-12">
-            <div class="pull-left" ng-if="assignmentQuestions.lastSaved" >
+            <div class="pull-left" >
             Last Saved: {{ assignmentQuestions.lastSaved | date :"MM/dd/yyyy 'at' h:mm:ssa" }}
             </div>
         </div>
     </div>
     <nav aria-label="Page navigation" class="questionsPaging">
           <ul class="pagination">
+            <li ng-if="assignmentQuestions.grading" ng-click="assignmentQuestions.savePoints()">
+               <a aria-label="Save Grades">
+                    Save Grades
+                </a>
+            </li>
             <li ng-if="assignmentQuestions.editable" ng-click="assignmentQuestions.saveAnswers()">
                <a aria-label="Save">
                     Save
@@ -80,15 +93,8 @@
             </li>
           </ul>
     </nav>
+    {{ assignmentQuestions.questionGrades | json }}
     <div style="text-align:center" ng-if="assignmentQuestions.editable">
         <p class="help-block">Please Save before submitting or moving to the next page!</p>
     </div>
 </form>
-<!--{{ assignmentQuestions.data | json }}-->
-
-
-
-
-
-
-
