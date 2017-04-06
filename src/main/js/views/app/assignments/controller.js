@@ -7,6 +7,7 @@ function Controller($scope, $state, $stateParams, AssignmentService, Confirmatio
     this._AssignmentService = AssignmentService;
     this._ConfirmationService = ConfirmationService;
     this.assignments = [];
+    this.currentDate = new Date();
     this.created_updated = $stateParams.created_updated;
     this.init();
 };
