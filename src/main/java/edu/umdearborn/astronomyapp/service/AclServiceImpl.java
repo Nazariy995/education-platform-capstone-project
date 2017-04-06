@@ -263,8 +263,8 @@ public class AclServiceImpl implements AclService {
   @Override
   public void enforceModuleNotOpen(String moduleId) {
     TypedQuery<Boolean> query = entityManager.createQuery(
-        "select count(m) > 0 from Module m where m.openTimestamp > now() and m.id = :id or "
-            + "m.openTimestamp is null",
+        "select count(m) > 0 from Module m where m.id = :id and (m.openTimestamp > now() or "
+            + "m.openTimestamp is null)",
         Boolean.class);
     query.setParameter("id", moduleId);
     boolean result = query.getSingleResult();

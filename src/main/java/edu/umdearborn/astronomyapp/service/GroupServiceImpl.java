@@ -52,6 +52,7 @@ public class GroupServiceImpl implements GroupService {
   public List<CourseUser> joinGroup(String courseUserId, String moduleId, String groupId) {
 
     enforceNotInGroup(courseUserId, groupId);
+    enforeGroupNotAtCapacity(groupId);
 
     logger.debug("Joining group: '{}' for course user: '{}' for module: '{}'", groupId,
         courseUserId, moduleId);
@@ -104,6 +105,22 @@ public class GroupServiceImpl implements GroupService {
     query.setParameter("courseUserId", courseUserId).setParameter("moduleId", moduleId);
 
     return query.getSingleResult();
+  }
+
+  private void enforeGroupNotAtCapacity(String groupId) {
+    long count = entityManager.createQuery(
+        "select count(gm) from GroupMember gm join gm.moduleGroup m where m.id = :groupId",
+        Long.class).setParameter("groupId", groupId).getSingleResult();
+    int maxStudents = entityManager
+        .createQuery(
+            "select mod.maxStudents from GroupMember gm join gm.moduleGroup m join m.module mod where "
+                + "m.id = :groupId",
+            Integer.class)
+        .setParameter("groupId", groupId).getSingleResult();
+    if (count >= maxStudents) {
+      logger.info("Group: '{}' is at capacity", groupId);
+      throw new GroupAlterationException("Group " + groupId + " is at capacity");
+    }
   }
 
   private void enforceNotInGroup(String courseUserId, String moduleId) {
@@ -249,11 +266,14 @@ public class GroupServiceImpl implements GroupService {
 
   @Override
   public List<Answer> gradeAnswers(Map<String, Map<String, String>> answers) {
-    return answers.entrySet().stream().map(e -> {
+    return answers.keySet().stream().map(e -> {
       Map<String, String> graded = answers.get(e);
 
       if (NumberUtils.isParsable(graded.getOrDefault("points", "NaN"))) {
-        Answer saved = entityManager.getReference(Answer.class, e);
+        Answer saved = entityManager.find(Answer.class, e);
+        if (saved == null) {
+          return null;
+        }
         saved.setPointesEarned(new BigDecimal(graded.get("points")));
         saved.setComment(graded.get("comment"));
         entityManager.merge(saved);
