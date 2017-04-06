@@ -28,5 +28,10 @@ Controller.prototype.getAssignmentGroups = function() {
     });
 };
 
+Controller.prototype.navToQuestions = function(groupId){
+    var self = this;
+    self._$state.go('app.course.assignment.questions',{ viewOnly: true, groupId:groupId, grading:true });
+}
+
 module.exports = angular.module('app.views.instructor.assignment.groups', [])
 .controller('Instructor.AssignmentGroups', Controller);
