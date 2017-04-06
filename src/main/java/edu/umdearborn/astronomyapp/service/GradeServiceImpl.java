@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -115,11 +114,11 @@ public class GradeServiceImpl implements GradeService {
       if (submissionNumber > 0L) {
 
         logger.debug("Getting points for user: '{}' for module: '{}'", email, moduleId);
-        BigInteger points = entityManager
+        BigDecimal points = entityManager
             .createQuery(
-                "select coalesce(sum(a.pointsEarned), 0) from Answer a join a.group g where g.id = :groupId"
+                "select coalesce(sum(a.pointesEarned), 0) from Answer a join a.group g where g.id = :groupId "
                     + "and a.submissionNumber = :submissionNumber",
-                BigInteger.class)
+                BigDecimal.class)
             .setParameter("submissionNumber", submissionNumber)
             .setParameter("groupId", results.get(0)).getSingleResult();
 
@@ -127,7 +126,7 @@ public class GradeServiceImpl implements GradeService {
             moduleId);
         Date submissionTimestamp = entityManager
             .createQuery(
-                "select a.submissionTimestamp from Answer a join a.group g where g.id = :groupId"
+                "select a.submissionTimestamp from Answer a join a.group g where g.id = :groupId "
                     + "and a.submissionNumber = :submissionNumber",
                 Date.class)
             .setParameter("submissionNumber", submissionNumber)
@@ -137,8 +136,8 @@ public class GradeServiceImpl implements GradeService {
             email, moduleId);
         boolean finishedGrading = entityManager
             .createQuery(
-                "select count(a) = 0 from Answer a join a.group g where g.id = :groupId"
-                    + "and a.submissionNumber = :submissionNumber and pointsEarned is null",
+                "select count(a) = 0 from Answer a join a.group g where g.id = :groupId "
+                    + "and a.submissionNumber = :submissionNumber and a.pointesEarned is null",
                 Boolean.class)
             .setParameter("submissionNumber", submissionNumber)
             .setParameter("groupId", results.get(0)).getSingleResult();

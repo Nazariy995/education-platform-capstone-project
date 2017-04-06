@@ -7,6 +7,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -432,6 +433,23 @@ public class ModuleGroupController {
     acl.enforceInCourse(principal.getName(), courseId);
     acl.enforceGroupInCourse(groupId, courseId);
     acl.enforceModuleClosed(moduleId);
+
+    Optional.ofNullable(groupService.getAnswers(groupId, false)).orElse(new ArrayList<Answer>())
+        .stream().filter(a -> a.getQuestion().isMachineGradeable() && a.getPointesEarned() == null)
+        .forEach(a -> {
+          BigDecimal points;
+          if (autoGradeService.checkAnswer(a.getId())) {
+            logger.debug("Answer: '{}' with value '{}' for question: '{}' is not correct",
+                a.getId(), a.getValue(), a.getQuestion().getId());
+            points = a.getQuestion().getPoints();
+          } else {
+            logger.debug("Answer: '{}' with value '{}' for question: '{}' is correct", a.getId(),
+                a.getValue(), a.getQuestion().getId());
+            points = BigDecimal.ZERO;
+          }
+
+          autoGradeService.setPointsEarned(a.getId(), points);
+        });
 
     return Optional.ofNullable(groupService.getAnswers(groupId, false))
         .orElse(new ArrayList<Answer>()).parallelStream()

@@ -106,4 +106,14 @@ public class AutoGradeServiceImpl implements AutoGradeService {
         .setParameter("questions", getGatekeepers(moduleId, pageNum)).getSingleResult();
   }
 
+  @Override
+  public Answer setPointsEarned(String answerId, BigDecimal points) {
+    Answer answer = entityManager.find(Answer.class, answerId);
+    answer.setPointesEarned(points);
+    entityManager.merge(answer);
+
+    return answer;
+
+  }
+
 }
