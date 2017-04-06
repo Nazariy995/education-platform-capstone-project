@@ -109,7 +109,6 @@ Service.prototype.getAssignments = function(courseId){
 Service.prototype.getAssignmentDetails = function(courseId, moduleId){
     var self = this;
     var config = self.getConfig();
-    config.cache = true;
 
     var url = {};
     url[self.userRoles.user] = self._appSettings.API.basePath + '/rest/student/course/'+ courseId+ '/module/' + moduleId;

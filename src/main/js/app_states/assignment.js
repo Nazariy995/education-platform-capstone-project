@@ -78,6 +78,7 @@ var states = [
         },
         params : {
             viewOnly : false,
+            grading : false
         },
         resolve : {
             lock : ['GroupService','$stateParams','$state', '$q', function(GroupService, $stateParams, $state, $q){
