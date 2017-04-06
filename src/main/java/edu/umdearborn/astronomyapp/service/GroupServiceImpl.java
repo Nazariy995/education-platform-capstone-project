@@ -266,11 +266,14 @@ public class GroupServiceImpl implements GroupService {
 
   @Override
   public List<Answer> gradeAnswers(Map<String, Map<String, String>> answers) {
-    return answers.entrySet().stream().map(e -> {
+    return answers.keySet().stream().map(e -> {
       Map<String, String> graded = answers.get(e);
 
       if (NumberUtils.isParsable(graded.getOrDefault("points", "NaN"))) {
-        Answer saved = entityManager.getReference(Answer.class, e);
+        Answer saved = entityManager.find(Answer.class, e);
+        if (saved == null) {
+          return null;
+        }
         saved.setPointesEarned(new BigDecimal(graded.get("points")));
         saved.setComment(graded.get("comment"));
         entityManager.merge(saved);
