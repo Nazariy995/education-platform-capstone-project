@@ -466,8 +466,15 @@ public class ModuleGroupController {
     acl.enforceGroupInCourse(groupId, courseId);
     acl.enforceModuleClosed(moduleId);
 
-    return Optional.ofNullable(groupService.gradeAnswers(answers)).orElse(new ArrayList<Answer>())
-        .parallelStream().collect(Collectors.toMap(a -> a.getQuestion().getId(), a -> a));
+    // return Optional.ofNullable(groupService.gradeAnswers(answers)).orElse(new
+    // ArrayList<Answer>())
+    // .parallelStream().collect(Collectors.toMap(a -> a.getQuestion().getId(), a -> a));
+
+    groupService.gradeAnswers(answers);
+
+    return Optional.ofNullable(groupService.getAnswers(groupId, false))
+        .orElse(new ArrayList<Answer>()).parallelStream()
+        .collect(Collectors.toMap(a -> a.getQuestion().getId(), a -> a));
   }
 
   @RequestMapping(value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/grade", method = GET)
