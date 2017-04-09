@@ -22,6 +22,21 @@ var states = [
                 controller: 'AdminAddEditCtrl',
                 controllerAs: 'adminAddEditCtrl'
             }
+        },
+        resolve: {
+            course: ['AdminServer', 'SessionService', '$stateParams', '$state', function (AdminService, SessionService, $stateParams, $state) {
+                if ($stateParams.courseId == "new") {
+                    return null
+                } else {
+                    return AdminService.getUser($stateParams.courseId)
+                        .then(function (course) {
+                            return course;
+                        }, function (err) {
+                            $state.go('app.courses', null, { reload: true, location: 'replace' });
+                            return err;
+                        });
+                }
+            }]
         }
     }
 ]

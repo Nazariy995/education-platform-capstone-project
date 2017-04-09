@@ -9,6 +9,7 @@ function Controller($state, $stateParams, AdminService) {
 
 Controller.prototype.init = function () {
     var self = this;
+    self.getConfig();
 }
 
 module.exports = angular.module('app.views.admin.adminAddEdit.controller', [])

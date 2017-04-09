@@ -8,8 +8,8 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <div class="alert alert-danger" ng-if="coursesEdit.error">
-                {{ coursesEdit.error }}
+            <div class="alert alert-danger" ng-if="adminAddEditCtrl.error">
+                {{ adminAddEditCtrl.error }}
             </div>
             <form name="courseForm" ng-submit="coursesEdit.addCourse(courseForm.$valid, coursesEdit.course)" novalidate>
                 <div class="form-group" ng-class="{ 'has-error' : courseForm.title.$invalid && !courseForm.title.$pristine }">

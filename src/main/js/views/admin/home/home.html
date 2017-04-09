@@ -8,13 +8,13 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <a ui-sref="app.admin.add_edit"><button class="btn btn-primary">+ New User</button></a>
+            <a ui-sref="app.admin.add_edit({userId:'new'})"><button class="btn btn-primary">+ New User</button></a>
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="alert alert-success top-buffer" ng-if="adminCtrl.created_updated">
-                <strong>Success!</strong> Created/Updated the course!
+                <strong>Success!</strong> Created/Updated a new user!
             </div>
         </div>
     </div>
@@ -31,12 +31,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="admin in adminsCtrl.admins track by $index">
-                        <td> {{ admin.firstName }} </td>
-                        <td> {{ admin.lastName }} </td>
-                        <td> {{ admin.email }} </td>
-                        <td> {{ admin.role }} </td>
-                        <td> Edit </td>
+                    <tr ng-repeat="user in adminCtrl.admin track by $index1">
+                        <td> {{ user.firstName }} </td>
+                        <td> {{ user.lastName }} </td>
+                        <td> {{ user.email }} </td>
+                        <td> {{ user.role }} </td>
+                        <td><a ui-sref="app.admin.add_edit({userId:'{{user.id}}'})">Edit</a></td>
                     </tr>
                 </tbody>
             </table>
