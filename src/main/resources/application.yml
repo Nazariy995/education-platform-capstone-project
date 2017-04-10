@@ -21,6 +21,9 @@ spring:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
       mail.smtp.starttls.required: true
+  http:
+    multipart:
+      max-file-size: 100Mb
 server:
   port: ${port:8080}
   session:
