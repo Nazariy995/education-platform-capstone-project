@@ -128,9 +128,10 @@ GroupService.prototype.groupCheckout = function(courseId, moduleId, groupId){
     });
 };
 
-GroupService.prototype.getLock = function(courseId, moduleId, groupId){
+GroupService.prototype.getLock = function(courseId, moduleId, groupId, pageNum){
     var self = this;
     var config = self.getConfig();
+    config.params.page = pageNum;
     var url = self._appSettings.API.basePath + '/rest/student/course/'+
         courseId+ '/module/'
         + moduleId + "/group/"
