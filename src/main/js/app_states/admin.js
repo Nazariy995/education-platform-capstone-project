@@ -15,24 +15,25 @@ var states = [
     },
     {
         name: 'app.admin.add_edit',
-        url: '/{userID}/add_edit',
+        url: '/{userEmail}/add_edit',
         views: {
             'mainContent@app': {
-                templateUrl: 'views/admin/user_add_edit',
+                templateUrl: 'views/admin/user_add_edit/home.html',
                 controller: 'AdminAddEditCtrl',
                 controllerAs: 'adminAddEditCtrl'
             }
         },
-        resolve: {
-            course: ['AdminServer', 'SessionService', '$stateParams', '$state', function (AdminService, SessionService, $stateParams, $state) {
-                if ($stateParams.courseId == "new") {
+        resolve : {
+            user : ['AdminService', 'SessionService', '$stateParams', '$state', function (AdminService, SessionService, $stateParams, $state) {
+                if ($stateParams.userEmail == "new") {
                     return null
                 } else {
-                    return AdminService.getUser($stateParams.courseId)
-                        .then(function (course) {
-                            return course;
+                    console.log($stateParams.userEmail);
+                    return AdminService.getUser($stateParams.userEmail)
+                        .then(function (user) {
+                            return user;
                         }, function (err) {
-                            $state.go('app.courses', null, { reload: true, location: 'replace' });
+                            $state.go('app.admin', null, { reload: true, location: 'replace' });
                             return err;
                         });
                 }

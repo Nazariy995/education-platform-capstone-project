@@ -11,61 +11,43 @@
             <div class="alert alert-danger" ng-if="adminAddEditCtrl.error">
                 {{ adminAddEditCtrl.error }}
             </div>
-            <form name="courseForm" ng-submit="coursesEdit.addCourse(courseForm.$valid, coursesEdit.course)" novalidate>
-                <div class="form-group" ng-class="{ 'has-error' : courseForm.title.$invalid && !courseForm.title.$pristine }">
-                    <label>Title</label>
-                    <input type="text" name="title" class="form-control" placeholder="Course Title"
-                           ng-model="coursesEdit.course.courseTitle" required>
-                    <span ng-show="courseForm.title.$invalid && !courseForm.title.$pristine" class="help-block">Title is required</span>
+            <form name="userForm" ng-submit="adminAddEditCtrl.addUser(userForm.$valid, adminAddEditCtrl.user)" novalidate>
+                <div class="form-group" ng-class="{ 'has-error' : userForm.firstName.$invalid && !userForm.firstName.$pristine }">
+                    <label>First Name</label>
+                    <input type="text" name="firstName" class="form-control" placeholder="First Name"
+                           ng-model="adminAddEditCtrl.user.firstName" required>
+                    <span ng-show="userForm.firstName.$invalid && !userForm.firstName.$pristine" class="help-block">Required</span>
                 </div>
-                <div class="form-group" ng-class="{ 'has-error' : courseForm.courseCode.$invalid && !courseForm.courseCode.$pristine }">
-                    <label>Course Code</label>
-                    <input type="text" name="courseCode" class="form-control"
+                <div class="form-group" ng-class="{ 'has-error' : userForm.lastName.$invalid && !userForm.lastName.$pristine }">
+                    <label>Last Name</label>
+                    <input type="text" name="lastName" class="form-control"
                            ng-minlength="1"
-                           ng-maxlength="6"
-                           placeholder="Course Code"
-                           ng-model="coursesEdit.course.courseCode" required>
-                    <span ng-show="courseForm.courseCode.$invalid && !courseForm.courseCode.$pristine" class="help-block">Course Code is required. Min Length: 1, Max Length: 6</span>
+                           ng-maxlength="15"
+                           placeholder="Last Name"
+                           ng-model="adminAddEditCtrl.user.lastName" required>
+                    <span ng-show="userForm.lastName.$invalid && !userForm.lastName.$pristine" class="help-block">Required</span>
                 </div>
-                <div class="form-group" ng-class="{ 'has-error' : courseForm.subjectCode.$invalid && !courseForm.subjectCode.$pristine }">
-                    <label>Subject Code</label>
-                    <input type="text" class="form-control" name="subjectCode"
+                <div class="form-group" ng-class="{ 'has-error' : userForm.email.$invalid && !userForm.email.$pristine }">
+                    <label>Email</label>
+                    <input type="email" class="form-control" name="email"
                            ng-minlength="1"
-                           ng-maxlength="6"
-                           placeholder="Subject Code"
-                           ng-model="coursesEdit.course.subjectCode" required>
-                    <span ng-show="courseForm.subjectCode.$invalid && !courseForm.subjectCode.$pristine" class="help-block">Subject Code is required. Min Length: 1, Max Length: 6</span>
-                </div>
-                <div class="form-group" ng-class="{ 'has-error' : courseForm.openDate.$invalid && !courseForm.openDate.$pristine }">
-                    <label>Open Date</label>
-                    <input type="date" class="form-control" format-date
-                           name="openDate"
-                           ng-model="coursesEdit.course.openTimestamp"
-                           required>
-                    <span ng-show="courseForm.openDate.$invalid && !courseForm.openDate.$pristine" class="help-block">Open Date is required. The min date is today.</span>
-                </div>
-                <div class="form-group" ng-class="{ 'has-error' : courseForm.closeDate.$invalid && !courseForm.closeDate.$pristine }">
-                    <label>Close Date</label>
-                    <input type="date" class="form-control" format-date
-                           name="closeDate"
-                           ng-model="coursesEdit.course.closeTimestamp"
-                           required>
-                    <span ng-show="courseForm.closeDate.$invalid && !courseForm.closeDate.$pristine" class="help-block">Close Date is required. The min date is today.</span>
+                           ng-maxlength="30"
+                           placeholder="Email"
+                           ng-model="adminAddEditCtrl.user.email" required>
+                    <span ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="help-block">Required</span>
                 </div>
                 <div class="form-group">
-                    <label>Clone Course</label>
-                    <select class="form-control"
-                            ng-model="coursesEdit.course.cloneCourseId"
-                            ng-disabled="!coursesEdit.cloneAllowed">
-                        <option ng-repeat="course in coursesEdit.allCourses"
-                                value="{{ course.id }}">
-                            {{ course.courseTitle }} {{ course.subjectCode }}
-                        </option>
+                    <label>Role</label>
+                    <select class="form-control" name="appRoles" ng-model="adminAddEditCtrl.user.appRoles" ng-list="">
+                        <option disabled selected value="Role">User role</option>
+                        <option value = "{{ adminAddEditCtrl._AdminService.userRoles.admin }}" > Admin </option>
+                        <option value = "{{ adminAddEditCtrl._AdminService.userRoles.instructor }}" > Instructor </option>
                     </select>
+                    <pre>{{ adminAddEditCtrl.user.appRoles | json }}</pre>
                 </div>
-                <button type="submit" class="btn btn-primary" ng-disabled="courseForm.$invalid">Submit</button>
+                <button type="submit" class="btn btn-primary" ng-disabled="userForm.$invalid">Submit</button>
             </form>
-            {{ coursesEdit.course | json }}
+            {{ adminAddEditCtrl.user | json }}
         </div>
     </div>
 </div>

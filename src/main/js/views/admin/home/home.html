@@ -8,7 +8,7 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <a ui-sref="app.admin.add_edit({userId:'new'})"><button class="btn btn-primary">+ New User</button></a>
+            <a ui-sref="app.admin.add_edit({userEmail:'new'})"><button class="btn btn-primary">+ New User</button></a>
         </div>
     </div>
     <div class="row">
@@ -31,12 +31,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="user in adminCtrl.admin track by $index1">
+                    <tr ng-repeat="user in adminCtrl.users track by $index">
                         <td> {{ user.firstName }} </td>
                         <td> {{ user.lastName }} </td>
                         <td> {{ user.email }} </td>
-                        <td> {{ user.role }} </td>
-                        <td><a ui-sref="app.admin.add_edit({userId:'{{user.id}}'})">Edit</a></td>
+                        <td> {{ user.appRoles[0] }} </td>
+                        <td><a ui-sref="app.admin.add_edit({userEmail:'{{user.email}}'})">Edit</a></td>
                     </tr>
                 </tbody>
             </table>
