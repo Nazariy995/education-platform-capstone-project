@@ -6,10 +6,6 @@ function Directive($state, QuestionService){
         scope.uploaded = false;
         scope.error = false;
 
-        scope.model = {
-            type : scope.field.questionType
-        };
-
         setAnswer(scope);
         //Upload image upon the click of the Upload Button
         scope.uploadImage = function(file){
@@ -46,6 +42,9 @@ function Directive($state, QuestionService){
         var _scope = scope;
         scope.$watch('savedAnswers', function(newAnswer){
             if(newAnswer && "value" in newAnswer){
+                _scope.model = {
+                    type : _scope.field.questionType
+                };
                 _scope.model.answer = newAnswer.value.answer;
             }
         });
