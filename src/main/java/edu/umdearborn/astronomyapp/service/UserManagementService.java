@@ -16,5 +16,7 @@ public interface UserManagementService {
   public boolean emailExists(String email);
   
   public CourseUser updateCourseUserStatus(String courseUserId, boolean isActive);
+  
+  public List<AstroAppUser> getAdminInstructorList();
 
 }

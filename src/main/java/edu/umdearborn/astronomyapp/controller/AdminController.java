@@ -33,11 +33,9 @@ public class AdminController {
 		this.userManagementService = userManagementService;
 	}
 	
-	@RequestMapping(value = "user/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/list", method = RequestMethod.GET)
 	public List<AstroAppUser> getAdmins(){
-		
-		return entityManager.createQuery("select u from AstroAppUser u join u.role r "
-				+ "				where r.role in ('INSTRUCTOR', 'ADMIN')", AstroAppUser.class).getResultList();
+		return userManagementService.getAdminInstructorList();
 	}
 
 	@RequestMapping(value = "/user", method = RequestMethod.POST)
