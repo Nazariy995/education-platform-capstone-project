@@ -31,8 +31,8 @@
         <tbody>
             <tr ng-repeat="assignment in courseAssignments.assignments | orderBy: '-openTimestamp'">
                 <td><a ui-sref="app.course.assignment({moduleId:'{{ assignment.id }}'})">{{ assignment.moduleTitle }}</a> </td>
-                <td restrict access="INSTRUCTOR"> {{ assignment.openTimestamp | date }} </td>
-                <td> {{ assignment.dueDate | date }} </td>
+                <td restrict access="INSTRUCTOR"> {{ assignment.openTimestamp | date:'MMM d, y h:mm a' }} </td>
+                <td> {{ assignment.dueDate | date:'MMM d, y h:mm a' }} </td>
                 <td> {{ assignment.maxStudents }} </td>
                 <td restrict access="INSTRUCTOR">
                     <a ui-sref="app.course.assignments_add_edit({moduleId: '{{ assignment.id }}', isNew : false})"
@@ -46,7 +46,7 @@
                     Edit Questions
                     </a> |
                     <a ui-sref="app.course.assignment.groups({moduleId: '{{ assignment.id }}'})"
-                       >
+                       ng-if="courseAssignments.currentDate > assignment.closeTimestamp">
                         Grade
                     </a>
                 </td>

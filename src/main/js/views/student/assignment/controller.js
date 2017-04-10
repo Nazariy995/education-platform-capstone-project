@@ -3,6 +3,7 @@ function Controller($scope, $state, $stateParams, AssignmentService, GroupServic
     "ngInject";
     this._$scope = $scope;
     this._$state = $state;
+    this.currentDate = new Date();
     this.pageName = "Assignment";
     this.courseId = $stateParams.courseId;
     this.moduleId = $stateParams.moduleId;
