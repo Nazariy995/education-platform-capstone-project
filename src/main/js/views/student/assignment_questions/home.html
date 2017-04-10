@@ -1,4 +1,7 @@
 <h2>{{ assignmentQuestions.pageName }}</h2>
+<div class="alert alert-danger" ng-if="assignmentQuestions.error">
+    {{ assignmentQuestions.error }}
+</div>
 <form name="quizForm" ng-submit="assignmentQuestions.submit()" novalidate >
     <div ng-form="answerEntryForm"
          ng-repeat="field in assignmentQuestions.questions
@@ -14,15 +17,11 @@
                     <span class="glyphicon glyphicon-lock" ng-if="field.isGatekeeper"></span>
                 </div>
                 <question-grading
-                        ng-if="assignmentQuestions.grading"
                         field="field"
                         is-grading="assignmentQuestions.grading"
                         model="assignmentQuestions.questionGrades[assignmentQuestions.savedAnswers[field.id].id]"
                         saved-answers="assignmentQuestions.savedAnswers[field.id]">
                 </question-grading>
-                <div class="pull-right" ng-if="!assignmentQuestions.grading">
-                    Points: {{ field.points }}
-                </div>
                 <div class="clearfix"></div>
             </div>
             <div ng-switch-when="MULTIPLE_CHOICE" class="panel-body">

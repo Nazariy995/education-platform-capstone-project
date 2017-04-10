@@ -1,11 +1,10 @@
 
-function Controller($scope, $state, $stateParams, lock, AssignmentService, QuestionService, appSettings, ConfirmationService){
+function Controller($scope, $state, $stateParams, AssignmentService, QuestionService, appSettings, ConfirmationService, GroupService){
     "ngInject";
     this.pageName = "Questions";
     this.maxPage = 1;
     this.minPage = 1;
     this.currentPage = 1;
-    this.lock = lock;
     this.editable = false;
     this.lastSaved = "Not Saved";
     this.pages = [];
@@ -16,11 +15,13 @@ function Controller($scope, $state, $stateParams, lock, AssignmentService, Quest
     this.moduleId = $stateParams.moduleId;
     this.groupId = $stateParams.groupId;
     this.grading = $stateParams.grading;
+    this.viewOnly = $stateParams.viewOnly;
     this.data = {};
     this.questionGrades = {};
     this.questions = [];
     this.savedAnswers = {};
     this._AssignmentService = AssignmentService;
+    this._GroupService = GroupService;
     this._QuestionService = QuestionService;
     this._ConfirmationService = ConfirmationService;
     this.init();
@@ -28,7 +29,6 @@ function Controller($scope, $state, $stateParams, lock, AssignmentService, Quest
 
 Controller.prototype.init = function(){
     var self = this;
-    self.getLock();
     self._$scope.assignmentService = self._AssignmentService;
     self._$scope.$watch('assignmentService.assignmentDetails', function(newAssignmentDetails){
        if(newAssignmentDetails){
@@ -40,10 +40,22 @@ Controller.prototype.init = function(){
     self.getQuestions(self.currentPage);
 };
 
-Controller.prototype.getLock = function(){
+Controller.prototype.getLock = function(page){
     var self = this;
-    if(self.lock && self.lock.hasLock && self.lock.isModuleEditable){
-        self.editable = true;
+    if(self.viewOnly || self.grading){
+        self.editable = false;
+    } else {
+        self._GroupService.getLock(self.courseId, self.moduleId, self.groupId, page)
+                .then(function(payload){
+                if(payload.hasLock && payload.isModuleEditable){
+                    self.editable = true;
+                } else {
+                    self.editable = false;
+                }
+        }, function(err){
+            self.editable = false;
+            self.error = "ERROR getting the lock"
+        })
     }
 };
 
@@ -56,6 +68,7 @@ Controller.prototype.getQuestions = function(newPage){
             self.questions = payload;
             self.currentPage = newPage;
             self.lastSaved = "Not Saved";
+            self.getLock(newPage);
     }, function(err){
        self.error = "ERROR getting the questions";
     });
