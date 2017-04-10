@@ -78,26 +78,8 @@ var states = [
         },
         params : {
             viewOnly : false,
-            grading : false
-        },
-        resolve : {
-            lock : ['GroupService','$stateParams','$state', '$q', function(GroupService, $stateParams, $state, $q){
-                var deferred = $q.defer();
-                if($stateParams.viewOnly){
-                    deferred.resolve(false);
-                } else {
-                    var courseId = $stateParams.courseId;
-                    var moduleId = $stateParams.moduleId;
-                    var groupId = $stateParams.groupId;
-                    GroupService.getLock(courseId, moduleId, groupId)
-                        .then(function(payload){
-                        deferred.resolve(payload);
-                    }, function(err){
-                        deferred.reject("ERROR getting the lock");
-                    })
-                }
-                return deferred.promise;
-            }]
+            grading : false,
+            currentPage : 1
         }
     },
     {
