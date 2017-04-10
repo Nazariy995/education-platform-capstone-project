@@ -57,6 +57,7 @@
                     <select class="form-control"
                             ng-model="coursesEdit.course.cloneCourseId"
                             ng-disabled="!coursesEdit.cloneAllowed">
+                        <option value="">Select Course</option>
                         <option ng-repeat="course in coursesEdit.allCourses"
                                 value="{{ course.id }}">
                             {{ course.courseTitle }} {{ course.subjectCode }}
@@ -65,6 +66,10 @@
                 </div>
                 <button type="submit" class="btn btn-primary" ng-disabled="courseForm.$invalid">Submit</button>
             </form>
+            <div class="help-block">
+                Open and Close Date Cannot be changed once you create the course<br>
+                Cannot Clone a course once you create the course
+            </div>
         </div>
     </div>
 </div>
