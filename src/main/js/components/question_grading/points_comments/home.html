@@ -1,7 +1,8 @@
 <div class="pull-right form-inline">
     <div class="form-group">
         <textarea rows="1" class="form-control"
-        placeholder="Comment"
+        placeholder="Comments"
+        style="max-width:300px"
         ng-model="model.comment" ng-disabled="!isGrading">
         </textarea>
     </div>
@@ -10,5 +11,5 @@
         <input type="number" class="form-control"
            ng-model="model.points" ng-disabled="!isGrading">
     </div>
-    Points: {{ field.points }}
+    of {{ field.points }} Points
 </div>
