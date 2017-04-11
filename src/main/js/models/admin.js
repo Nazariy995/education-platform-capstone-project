@@ -41,20 +41,18 @@ Service.prototype.addUser = function (payload){
     return self._$http
         .post(url, payload, self.config)
         .then(function (res) {
-            Console.log("Adding user");
             return res.data;
         });
 }
 
-Service.prototype.editUser = function (email, payload) {
+Service.prototype.editUser = function (email) {
     var self = this;
     var url = self._appSettings.API.basePath + '/rest/admin/user/' + email;
     self.getConfig();
 
     return self._$http
-        .put(url, payload, self.config)
+        .put(url, self.config)
         .then(function (res) {
-            Console.log("Getting user");
             return res.data;
         });
 }

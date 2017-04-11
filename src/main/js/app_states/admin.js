@@ -29,7 +29,7 @@ var states = [
                     return null
                 } else {
                     console.log($stateParams.userEmail);
-                    return AdminService.getUser($stateParams.userEmail)
+                    return AdminService.editUser($stateParams.userEmail)
                         .then(function (user) {
                             return user;
                         }, function (err) {

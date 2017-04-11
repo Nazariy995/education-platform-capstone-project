@@ -4,7 +4,6 @@ function Controller($state, $stateParams, user, AdminService) {
     this.pageName = "Add/Edit Admin or Instructor";
     this._AdminService = AdminService;
     this.user = user;
-    this.created_updated = $stateParams.created_updated;
     this.init();
 };
 
@@ -18,9 +17,9 @@ Controller.prototype.addUser = function (valid, user) {
         self.error = null;
         self._AdminService.addUser(user)
             .then(function (payload) {
-                self._$state.go('app.admin', { created_updated: true });
+                self._$state.go('app.admin', { created_updated : true });
         }, function(err) {
-           self.error = "Error adding users";
+           self.error = "An Error occured while adding a user!";
         });
     }
 };
