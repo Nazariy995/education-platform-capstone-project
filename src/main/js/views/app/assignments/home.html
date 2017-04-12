@@ -50,6 +50,7 @@
                 </td>
                 <td restrict access="INSTRUCTOR">
                     <button type="button" class="btn btn-xs btn-warning"
+                    ng-if="courseAssignments.currentDate < assignment.openTimestamp"
                     ng-click="courseAssignments.dropAssignment(assignment.id)">
                       <span class="glyphicon glyphicon-trash"></span>
                     </button>
