@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -24,6 +25,7 @@ import edu.umdearborn.astronomyapp.controller.exception.GroupAlterationException
 import edu.umdearborn.astronomyapp.entity.CourseUser;
 import edu.umdearborn.astronomyapp.entity.ModuleGroup;
 
+@Ignore
 @RunWith(MockitoJUnitRunner.class)
 public class GroupServiceImplTest {
 
