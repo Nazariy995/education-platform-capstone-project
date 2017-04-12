@@ -41,7 +41,6 @@ Service.prototype.addUser = function (payload){
     return self._$http
         .post(url, payload, self.config)
         .then(function (res) {
-            Console.log("Adding user");
             return res.data;
         });
 }

@@ -27,7 +27,6 @@
                         <th>Last Name</th>
                         <th>Email</th>
                         <th>Role</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,7 +35,6 @@
                         <td> {{ user.lastName }} </td>
                         <td> {{ user.email }} </td>
                         <td> {{ user.appRoles[0] }} </td>
-                        <td><a ng-click="adminCtrl.viewUserDetails(user)" class="pointer-cursor">Edit</a></td>
                     </tr>
                 </tbody>
             </table>
