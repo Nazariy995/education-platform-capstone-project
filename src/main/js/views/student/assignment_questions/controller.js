@@ -126,7 +126,6 @@ Controller.prototype.submit = function(){
 Controller.prototype.getPage = function(newPage){
     var self = this;
     if(newPage >= self.minPage && newPage <= self.maxPage && newPage != self.currentPage){
-        self.questions = [];
         self.getQuestions(newPage);
     }
 }

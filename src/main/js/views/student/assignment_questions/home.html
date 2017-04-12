@@ -4,9 +4,7 @@
 </div>
 <form name="quizForm" ng-submit="assignmentQuestions.submit()" novalidate >
     <div ng-form="answerEntryForm"
-         ng-repeat="field in assignmentQuestions.questions
-                    | orderBy: 'order'
-                    track by $index ">
+         ng-repeat="field in assignmentQuestions.questions | orderBy: 'order' track by $index ">
         <div ng-if="field.pageItemType == 'TEXT' && !assignmentQuestions.grading" class="well well-sm">
             <div ta-bind="text" ng-model="field.humanReadableText"></div>
         </div>
