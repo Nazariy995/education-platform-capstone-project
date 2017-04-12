@@ -1,19 +1,23 @@
 function Controller($state, $stateParams, AdminService) {
     "ngInject";
     this._$state = $state;
-    this.pageName = "Admins / Instructors";
+    this.pageName = "Admin";
     this._AdminService = AdminService;
     this.created_updated = $stateParams.created_updated;
     this.users = [];
+<<<<<<< HEAD
     this.email = $stateParams.email;
     this.appRole = $stateParams.appRole;
     this.firstName = $stateParams.firstName;
     this.lastName = $stateParams.lastName;
+=======
+>>>>>>> parent of e21494a... Redirect after adding user
     this.init();
 };
 
 Controller.prototype.init = function () {
     var self = this;
+    console.log("Attempting to grab instructors and admins..")
     self.getMembers();
 }
 
@@ -27,6 +31,7 @@ Controller.prototype.getMembers = function () {
         });
 };
 
+<<<<<<< HEAD
 Controller.prototype.viewUserDetails = function (userData) {
     var self = this;
     var params = {
@@ -49,5 +54,7 @@ Controller.prototype.editMember = function (email, user) {
         });
 }
 
+=======
+>>>>>>> parent of e21494a... Redirect after adding user
 module.exports = angular.module('app.views.admin.home.controller', [])
     .controller('AdminCtrl', Controller);
