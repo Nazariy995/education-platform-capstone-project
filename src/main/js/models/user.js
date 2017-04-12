@@ -43,7 +43,7 @@ Service.prototype.resetPassword = function(payload){
     + "/rest/self/password/reset";
 
     return this._$http
-          .post(url, null, config)
+          .post(url, payload, config)
           .then(function (res) {
             return res.data;
           });
