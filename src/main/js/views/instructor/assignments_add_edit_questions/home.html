@@ -34,8 +34,8 @@
                 <th>Type</th>
                 <th>Q Type</th>
                 <th>Points</th>
-                <th><span class="glyphicon glyphicon-lock"></span></th>
-                <th><span class="glyphicon glyphicon-saved"></span></th>
+                <th><span class="glyphicon glyphicon-lock" title="Gatekeeper?"></span></th>
+                <th><span class="glyphicon glyphicon-saved" title="Automatically Gradable?"></span></th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -46,8 +46,8 @@
                 <td> {{ question.pageItemType }}</td>
                 <td> {{ question.questionType }}</td>
                 <td> {{ question.points }}</td>
-                <td> {{ question.isGatekeeper }}</td>
-                <td> {{ question.machineGradeable }}</td>
+                <td> {{ question.isGatekeeper ? 'Yes' : 'No' }}</td>
+                <td> {{ question.machineGradeable ? 'Yes' : 'No' }}</td>
                 <td> <a href=""
                         ng-click="questionsEditCtrl.dropQuestion(question.id)" >Delete</a> </td>
             </tr>
