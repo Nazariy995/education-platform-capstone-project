@@ -10,7 +10,7 @@
         <form name="assignmentForm" ng-submit="assignmentsEditCtrl.add_eidtAssignment(assignmentForm.$valid, assignmentsEditCtrl.assignment)" novalidate>
             <div class="form-group" ng-class="{ 'has-error' : assignmentForm.title.$invalid && !assignmentForm.title.$pristine }">
                 <label>Title</label>
-                <input type="text" name="title" class="form-control" placeholder="Course Title"
+                <input type="text" name="title" class="form-control" placeholder="Title"
                        ng-model="assignmentsEditCtrl.assignment.moduleTitle" required>
                 <span ng-show="assignmentForm.title.$invalid && !assignmentForm.title.$pristine" class="help-block">Title is required</span>
             </div>
