@@ -311,7 +311,7 @@ public class ModuleServiceImpl implements ModuleService {
         .setParameter(1, question.getId()).setParameter(2, question.getAllowedCoefficientSpread())
         .setParameter(3, question.getAllowedExponenetSpread())
         .setParameter(4, question.getCorrectCoefficient())
-        .setParameter(5, question.getRequiresScale()).setParameter(6, question.getRequiresScale())
+        .setParameter(5, question.getCorrectExponenet()).setParameter(6, question.getRequiresScale())
         .executeUpdate();
 
     logger.debug("Inserting into numeric_question options");
