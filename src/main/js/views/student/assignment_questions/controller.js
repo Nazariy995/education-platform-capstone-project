@@ -92,7 +92,7 @@ Controller.prototype.savePoints = function(){
             self.savedAnswers = payload;
             self.lastSaved = new Date();
     }, function(err){
-       self.error = "ERROR saving the answers";
+       self.error = "ERROR saving points";
     });
 };
 
@@ -102,7 +102,7 @@ Controller.prototype.getAnswers = function(newPage){
         .then(function(payload){
             self.savedAnswers = payload;
     }, function(err){
-       self.error = err;
+       self.error = "ERROR getting the answers";
     });
 };
 
