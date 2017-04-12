@@ -8,7 +8,7 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <a ui-sref="app.admin.add_edit({userEmail:'new'})"><button class="btn btn-primary">+ New User</button></a>
+            <a ui-sref="app.admin.add_edit({email:'new'})"><button class="btn btn-primary">+ New User</button></a>
         </div>
     </div>
     <div class="row">
@@ -36,7 +36,7 @@
                         <td> {{ user.lastName }} </td>
                         <td> {{ user.email }} </td>
                         <td> {{ user.appRoles[0] }} </td>
-                        <td><a ui-sref="app.admin.add_edit({userEmail:'{{user.email}}'})">Edit</a></td>
+                        <td><a ng-click="adminCtrl.viewUserDetails(user)" class="pointer-cursor">Edit</a></td>
                     </tr>
                 </tbody>
             </table>

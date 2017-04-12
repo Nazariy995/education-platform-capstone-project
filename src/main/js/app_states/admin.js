@@ -15,29 +15,19 @@ var states = [
     },
     {
         name: 'app.admin.add_edit',
-        url: '/{userEmail}/add_edit',
+        url: '/{email}/add_edit',
+        params: {
+            email,
+            firstName,
+            lastName,
+            appRoles
+        },
         views: {
             'mainContent@app': {
                 templateUrl: 'views/admin/user_add_edit/home.html',
                 controller: 'AdminAddEditCtrl',
                 controllerAs: 'adminAddEditCtrl'
             }
-        },
-        resolve : {
-            user : ['AdminService', 'SessionService', '$stateParams', '$state', function (AdminService, SessionService, $stateParams, $state) {
-                if ($stateParams.userEmail == "new") {
-                    return null
-                } else {
-                    console.log($stateParams.userEmail);
-                    return AdminService.editUser($stateParams.userEmail)
-                        .then(function (user) {
-                            return user;
-                        }, function (err) {
-                            $state.go('app.admin', null, { reload: true, location: 'replace' });
-                            return err;
-                        });
-                }
-            }]
         }
     }
 ]
