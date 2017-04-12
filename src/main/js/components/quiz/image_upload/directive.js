@@ -59,8 +59,6 @@ function Directive($state, QuestionService){
     }
 
     var directive = {
-        controller: 'InputComponentController',
-        controllerAs: 'componentCtrl',
         templateUrl: 'components/quiz/image_upload/home.html',
         link : link,
         scope: {

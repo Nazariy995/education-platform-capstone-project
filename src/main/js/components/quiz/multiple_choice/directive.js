@@ -21,8 +21,6 @@ function Directive($state){
     }
 
     var directive = {
-        controller: 'InputComponentController',
-        controllerAs: 'componentCtrl',
         templateUrl: 'components/quiz/multiple_choice/home.html',
         link : link,
         scope: {

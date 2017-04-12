@@ -20,8 +20,6 @@ function Directive($state){
     }
 
     var directive = {
-        controller: 'InputComponentController',
-        controllerAs: 'componentCtrl',
         templateUrl: 'components/quiz/free_response/home.html',
         link : link,
         scope: {
