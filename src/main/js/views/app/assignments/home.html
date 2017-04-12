@@ -35,13 +35,13 @@
                 <td> {{ assignment.closeTimestamp | date:'MMM d, y h:mm a' }} </td>
                 <td> {{ assignment.maxStudents }} </td>
                 <td restrict access="INSTRUCTOR">
-                    <a ui-sref="app.course.assignments_add_edit({moduleId: '{{ assignment.id }}', isNew : false})" ng-if="courseAssignments.currentDate < assignment.openTimestamp">
+                    <a ui-sref="app.course.assignments_add_edit({moduleId: '{{ assignment.id }}', isNew : false})" ng-if="courseAssignments.currentDate < assignment.openTimestamp || !assignment.openTimestamp">
                         <button type="button" class="btn btn-xs btn-default">
                             <span class="glyphicon glyphicon-pencil"></span>
                         </button>
                     </a> |
                     <a ui-sref="app.course.assignments_add_edit_pages({moduleId: '{{ assignment.id }}'})"
-                       ng-if="courseAssignments.currentDate < assignment.openTimestamp">
+                       ng-if="courseAssignments.currentDate < assignment.openTimestamp || !assignment.openTimestamp">
                     Edit Questions
                     </a> |
                     <a ui-sref="app.course.assignment.groups({moduleId: '{{ assignment.id }}'})" ng-if="courseAssignments.currentDate > assignment.closeTimestamp">
@@ -50,7 +50,7 @@
                 </td>
                 <td restrict access="INSTRUCTOR">
                     <button type="button" class="btn btn-xs btn-warning"
-                    ng-if="courseAssignments.currentDate < assignment.openTimestamp"
+                    ng-if="courseAssignments.currentDate < assignment.openTimestamp || !assignment.openTimestamp"
                     ng-click="courseAssignments.dropAssignment(assignment.id)">
                       <span class="glyphicon glyphicon-trash"></span>
                     </button>
