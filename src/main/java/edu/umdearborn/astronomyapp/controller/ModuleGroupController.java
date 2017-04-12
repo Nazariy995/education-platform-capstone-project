@@ -71,6 +71,7 @@ public class ModuleGroupController {
     acl.enforceIsCourseRole(principal.getName(), courseId,
         Arrays.asList(CourseUser.CourseRole.STUDENT));
     acl.enforceModuleOpen(moduleId);
+    acl.enforeModuleNotClosed(moduleId);
 
     ModuleGroup group = groupService.createGroup(courseUserId, moduleId);
 
@@ -96,6 +97,7 @@ public class ModuleGroupController {
     acl.enforceIsCourseRole(principal.getName(), courseId,
         Arrays.asList(CourseUser.CourseRole.STUDENT));
     acl.enforceInGroup(courseUserId, groupId);
+    acl.enforeModuleNotClosed(moduleId);
 
     return groupService.removeFromGroup(groupId, removedUser);
   }
@@ -158,6 +160,8 @@ public class ModuleGroupController {
         Arrays.asList(CourseUser.CourseRole.STUDENT));
     acl.enforceInGroup(courseUserId, groupId);
     acl.enforceGroupLocked(groupId, false);
+    acl.enforeModuleNotClosed(moduleId);
+    acl.enforceModuleOpen(moduleId);
 
     return groupService.joinGroup(addMember, moduleId, groupId);
   }
@@ -231,6 +235,7 @@ public class ModuleGroupController {
     acl.enforceIsCourseRole(principal.getName(), courseId,
         Arrays.asList(CourseUser.CourseRole.STUDENT));
     acl.enforceModuleOpen(moduleId);
+    acl.enforeModuleNotClosed(moduleId);
     acl.enforceGroupInCourse(groupId, courseId);
     acl.enforceInGroup(courseUserId, groupId);
     acl.enforceGroupLocked(groupId, true);
@@ -320,6 +325,7 @@ public class ModuleGroupController {
     acl.enforceIsCourseRole(principal.getName(), courseId,
         Arrays.asList(CourseUser.CourseRole.STUDENT));
     acl.enforceModuleOpen(moduleId);
+    acl.enforeModuleNotClosed(moduleId);
     acl.enforceGroupInCourse(groupId, courseId);
     acl.enforceInGroup(courseUserId, groupId);
     acl.enforceGroupLocked(groupId, true);
@@ -345,6 +351,7 @@ public class ModuleGroupController {
     acl.enforceIsCourseRole(principal.getName(), courseId,
         Arrays.asList(CourseUser.CourseRole.STUDENT));
     acl.enforceModuleOpen(moduleId);
+    acl.enforeModuleNotClosed(moduleId);
     acl.enforceGroupInCourse(groupId, courseId);
     acl.enforceInGroup(courseUserId, groupId);
     acl.enforceGroupLocked(groupId, true);
@@ -406,6 +413,8 @@ public class ModuleGroupController {
     acl.enforceIsCourseRole(principal.getName(), courseId,
         Arrays.asList(CourseUser.CourseRole.STUDENT));
     acl.enforceGroupInCourse(groupId, courseId);
+    acl.enforeModuleNotClosed(moduleId);
+    acl.enforceModuleOpen(moduleId);
     acl.enforceInGroup(courseUserId, groupId);
     acl.enforceGroupLocked(groupId, false);
 
