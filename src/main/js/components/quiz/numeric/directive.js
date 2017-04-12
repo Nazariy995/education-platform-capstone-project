@@ -13,7 +13,7 @@ function Directive($state){
                 _scope.model = {
                     type : _scope.field.questionType
                 };
-                _scope.model.answer = Number(newAnswer.value.answer);
+                _scope.model.answer = newAnswer.value.answer;
                 _scope.model.unit = newAnswer.value.unit;
             }
         });
