@@ -1,5 +1,6 @@
 var gulp = require('gulp');
 var htmlmin = require('gulp-htmlmin');
+var stripDebug = require('gulp-strip-debug');
 var templateCache = require('gulp-angular-templatecache');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
@@ -40,6 +41,7 @@ gulp.task('browserify', [ 'clean' ], function() {
 	})
         .pipe(source('src/main/js/dist/bundle.js'))
         .pipe(buffer())
+        .pipe(stripDebug())
         .pipe(ngAnnotate())
         .pipe(uglify().on('error', function(e){
             gutil.log(e);
