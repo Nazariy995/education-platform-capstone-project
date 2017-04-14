@@ -2,7 +2,8 @@ module.exports = angular.module('app.settings', [])
 .constant("appSettings", {
     "ROLES" : {
         user : "USER",
-        instructor : "INSTRUCTOR"
+        instructor : "INSTRUCTOR",
+        admin : "ADMIN"
     },
     "API" : {
         "basePath" : "",

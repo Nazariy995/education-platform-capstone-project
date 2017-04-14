@@ -25,6 +25,9 @@ Controller.prototype.login = function(){
             self._$state.go("app.courses");
         } else if(user.roles.indexOf(self.userRoles.instructor) != -1) {
             self._$state.go("app.courses");
+        } else if (user.roles.indexOf(self.userRoles.admin) != -1) {
+            console.log("You're an admin!");
+            self._$state.go("app.admin");
         }
     },function(err){
         self.error = "There was a problem logging in. Please try again";

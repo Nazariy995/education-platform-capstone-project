@@ -22,8 +22,8 @@ import edu.umdearborn.astronomyapp.entity.AstroAppUser;
 import edu.umdearborn.astronomyapp.service.UserManagementService;
 import edu.umdearborn.astronomyapp.util.ValidAssert;;
 
-@RestController
-@RequestMapping(REST_PATH_PREFIX)
+//@RestController
+//@RequestMapping(REST_PATH_PREFIX)
 public class UserManagementController {
 
   private static final Logger logger = LoggerFactory.getLogger(UserManagementController.class);
