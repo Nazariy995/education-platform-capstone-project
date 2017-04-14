@@ -22,7 +22,6 @@ import edu.umdearborn.astronomyapp.entity.AstroAppUser;
 import edu.umdearborn.astronomyapp.entity.Course;
 import edu.umdearborn.astronomyapp.entity.CourseUser;
 import edu.umdearborn.astronomyapp.util.ResultListUtil;
-import edu.umdearborn.astronomyapp.util.email.NewUserEmailContextBuilder;
 
 @Service
 @Transactional
@@ -81,19 +80,19 @@ public class UserManagementServiceImpl implements UserManagementService {
 				Boolean.class).setParameter("email", email).getSingleResult();
 	}
 
-	@Override
-	public AstroAppUser persistNewUser(AstroAppUser user) {
+	  @Override
+	  public AstroAppUser persistNewUser(AstroAppUser user) {
 
-		user.setPassword(RandomStringUtils.randomAlphanumeric(12));
+	    user.setPassword(RandomStringUtils.randomAlphanumeric(12));
 
-		Map<String, String> context = emailService.buildEmailContext(new NewUserEmailContextBuilder(user));
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		emailService.send(context);
+	    emailService.send(user.getEmail(), "Welcome to AstroApp",
+	        "Username: " + user.getEmail() + " Password: " + user.getPassword());
+	    user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-		entityManager.persist(user);
+	    entityManager.persist(user);
 
-		return user;
-	}
+	    return user;
+	  }
 
 	@PostConstruct
 	public void postConstruct() {
