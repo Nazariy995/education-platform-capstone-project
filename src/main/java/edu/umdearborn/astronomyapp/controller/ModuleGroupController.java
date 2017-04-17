@@ -383,22 +383,22 @@ public class ModuleGroupController {
 
   }
 
-  @RequestMapping(
-      value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/answers",
-      method = GET)
-  public Map<String, Answer> getSubmissions(@PathVariable("courseId") String courseId,
-      @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
-      Principal principal, HttpSession session) {
-
-    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
-
-    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
-
-    return Optional.ofNullable(groupService.getAnswers(groupId, false))
-        .orElse(new ArrayList<Answer>()).parallelStream()
-        .collect(Collectors.toMap(a -> a.getQuestion().getId(), a -> a));
-
-  }
+//  @RequestMapping(
+//      value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/answers",
+//      method = GET)
+//  public Map<String, Answer> getSubmissions(@PathVariable("courseId") String courseId,
+//      @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
+//      Principal principal, HttpSession session) {
+//
+//    String courseUserId = HttpSessionUtil.getCourseUserId(session, courseId);
+//
+//    acl.enforceInCourse(principal.getName(), courseId, courseUserId);
+//
+//    return Optional.ofNullable(groupService.getAnswers(groupId, false))
+//        .orElse(new ArrayList<Answer>()).parallelStream()
+//        .collect(Collectors.toMap(a -> a.getQuestion().getId(), a -> a));
+//
+//  }
 
   @RequestMapping(
       value = STUDENT_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/finalize",
@@ -433,7 +433,7 @@ public class ModuleGroupController {
     return groupService.getGroups(moduleId);
   }
 
-  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}",
+  @RequestMapping(value = INSTRUCTOR_PATH + "/course/{courseId}/module/{moduleId}/group/{groupId}/answers",
       method = GET)
   public Map<String, Answer> getAnswers(@PathVariable("courseId") String courseId,
       @PathVariable("moduleId") String moduleId, @PathVariable("groupId") String groupId,
