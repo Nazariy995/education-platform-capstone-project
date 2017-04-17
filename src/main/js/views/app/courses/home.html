@@ -34,7 +34,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="course in coursesCtrl.courses">
+                <tr ng-repeat="course in coursesCtrl.courses | orderBy:'-openTimestamp'">
                     <td><a ui-sref="app.course.assignments({courseId:'{{course.id}}'})"> {{  course.courseTitle }} </a></td>
                     <td> {{ course.subjectCode }} </td>
                     <td> {{ course.courseCode }} </td>
