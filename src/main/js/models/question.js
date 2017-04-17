@@ -147,19 +147,20 @@ Service.prototype.savePoints = function(courseId, moduleId, groupId, payload){
         });
 }
 
-Service.prototype.getAnswers = function(courseId, moduleId, groupId){
+Service.prototype.getAnswers = function(courseId, moduleId, groupId, showSaved){
     var self = this;
     var config = self.getConfig();
+    config.params.showSaved = showSaved;
 
     var url = {};
     url[self.userRoles.user] = self._appSettings.API.basePath + '/rest/student/course/'+
     courseId+ '/module/'
     + moduleId + "/group/"
-    + groupId + "/answers/?showSaved=true";
+    + groupId + "/answers/";
     url[self.userRoles.instructor] = self._appSettings.API.basePath + '/rest/instructor/course/'+
     courseId+ '/module/'
     + moduleId + "/group/"
-    + groupId + "/answers/?showSaved=true";
+    + groupId + "/answers/";
     url = self.getUrl(url);
 
     return this._$http

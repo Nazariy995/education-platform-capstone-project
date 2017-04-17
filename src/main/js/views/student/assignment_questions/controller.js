@@ -7,6 +7,7 @@ function Controller($scope, $state, $stateParams, AssignmentService, QuestionSer
     this.currentPage = 1;
     this.editable = false;
     this.lastSaved = "Not Saved";
+    this.showSaved = true;
     this.pages = [];
     this._$state = $state;
     this._$scope = $scope;
@@ -36,7 +37,7 @@ Controller.prototype.init = function(){
            self.pages = new Array(self.maxPage);
        }
     });
-    self.getAnswers();
+    self.getShowSaved();
     self.getQuestions(self.currentPage);
 };
 
@@ -57,6 +58,23 @@ Controller.prototype.getLock = function(page){
             self.error = "ERROR getting the lock"
         })
     }
+};
+
+Controller.prototype.getShowSaved = function(){
+    var self = this;
+    self._AssignmentService.getAssignmentDetails(self.courseId, self.moduleId)
+        .then(function(payload){
+            var currentDate = new Date();
+            if(currentDate > payload.closeTimestamp){
+                self.showSaved = false;
+            } else {
+                self.showSaved = true;
+            }
+            //Get the answers
+            self.getAnswers();
+    }, function(err){
+       self.error = "ERROR getting Assignment Details";
+    });
 };
 
 //Get Questions for the assignment
@@ -98,7 +116,7 @@ Controller.prototype.savePoints = function(){
 
 Controller.prototype.getAnswers = function(newPage){
     var self = this;
-    self._QuestionService.getAnswers(self.courseId, self.moduleId, self.groupId)
+    self._QuestionService.getAnswers(self.courseId, self.moduleId, self.groupId, self.showSaved)
         .then(function(payload){
             self.savedAnswers = payload;
     }, function(err){
