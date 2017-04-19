@@ -21,6 +21,7 @@ Service.prototype.getConfig = function(){
     return config;
 };
 
+//Purpsoe: get courses that the person is associated with
 Service.prototype.getCourses = function(){
     var self =this;
     var config = self.getConfig();
@@ -28,6 +29,26 @@ Service.prototype.getCourses = function(){
     var url = {};
     url[self.userRoles.user] = self._appSettings.API.basePath + '/rest/student/courses';
     url[self.userRoles.instructor] = self._appSettings.API.basePath + '/rest/instructor/courses/?hideOpenSoon=false';
+    url = self.getUrl(url);
+
+    return this._$http
+          .get(url, config)
+          .then(function (res) {
+            return res.data;
+          });
+};
+
+//Get all the courses that the person is associated with
+Service.prototype.getAllCourses = function(){
+    var self =this;
+    var config = self.getConfig();
+    config.params = {};
+    config.params.hideOpenSoon = false;
+    config.params.hideClosed = false;
+
+    var url = {};
+    url[self.userRoles.user] = self._appSettings.API.basePath + '/rest/student/courses';
+    url[self.userRoles.instructor] = self._appSettings.API.basePath + '/rest/instructor/courses/';
     url = self.getUrl(url);
 
     return this._$http

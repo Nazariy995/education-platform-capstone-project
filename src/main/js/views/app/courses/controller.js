@@ -14,9 +14,21 @@ Controller.prototype.init = function(){
     self.getCourses();
 }
 
+//Get the courses that are currently open or will be open in the future
 Controller.prototype.getCourses = function(){
     var self = this;
     self._CourseService.getCourses().then(
+        function(payload){
+        self.courses = payload;
+    }, function(err){
+        self.error = "ERROR retrieving courses";
+    });
+};
+
+//Purpose: Get all the courses including the ones that have already closed
+Controller.prototype.getAllCourses = function(){
+    var self = this;
+    self._CourseService.getAllCourses().then(
         function(payload){
         self.courses = payload;
     }, function(err){
