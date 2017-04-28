@@ -1,3 +1,13 @@
+
+/**
+ * Router to control the states
+ * Controlls which URL map to what states
+ *
+ * @constructor
+ * @export
+ */
+
+//Import all of the states
 var app_states = require("./app_states/app");
 var assignment_states = require("./app_states/assignment");
 var course_states = require("./app_states/course");
@@ -20,6 +30,7 @@ function Router($stateProvider, $httpProvider, $locationProvider, $urlRouterProv
         $stateProvider.state(state);
     });
 
+    //Set the default URL to go to
     $urlRouterProvider.otherwise("/");
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 
