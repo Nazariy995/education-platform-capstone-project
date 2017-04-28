@@ -1,7 +1,15 @@
+
+/**
+ * Decorator to set options for the HTML editor
+ *
+ * @constructor
+ * @export
+ */
 function Provider($provide){
     "ngInject";
 
     $provide.decorator('taOptions', ['taRegisterTool', 'taSelection', 'taToolFunctions', 'EditorUploadService' ,'$delegate', function(taRegisterTool, taSelection, taToolFunctions, EditorUploadService, taOptions) { // $delegate is the taOptions we are decorating
+        //Add a custom Upload Image Option for the website
         taRegisterTool('uploadInsertImage', {
             iconclass : 'fa fa-cloud-upload',
             tooltiptext : 'Upload And Insert Image',
@@ -16,6 +24,8 @@ function Provider($provide){
                         taSelection.setSelectionAfterElement(taSelection.getSelectionElement());
                     }
                     var embed = '<img src="' + imageURL + '" style="width:50%">';
+                    //restore selection to the HTML editor
+                    //without this, the data in the HTML editor is not Updated
                     restoreSelection();
                     self.$editor().wrapSelection('insertHTML', embed, true);
                     $deferred.resolve();
