@@ -41,7 +41,7 @@ gulp.task('browserify', [ 'clean' ], function() {
 	})
         .pipe(source('src/main/js/dist/bundle.js'))
         .pipe(buffer())
-//        .pipe(stripDebug())
+        .pipe(stripDebug())
         .pipe(ngAnnotate())
         .pipe(uglify().on('error', function(e){
             gutil.log(e);
