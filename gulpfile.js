@@ -14,10 +14,12 @@ var gutil = require('gulp-util');
 var del = require('del');
 var path = require('path');
 
+//Delete all of the files from the static folder
 gulp.task('clean', function() {
 	return del['src/main/resources/static/**'];
 });
 
+//Cache all of the templates 
 gulp.task('templates', function(){
     return gulp.src([
         'src/main/js/**/*.html'
@@ -31,6 +33,7 @@ gulp.task('templates', function(){
         .pipe(gulp.dest('src/main/js/dist/'))
 });
 
+//Browseriy all of the javascript 
 gulp.task('browserify', [ 'clean' ], function() {
 	return browserify({
 		entries : [ 'src/main/js/app.js' ],
@@ -50,6 +53,7 @@ gulp.task('browserify', [ 'clean' ], function() {
 
 });
 
+//Concatenate all of the css into one css file 
 gulp.task('css',function(){
     return gulp.src([
         'src/main/js/views/**/*.css',
@@ -59,6 +63,7 @@ gulp.task('css',function(){
         .pipe(gulp.dest('.'));
 });
 
+//Task to browserify, clear, and copy to the static folder
 gulp.task('copy', [ 'browserify', 'css', 'templates' ], function() {
 	return gulp.src('src/main/js/**').pipe(
 			gulp.dest('src/main/resources/static/'));

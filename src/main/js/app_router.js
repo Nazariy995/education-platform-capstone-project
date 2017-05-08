@@ -30,7 +30,7 @@ function Router($stateProvider, $httpProvider, $locationProvider, $urlRouterProv
         $stateProvider.state(state);
     });
 
-    //Set the default URL to go to
+    //Set the default URL to go to the login page
     $urlRouterProvider.otherwise("/");
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 
