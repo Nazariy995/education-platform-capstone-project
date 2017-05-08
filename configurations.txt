@@ -1,0 +1,11 @@
+Configurations:
+datasource.password  : umdearborn
+datasource.url    : jdbc:postgresql://astrodevdb.ct1ugyz86pob.us-east-2.rds.amazonaws.com:5432/astrodevdb
+
+datasource.username   : astrodevdb
+email.host  : email-smtp.us-east-1.amazonaws.com
+email.password  : Ah+ofQtDcibna9nxBPDQ7XNGLUvPPM8VqvPiXkpKY3ha
+email.port  : 465
+email.template.from   : pbremer@umich.edu
+email.username   : AKIAIMEQVFK6XHFRJ3NQ
+logging.level.edu.umdearborn  : DEBUG

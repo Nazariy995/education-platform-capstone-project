@@ -1,5 +1,9 @@
 <h2>{{ assignmentGroup.pageName }}</h2>
 
+<div class="alert alert-danger" ng-if="assignmentGroup.error">
+    {{ assignmentGroup.error }}
+</div>
+
 <ul class="list-group">
     <li class="list-group-item" ng-repeat="member in assignmentGroup.groupMembers">
         <button class="btn btn-xs btn-warning"
@@ -26,6 +30,7 @@
     <button type="button" class="btn btn-primary"
         ng-click="assignmentGroup.finalize()">Finalize</button>
 </form>
+<div class="help-block">You will not be able to edit the group once you click finalize</div>
 
 
 

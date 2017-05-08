@@ -1,0 +1,30 @@
+
+<h2 >
+    {{ courseGradesCtrl.pageName }}
+</h2>
+<div class="row" restrict access="INSTRUCTOR">
+    <div class="col-xs-12">
+        <button ng-click="courseGradesCtrl.getInstructorCourseGrades()" class="btn btn-primary">Download Now</button>
+    </div>
+</div>
+<div class="row" restrict access="USER" >
+    <div class="col-md-12">
+        <table class="table table-hover">
+        <thead>
+            <tr>
+            <th>Assignment</th>
+            <th>Points Earned</th>
+            <th># Submissions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="(assignment, value) in courseGradesCtrl.grades" ng-if="value.finishedGrading">
+                <td> {{ assignment }}</td>
+                <td> {{ value.pointsEarned }} </td>
+                <td> {{ value.submissionNumber }} </td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+</div>
+

@@ -1,0 +1,50 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1 class="page-header">
+                {{ adminAddEditCtrl.pageName }}
+            </h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="alert alert-danger" ng-if="adminAddEditCtrl.error">
+                {{ adminAddEditCtrl.error }}
+            </div>
+            <form name="userForm" ng-submit="adminAddEditCtrl.addUser(userForm.$valid, adminAddEditCtrl.user)" novalidate>
+                <div class="form-group" ng-class="{ 'has-error' : userForm.firstName.$invalid && !userForm.firstName.$pristine }">
+                    <label>First Name</label>
+                    <input type="text" name="firstName" class="form-control" placeholder="First Name"
+                           ng-model="adminAddEditCtrl.user.firstName" required>
+                    <span ng-show="userForm.firstName.$invalid && !userForm.firstName.$pristine" class="help-block">First name is equired</span>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error' : userForm.lastName.$invalid && !userForm.lastName.$pristine }">
+                    <label>Last Name</label>
+                    <input type="text" name="lastName" class="form-control"
+                           ng-minlength="1"
+                           ng-maxlength="15"
+                           placeholder="Last Name"
+                           ng-model="adminAddEditCtrl.user.lastName" required>
+                    <span ng-show="userForm.lastName.$invalid && !userForm.lastName.$pristine" class="help-block">Last name is required</span>
+                </div>
+                <div class="form-group" ng-class="{ 'has-error' : userForm.email.$invalid && !userForm.email.$pristine }">
+                    <label>Email</label>
+                    <input type="email" class="form-control" name="email"
+                           ng-minlength="1"
+                           ng-maxlength="30"
+                           placeholder="Email"
+                           ng-model="adminAddEditCtrl.user.email" required>
+                    <span ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="help-block">Email is required</span>
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select class="form-control" name="appRoles" ng-model="adminAddEditCtrl.user.appRoles" ng-list="" required>
+                        <option value = "{{ adminAddEditCtrl._AdminService.userRoles.admin }}" > Admin </option>
+                        <option value = "{{ adminAddEditCtrl._AdminService.userRoles.instructor }}" > Instructor </option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" ng-disabled="userForm.$invalid">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>

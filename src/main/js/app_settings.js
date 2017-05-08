@@ -2,13 +2,21 @@ module.exports = angular.module('app.settings', [])
 .constant("appSettings", {
     "ROLES" : {
         user : "USER",
-        instructor : "INSTRUCTOR"
+        instructor : "INSTRUCTOR",
+        admin : "ADMIN"
     },
     "API" : {
         "basePath" : "",
         "PARAMS" : {
             "courseUserId" : 'courseUserId'
         }
+    },
+    "QUESTION_TYPES" : {
+        MULTIPLE_CHOICE : "Multiple Choice",
+        NUMERIC : "Numeric",
+        FREE_RESPONSE : "Free Response",
+        IMAGE : "Image Upload",
+        TEXT : "Front Text"
     },
     "USER" : {
         "mainNavigationLinks" : [
@@ -30,11 +38,6 @@ module.exports = angular.module('app.settings', [])
                 "name" : "Assignments",
                 "state" : "app.course.assignments",
                 "icon" : "glyphicon glyphicon-edit"
-            },
-            {
-                "name" : "Grades",
-                "state" : "app.course.grades",
-                "icon" : "glyphicon glyphicon-book"
             }
         ],
         "quizComponentTemplates" : {

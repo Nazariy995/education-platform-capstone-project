@@ -1,0 +1,55 @@
+
+<h2>
+    {{ assignmentsEditCtrl.pageName }}
+</h2>
+<div class="row">
+    <div class="col-md-6">
+        <div class="alert alert-danger" ng-if="assignmentsEditCtrl.error">
+            {{ assignmentsEditCtrl.error }}
+        </div>
+        <form name="assignmentForm" ng-submit="assignmentsEditCtrl.add_eidtAssignment(assignmentForm.$valid, assignmentsEditCtrl.assignment)" novalidate>
+            <div class="form-group" ng-class="{ 'has-error' : assignmentForm.title.$invalid && !assignmentForm.title.$pristine }">
+                <label>Title</label>
+                <input type="text" name="title" class="form-control" placeholder="Title"
+                       ng-model="assignmentsEditCtrl.assignment.moduleTitle" required>
+                <span ng-show="assignmentForm.title.$invalid && !assignmentForm.title.$pristine" class="help-block">Title is required</span>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error' : assignmentForm.maxStudents.$invalid && !assignmentForm.maxStudents.$pristine }">
+                <label>Max Students</label>
+                <input type="number" name="maxStudents" class="form-control" placeholder="Max Students"
+                       ng-model="assignmentsEditCtrl.assignment.maxStudents" required>
+                <span ng-show="assignmentForm.maxStudents.$invalid && !assignmentForm.maxStudents.$pristine" class="help-block">Max Students is required</span>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error' : assignmentForm.openDate.$invalid && !assignmentForm.openDate.$pristine }">
+                <label>Open Date</label>
+                <input type="date" class="form-control" format-date
+                       name="openDate"
+                       ng-model="assignmentsEditCtrl.assignment.openTimestamp"
+                       required>
+                <span ng-show="assignmentForm.openDate.$invalid && !assignmentForm.openDate.$pristine" class="help-block">Open Date is required. The min date is today.</span>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error' : assignmentForm.closeDate.$invalid && !assignmentForm.closeDate.$pristine }">
+                <label>Close Date</label>
+                <input type="date" class="form-control" format-date
+                       name="closeDate"
+                       ng-model="assignmentsEditCtrl.assignment.closeTimestamp"
+                       required>
+                <span ng-show="assignmentForm.closeDate.$invalid && !assignmentForm.closeDate.$pristine" class="help-block">Close Date is required. The min date is today.</span>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error' : assignmentForm.description.$invalid && !assignmentForm.description.$pristine }">
+                <label>Description</label>
+                <textarea class="form-control"
+                          rows="3"
+                          name="description"
+                          ng-model="assignmentsEditCtrl.assignment.humanReadableText"
+                          required
+                          placeholder="Description"
+                          >
+                </textarea>
+                <span ng-show="assignmentForm.description.$invalid && !assignmentForm.description.$pristine" class="help-block">Description is Required</span>
+            </div>
+            <button type="submit" class="btn btn-primary" ng-disabled="assignmentForm.$invalid">Submit</button>
+        </form>
+    </div>
+</div>
+

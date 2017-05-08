@@ -263,8 +263,8 @@ public class AclServiceImpl implements AclService {
   @Override
   public void enforceModuleNotOpen(String moduleId) {
     TypedQuery<Boolean> query = entityManager.createQuery(
-        "select count(m) > 0 from Module m where m.openTimestamp > now() and m.id = :id or "
-            + "m.openTimestamp is null",
+        "select count(m) > 0 from Module m where m.id = :id and (m.openTimestamp > now() or "
+            + "m.openTimestamp is null)",
         Boolean.class);
     query.setParameter("id", moduleId);
     boolean result = query.getSingleResult();
@@ -275,6 +275,52 @@ public class AclServiceImpl implements AclService {
     }
 
     logger.debug("Module: '{}' is not open", moduleId);
+  }
+
+  @Override
+  public void enforceModuleClosed(String moduleId) {
+    TypedQuery<Boolean> query = entityManager.createQuery(
+        "select count(m) > 0 from Module m where m.closeTimestamp < now() and m.id = :id",
+        Boolean.class);
+    query.setParameter("id", moduleId);
+    boolean result = query.getSingleResult();
+
+    if (!result) {
+      logger.debug("Module: '{}' is still open", moduleId);
+      throw new AccessDeniedException("Module: " + moduleId + " is still open");
+    }
+
+    logger.debug("Module: '{}' is closed", moduleId);
+  }
+
+  @Override
+  public void enforeceCourseNotClosed(String courseId) {
+    TypedQuery<Boolean> query = entityManager.createQuery(
+        "select count(c) > 0 from Course c where c.closeTimestamp > now() and c.id = :id",
+        Boolean.class);
+    query.setParameter("id", courseId);
+    boolean result = query.getSingleResult();
+
+    if (!result) {
+      logger.debug("Course: '{}' is closed", courseId);
+      throw new AccessDeniedException("Course: " + courseId + " is closed");
+    }
+
+    logger.debug("Course: '{}' is not closed", courseId);
+
+  }
+
+  @Override
+  public void enforeModuleNotClosed(String moduleId) {
+    if (!entityManager.createQuery(
+        "select count(m) > 0 from Module m where m.closeTimestamp > now() and m.id = :id",
+        Boolean.class).setParameter("id", moduleId).getSingleResult()) {
+      logger.debug("Module: '{}' is closed", moduleId);
+      throw new AccessDeniedException("Module: " + moduleId + " is closed");
+    }
+
+    logger.debug("Module: '{}' is not closed", moduleId);
+
   }
 
 }

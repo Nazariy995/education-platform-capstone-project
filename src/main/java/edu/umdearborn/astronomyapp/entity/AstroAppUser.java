@@ -22,6 +22,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -89,6 +90,7 @@ public class AstroAppUser extends AbstractGeneratedId {
       joinColumns = @JoinColumn(name = "userId"), indexes = @Index(columnList = "userId"))
   @Column(name = "role", length = 10)
   @Enumerated(EnumType.STRING)
+  @NotEmpty
   @JsonProperty("appRoles")
   private Set<Role> roles = new HashSet<>();
 

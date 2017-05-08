@@ -1,11 +1,26 @@
 <h4>Description</h4>
 <p>{{ assignmentDetails.assignment.humanReadableText }}</p>
-<button type="button"
-        class="btn btn-primary"
-        ng-disabled="!assignmentDetails.canStart"
-        ng-click="assignmentDetails.navToLogin()">
-    Start
-</button>
+<div ng-if="assignmentDetails.grade.finishedGrading">
+    <h4>Grade</h4>
+    <p>Points Earned: {{ assignmentDetails.grade.pointsEarned }} </p>
+    <p># Submissions: {{ assignmentDetails.grade.submissionNumber }} </p>
+</div>
+<div class="btn-toolbar">
+    <button type="button"
+            class="btn btn-primary"
+            ng-disabled="!assignmentDetails.canStart"
+            ng-click="assignmentDetails.navToLogin()">
+        Start
+    </button>
+    <button type="button"
+            class="btn btn-default"
+            ng-click="assignmentDetails.navToQuestions()">
+        View
+    </button>
+</div>
+<div class="help-block" ng-if="!assignmentDetails.canStart">
+        Please finalize the group to start the assignment!</div>
+
 <h2>Group</h2>
 <button type="button"
         class="btn btn-primary"

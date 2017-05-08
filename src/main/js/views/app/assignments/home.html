@@ -1,0 +1,66 @@
+
+<h2>{{ courseAssignments.pageName }}</h2>
+<div class="row" restrict access="INSTRUCTOR">
+    <div class="col-xs-12">
+        <a ui-sref="app.course.assignments_add_edit({moduleId:'new', isNew : true})"><button class="btn btn-primary">+ New Assignment</button></a>
+    </div>
+</div>
+<div class="row" restrict access="INSTRUCTOR">
+    <div class="col-xs-12">
+        <div class="alert alert-danger top-buffer" ng-if="courseAssignments.error">
+            {{ courseAssignments.error }}
+        </div>
+        <div class="alert alert-success top-buffer" ng-if="courseAssignments.created_updated" >
+            <strong>Success!</strong> Created/Updated the assignment!
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-hover">
+        <thead>
+            <tr>
+            <th>Name</th>
+            <th restrict access="INSTRUCTOR">Open Date</th>
+            <th>Due Date</th>
+            <th>Max Students</th>
+            <th restrict access="INSTRUCTOR">Action</th>
+            <th restrict access="INSTRUCTOR"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="assignment in courseAssignments.assignments | orderBy: '-openTimestamp'">
+                <td><a ui-sref="app.course.assignment({moduleId:'{{ assignment.id }}'})">{{ assignment.moduleTitle }}</a> </td>
+                <td restrict access="INSTRUCTOR"> {{ assignment.openTimestamp | date:'MMM d, y h:mm a' }} </td>
+                <td> {{ assignment.closeTimestamp | date:'MMM d, y h:mm a' }} </td>
+                <td> {{ assignment.maxStudents }} </td>
+                <td restrict access="INSTRUCTOR">
+                    <a ui-sref="app.course.assignments_add_edit({moduleId: '{{ assignment.id }}', isNew : false})" ng-if="courseAssignments.currentDate < assignment.openTimestamp || !assignment.openTimestamp">
+                        <button type="button" class="btn btn-xs btn-default">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+                    </a> |
+                    <a ui-sref="app.course.assignments_add_edit_pages({moduleId: '{{ assignment.id }}'})"
+                       ng-if="courseAssignments.currentDate < assignment.openTimestamp || !assignment.openTimestamp">
+                    Edit Questions
+                    </a> |
+                    <a ui-sref="app.course.assignment.groups({moduleId: '{{ assignment.id }}'})" ng-if="courseAssignments.currentDate > assignment.closeTimestamp">
+                        Grade
+                    </a>
+                </td>
+                <td restrict access="INSTRUCTOR">
+                    <button type="button" class="btn btn-xs btn-warning"
+                    ng-if="courseAssignments.currentDate < assignment.openTimestamp || !assignment.openTimestamp"
+                    ng-click="courseAssignments.dropAssignment(assignment.id)">
+                      <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+

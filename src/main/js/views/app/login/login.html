@@ -1,11 +1,14 @@
 <div class="container-fluid">
     <div id="login-container">
         <div id="login" class="well">
-            <div class="alert alert-danger" ng-show="login.error">
-                There was a problem logging in. Please try again.
+            <div class="alert alert-danger" ng-if="login.error">
+                {{ login.error }}
             </div>
             <div class="alert alert-danger" ng-if="login.sessionExpired">
-                Session expired! Please login again!
+                Please login again!
+            </div>
+            <div class="alert alert-success" ng-if="login.passwordReset">
+              <strong>Success!</strong> Please check your email!
             </div>
             <form role="form" ng-submit="login.login()">
                 <div class="form-group">
@@ -17,6 +20,9 @@
                         class="form-control" id="password" name="password" ng-model="login.credentials.password"/>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
+                <div class="pull-right">
+                    <button type="button" class="btn btn-default" ng-click="login.resetPassword()">Reset Password</button>
+                </div>
             </form>
         </div>
     </div>

@@ -1,4 +1,9 @@
-
+/**
+ * Main App Controller
+ *
+ * @constructor
+ * @export
+ */
 function AppController($scope, $window, $rootScope, AuthService, SessionService){
     "ngInject";
     this.auth = AuthService;

@@ -1,26 +1,35 @@
 package edu.umdearborn.astronomyapp.service;
 
-import java.util.Map;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
-import edu.umdearborn.astronomyapp.util.email.EmailContextBuilder;
 
 @Service
 public class EmailServiceImpl implements EmailService {
 
-  @Override
-  public Map<String, String> buildEmailContext(EmailContextBuilder emailContextBuilder) {
-    return emailContextBuilder.buildContext();
+  private static final Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
+  
+  private MailSender mailSender;
+  private SimpleMailMessage mailTemplate;
+  
+  public EmailServiceImpl(MailSender mailSender, SimpleMailMessage mailTemplate) {
+    this.mailSender = mailSender;
+    this.mailTemplate = mailTemplate;
   }
 
   @Async
   @Override
-  public void send(Map<String, String> context) throws MailException {
-    // TODO Auto-generated method stub
-
+  public void send(String to, String subject, String body) throws MailException {
+    SimpleMailMessage email = new SimpleMailMessage(mailTemplate);
+    email.setTo(to);
+    email.setSubject(subject);
+    email.setText(body);
+    logger.debug("Sending email: {}", email);
+    mailSender.send(email);
   }
 
 }

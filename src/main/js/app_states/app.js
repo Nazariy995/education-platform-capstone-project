@@ -4,7 +4,7 @@ var states = [
         url : '/',
         views : {
             'app' : {
-                templateUrl : 'views/app/home/home.html'
+                templateUrl : 'views/app/home/home.html',
             }
         },
         redirectTo : 'app.courses'
@@ -37,6 +37,9 @@ var states = [
     {
         name : 'app.courses',
         url : 'courses',
+        params : {
+            created_updated : false
+        },
         views : {
             'mainContent@app' : {
                 templateUrl: 'views/app/courses/home.html',

@@ -3,6 +3,7 @@ function Controller($scope, $state, $stateParams, AssignmentService, GroupServic
     "ngInject";
     this._$scope = $scope;
     this._$state = $state;
+    this.currentDate = new Date();
     this.pageName = "Assignment";
     this.courseId = $stateParams.courseId;
     this.moduleId = $stateParams.moduleId;
@@ -10,6 +11,7 @@ function Controller($scope, $state, $stateParams, AssignmentService, GroupServic
     this._AssignmentService = AssignmentService;
     this._GroupService = GroupService;
     this.assignment = {};
+    this.grade = {};
     this.assignmentMembers = [];
     this.finalized = null;
     this.canStart = false;
@@ -26,6 +28,8 @@ Controller.prototype.init = function(){
     self.getAssignmentDetails();
     //get Group Details
     self.getGroup();
+    //Get Assignment Grade
+    self.getAssignmentGrade();
 };
 
 //Watch finalized variable from the API
@@ -57,6 +61,16 @@ Controller.prototype.getAssignmentDetails = function(){
             self.assignment = payload;
             self.pageName = payload.moduleTitle;
             self._AssignmentService.assignmentDetails = payload;
+    }, function(err){
+       self.error = err;
+    });
+};
+
+Controller.prototype.getAssignmentGrade = function(){
+    var self = this;
+    self._AssignmentService.getAssignmentGrade(self.courseId, self.moduleId)
+        .then(function(payload){
+            self.grade = payload;
     }, function(err){
        self.error = err;
     });
@@ -92,6 +106,11 @@ Controller.prototype.navToLogin = function(){
     if(self.canStart){
         self._$state.go('app.course.assignment.login',{groupId:self.groupId});
     }
+}
+
+Controller.prototype.navToQuestions = function(){
+    var self = this;
+    self._$state.go('app.course.assignment.questions',{ viewOnly: true, groupId:self.groupId });
 }
 
 

@@ -7,17 +7,45 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-xs-12">
+            <div class="alert alert-danger" ng-if="account.error">
+                {{ account.error }}
+            </div>
+            <div class="alert alert-success" ng-if="account.changeSuccess" >
+                <strong>Success!</strong> Your password was changed!
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-12">
-            <form name="editProfile" autocomplete="off" novalidate>
+            <form name="passwordResetForm" novalidate ng-submit="account.submit()">
                 <div class="form-group">
                     <label for="newPassword">New Password</label>
-                    <input type="password" autocomplete="off" name="newPassword" class="form-control" placeholder="New Password">
+                    <input type="password"
+                           ng-minlength="6"
+                           ng-model="account.newPassword.password"
+                           name="newPassword"
+                           class="form-control" placeholder="New Password" required>
+                    <div ng-messages="passwordResetForm.newPassword.$error" class="help-block">
+                        <div ng-message="required">This field is required</div>
+                        <div ng-message="minlength">Minimum of 6 characters</div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="retypePassword">Retype Password</label>
-                    <input type="password" autocomplete="off" name="retypePassword" class="form-control" placeholder="Retype Password">
+                    <input type="password"
+                           ng-minlength="6"
+                           ng-model="account.newPassword.confirm"
+                           name="confirmPassword"
+                           class="form-control"
+                           placeholder="Retype Password"
+                           compare-to="account.newPassword.password"
+                           required>
+                    <div ng-messages="passwordResetForm.confirmPassword.$error" role="alert" class="help-block">
+                        <div ng-message="compareTo">Passwords do not match</div>
+                    </div>
                 </div>
-                <button class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" ng-disabled="passwordResetForm.$invalid">Submit</button>
             </form>
         </div>
     </div>

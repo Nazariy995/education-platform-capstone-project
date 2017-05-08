@@ -26,10 +26,8 @@ Controller.prototype.getGroupMembers = function(){
     self._GroupService.getGroupMembers(self.courseId, self.moduleId)
         .then(function(payload){
             self.groupMembers = payload.members;
-            console.log("Get Group Members");
-            console.log(self.groupMembers);
     }, function(err){
-       self.error = err;
+       self.error = "ERROR getting group members data";
     });
 };
 
@@ -39,7 +37,7 @@ Controller.prototype.getAssignmentMembers = function(){
         .then(function(payload){
             self.assignmentMembers = payload;
     }, function(err){
-       self.error = err;
+       self.error = "ERROR getting assignment errors data";
     });
 };
 
@@ -50,10 +48,8 @@ Controller.prototype.addGroupMember = function(){
             self.groupMembers = payload;
             self.newGroupMember = "";
             self.getAssignmentMembers();
-            console.log("Returned Group Members After Adding a member");
-            console.log(self.groupMembers);
     }, function(err){
-       self.error = err;
+       self.error = "ERROR adding a group member";
     });
 };
 
@@ -63,10 +59,8 @@ Controller.prototype.removeGroupMember = function(memberToBeRemovedId){
         .then(function(payload){
             self.groupMembers = payload;
             self.getAssignmentMembers();
-            console.log("Returned Group Members After Adding a member");
-            console.log(self.groupMembers);
     }, function(err){
-       self.error = err;
+       self.error = "ERROR removing a group member";
     });
 };
 
@@ -80,7 +74,7 @@ Controller.prototype.finalize = function(){
             .then(function(payload){
                 self._$state.go('app.course.assignment', {moduleId:self.moduleId}, { reload:true });
         }, function(err){
-           self.error = err;
+           self.error = "ERROR finalizing the group";
         });
     }, function(){
         console.log("They said no");

@@ -14,6 +14,17 @@ var states = [
         }
     },
     {
+        name : 'app.course.assignment.groups',
+        url : '/groups',
+        views : {
+            'assignmentContent' : {
+                templateUrl : 'views/instructor/assignment_groups/home.html',
+                controller : 'Instructor.AssignmentGroups',
+                controllerAs : 'assignmentGroupsCtrl'
+            }
+        }
+    },
+    {
         name : 'app.course.assignment.group',
         url : '/group/{groupId}',
         views : {
@@ -34,7 +45,7 @@ var states = [
                             $stateParams.groupId = payload.id;
                             deferred.resolve(payload.id);
                     }, function(err){
-                        deferred.reject("Could not initialize group");
+                        deferred.reject("ERROR Initializing the group");
                     });
                 } else {
                     deferred.resolve($stateParams.groupId);
@@ -65,15 +76,83 @@ var states = [
                 controllerAs : 'assignmentQuestions'
             }
         },
+        params : {
+            viewOnly : false,
+            grading : false,
+            currentPage : 1
+        }
+    },
+    {
+        name : 'app.course.assignments_add_edit',
+        url : '/{moduleId}/add_edit',
+        views : {
+            'childContent' : {
+                templateUrl : 'views/instructor/assignments_add_edit/home.html',
+                controller : 'Instructor.AssignmentsAddEdit',
+                controllerAs : 'assignmentsEditCtrl'
+            }
+        },
+        params  : {
+            isNew : false
+        },
         resolve : {
-            lock : ['GroupService','$stateParams','$state', function(GroupService, $stateParams, $state){
-                var courseId = $stateParams.courseId;
-                var moduleId = $stateParams.moduleId;
-                var groupId = $stateParams.groupId;
-                return GroupService.getLock(courseId, moduleId, groupId);
+            assignment : ['AssignmentService','$q','$stateParams', '$state', function(AssignmentService, $q, $stateParams, $state){
+                var deferred = $q.defer();
+                if($stateParams.moduleId == "new"){
+                    deferred.resolve(null);
+                } else {
+                    AssignmentService.getAssignmentDetails($stateParams.courseId, $stateParams.moduleId)
+                        .then(function(payload){
+                        deferred.resolve(payload);
+                    }, function(err){
+                        deferred.reject("ERROR getting Assignmet Details");
+                    });
+                }
+                return deferred.promise;
             }]
         }
-    }
+    },
+    {
+        name : 'app.course.assignments_add_edit_pages',
+        url : '/{moduleId}/add_edit_pages',
+        views : {
+            'childContent' : {
+                templateUrl : 'views/instructor/assignments_add_edit_pages/home.html',
+                controller : 'Instructor.PagesAddEdit',
+                controllerAs : 'pagesEditCtrl'
+            }
+        }
+    },
+    {
+        name : 'app.course.assignments_add_edit_questions',
+        url : '/{moduleId}/add_edit_pages/{pageNum}/add_edit_questions',
+        params : {
+            created_updated : false
+        },
+        views : {
+            'childContent' : {
+                templateUrl : 'views/instructor/assignments_add_edit_questions/home.html',
+                controller : 'Instructor.QuestionsAddEdit',
+                controllerAs : 'questionsEditCtrl'
+            }
+        }
+    },
+    {
+        name : 'app.course.assignments_add_edit_question',
+        url : '/{moduleId}/add_edit_pages/{pageNum}/add_edit_questions/{questionId}',
+        params : {
+            isNew : false,
+            questionType : null,
+            questionData : {}
+        },
+        views : {
+            'childContent' : {
+                templateUrl : 'views/instructor/assignments_add_edit_question/home.html',
+                controller : 'Instructor.QuestionAddEdit',
+                controllerAs : 'questionEditCtrl'
+            }
+        }
+    },
 ]
 
 module.exports = states;

@@ -1,15 +1,11 @@
  <fieldset class="form-group">
-    <legend>{{ componentCtrl.data.humanReadableText }}</legend>
-<!--
-    <div class="alert alert-success" ng-show="imageFile.result" >
-        <strong>Success!</strong> Upload Complete!
+    <legend>{{ field.humanReadableText }}</legend>
+    <div class="alert alert-success" ng-if="uploaded" >
+        <strong>Success!</strong> Upload Complete! Please save your progress!
     </div>
--->
-<!--
-    <div class="alert alert-danger" ng-show="courseMembersAddCtrl.error">
+    <div class="alert alert-danger" ng-if="error">
         <strong>Sorry!</strong> There was a problem uploading.
     </div>
--->
     <div class="form-group">
         <label for="file" >Select File</label>
         <input type="file"
@@ -21,5 +17,14 @@
         <p class="help-block">.PNG, .JPG</p>
     </div>
     <button type="button" class="btn btn-primary"
-            ng-click="uploadImage(imageFile)">Upload</button>
+            ng-click="uploadImage(imageFile)"
+            ng-disabled="!imageFile"
+            >Upload</button>
 </fieldset>
+<div class="row" ng-if="model.answer">
+    <div class="col-xs-6 col-sm-4">
+        <a ng-href="{{ model.answer }}" class="thumbnail" target="_blank">
+            <img ng-src="{{ model.answer }}" >
+        </a>
+    </div>
+</div>

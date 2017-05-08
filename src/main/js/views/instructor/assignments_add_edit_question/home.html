@@ -1,0 +1,48 @@
+
+<h2>
+    {{ questionEditCtrl.pageName }} {{ questionEditCtrl.selectedQuestionType }}
+</h2>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="alert alert-danger" ng-if="questionEditCtrl.error">
+            {{ questionEditCtrl.error }}
+        </div>
+        <form name="questionForm"
+              ng-submit="questionEditCtrl.submit(questionEditCtrl.questionData)"
+              novalidate >
+            <div ng-form="questionEntryForm">
+                <div ng-switch="questionEditCtrl._$stateParams.questionType">
+                    <div ng-switch-when="FREE_RESPONSE">
+                      <new-question-free-response
+                                                 model="questionEditCtrl.questionData">
+                      </new-question-free-response>
+                    </div>
+                    <div ng-switch-when="IMAGE">
+                      <new-question-image-upload
+                                                 model="questionEditCtrl.questionData">
+                      </new-question-image-upload>
+                    </div>
+                    <div ng-switch-when="TEXT">
+                      <new-question-front-text
+                                                 model="questionEditCtrl.questionData">
+                      </new-question-front-text>
+                    </div>
+                    <div ng-switch-when="NUMERIC">
+                      <new-question-numeric
+                                                 model="questionEditCtrl.questionData">
+                      </new-question-numeric>
+                    </div>
+                    <div ng-switch-when="MULTIPLE_CHOICE">
+                        <new-question-multiple-choice
+                                                 model="questionEditCtrl.questionData">
+                        </new-question-multiple-choice>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" ng-disabled="!questionEditCtrl.isNew" >Submit</button>
+            <span class="help-block">You can't edit the question once you submit!</span>
+<!--            {{ questionEditCtrl.questionData | json }}-->
+        </form>
+    </div>
+</div>
+

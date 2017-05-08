@@ -1,0 +1,59 @@
+
+<h2>
+    {{ questionsEditCtrl.pageName }}
+</h2>
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="alert alert-success" ng-if="questionsEditCtrl.created_updated">
+            Question was successfully updated/created
+        </div>
+        <form name="addQuestionForm" novalidate class="form-inline">
+            <div class="form-group">
+                <select class="form-control"
+                        ng-model="questionsEditCtrl.selectedQuestionType"
+                        required>
+                    <option ng-repeat="(key, value) in questionsEditCtrl.questionTypes"
+                            value="{{ key }}">
+                        {{ value }}
+                    </option>
+                </select>
+            </div>
+            <button class="btn btn-primary" ng-click="questionsEditCtrl.addQuestion()">+ Add Question</button>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-hover">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Text</th>
+                <th>Type</th>
+                <th>Q Type</th>
+                <th>Points</th>
+                <th><span class="glyphicon glyphicon-lock" title="Gatekeeper?"></span></th>
+                <th><span class="glyphicon glyphicon-saved" title="Automatically Gradable?"></span></th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="question in questionsEditCtrl.questions | orderBy:'order'">
+                <td> <a ng-click="questionsEditCtrl.viewQuestion(question)" class="pointer-cursor"><span class="glyphicon glyphicon-search"></span></a></td>
+                <td> {{ question.humanReadableText | limitTo:10 }}</td>
+                <td> {{ question.pageItemType }}</td>
+                <td> {{ question.questionType }}</td>
+                <td> {{ question.points }}</td>
+                <td> {{ question.isGatekeeper ? 'Yes' : 'No' }}</td>
+                <td> {{ question.machineGradeable ? 'Yes' : 'No' }}</td>
+                <td> <a href=""
+                        ng-click="questionsEditCtrl.dropQuestion(question.id)" >Delete</a> </td>
+            </tr>
+        </tbody>
+        </table>
+
+    </div>
+</div>
+

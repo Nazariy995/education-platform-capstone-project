@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import edu.umdearborn.astronomyapp.controller.exception.UpdateException;
+import edu.umdearborn.astronomyapp.entity.Course;
 import edu.umdearborn.astronomyapp.entity.Module;
 import edu.umdearborn.astronomyapp.entity.MultipleChoiceQuestion;
 import edu.umdearborn.astronomyapp.entity.NumericQuestion;
@@ -253,8 +254,9 @@ public class ModuleServiceImpl implements ModuleService {
 
     entityManager
         .createNativeQuery(
-            "insert into page_item(page_item_id, page_item_type, item_order, human_readable_text, page_id) "
-                + "values (?, ?, (select max(item_order) + 1 from page_item where page_id = ?), ?, ?)")
+            "insert into page_item(page_item_id, page_item_type, item_order, human_readable_text, "
+                + "page_id) values (?, ?, "
+                + "(select coalesce(max(item_order), 0) + 1 from page_item where page_id = ?), ?, ?)")
         .setParameter(1, item.getId()).setParameter(2, item.getPageItemType().toString())
         .setParameter(3, pageId).setParameter(4, item.getHumanReadableText())
         .setParameter(5, pageId).executeUpdate();
@@ -309,7 +311,7 @@ public class ModuleServiceImpl implements ModuleService {
         .setParameter(1, question.getId()).setParameter(2, question.getAllowedCoefficientSpread())
         .setParameter(3, question.getAllowedExponenetSpread())
         .setParameter(4, question.getCorrectCoefficient())
-        .setParameter(5, question.getRequiresScale()).setParameter(6, question.getRequiresScale())
+        .setParameter(5, question.getCorrectExponenet()).setParameter(6, question.getRequiresScale())
         .executeUpdate();
 
     logger.debug("Inserting into numeric_question options");
@@ -332,13 +334,15 @@ public class ModuleServiceImpl implements ModuleService {
   }
 
   @Override
-  public void deletePageItem(String pageItemId) {
+  public List<PageItem> deletePageItem(String moduleId, String pageItemId) {
     List<PageItem> results = entityManager
         .createQuery("select item from PageItem item where item.id = :id", PageItem.class)
         .setParameter("id", pageItemId).getResultList();
 
     if (ResultListUtil.hasResult(results)) {
+      int pageNum = results.get(0).getPage().getOrder();
       entityManager.remove(results.get(0));
+      return getPage(moduleId, pageNum);
     } else {
       throw new UpdateException("Item with id: " + pageItemId + " does not exist");
     }
@@ -348,5 +352,16 @@ public class ModuleServiceImpl implements ModuleService {
   public void deleteModule(String moduleId) {
     entityManager.remove(entityManager.find(Module.class, moduleId));
 
+  }
+
+  @Override
+  public void ensureValidDates(String courseId, Module module) {
+    Course course = entityManager.getReference(Course.class, courseId);
+    if (course.getCloseTimestamp() == null || course.getOpenTimestamp() == null
+        || module.getCloseTimestamp() == null || module.getOpenTimestamp() == null
+        || course.getCloseTimestamp().before(module.getCloseTimestamp())
+        || course.getOpenTimestamp().after(module.getOpenTimestamp())) {
+      throw new UpdateException("Module's open and close timestamp must be within the course");
+    }
   }
 }

@@ -1,17 +1,25 @@
 package edu.umdearborn.astronomyapp.service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.google.common.base.Predicates;
 
 import edu.umdearborn.astronomyapp.controller.exception.GroupAlterationException;
 import edu.umdearborn.astronomyapp.controller.exception.UpdateException;
@@ -29,18 +37,22 @@ public class GroupServiceImpl implements GroupService {
 
   private static final Logger logger = LoggerFactory.getLogger(GroupServiceImpl.class);
 
-  private EntityManager   entityManager;
-  private PasswordEncoder passwordEncoder;
+  private EntityManager    entityManager;
+  private PasswordEncoder  passwordEncoder;
+  private AutoGradeService autoGradeService;
 
-  public GroupServiceImpl(EntityManager entityManager, PasswordEncoder passwordEncoder) {
+  public GroupServiceImpl(EntityManager entityManager, PasswordEncoder passwordEncoder,
+      AutoGradeService autoGradeService) {
     this.entityManager = entityManager;
     this.passwordEncoder = passwordEncoder;
+    this.autoGradeService = autoGradeService;
   }
 
   @Override
   public List<CourseUser> joinGroup(String courseUserId, String moduleId, String groupId) {
 
     enforceNotInGroup(courseUserId, groupId);
+    enforeGroupNotAtCapacity(groupId);
 
     logger.debug("Joining group: '{}' for course user: '{}' for module: '{}'", groupId,
         courseUserId, moduleId);
@@ -93,6 +105,22 @@ public class GroupServiceImpl implements GroupService {
     query.setParameter("courseUserId", courseUserId).setParameter("moduleId", moduleId);
 
     return query.getSingleResult();
+  }
+
+  private void enforeGroupNotAtCapacity(String groupId) {
+    long count = entityManager.createQuery(
+        "select count(gm) from GroupMember gm join gm.moduleGroup m where m.id = :groupId",
+        Long.class).setParameter("groupId", groupId).getSingleResult();
+    int maxStudents = entityManager
+        .createQuery(
+            "select mod.maxStudents from GroupMember gm join gm.moduleGroup m join m.module mod where "
+                + "m.id = :groupId",
+            Integer.class)
+        .setParameter("groupId", groupId).getSingleResult();
+    if (count >= maxStudents) {
+      logger.info("Group: '{}' is at capacity", groupId);
+      throw new GroupAlterationException("Group " + groupId + " is at capacity");
+    }
   }
 
   private void enforceNotInGroup(String courseUserId, String moduleId) {
@@ -186,6 +214,14 @@ public class GroupServiceImpl implements GroupService {
 
     logger.debug("Saving answers for group: '{}'", groupId);
     List<Answer> savedAnswers = getAnswers(groupId, true);
+    List<String> gatekeeperIds =
+        Optional.ofNullable(autoGradeService
+            .getGatekeepers(entityManager.find(ModuleGroup.class, groupId).getModule().getId(),
+                Integer.MAX_VALUE)
+            .parallelStream().map(e -> e.getId()).collect(Collectors.toList()))
+            .orElse(new ArrayList<String>());
+
+    logger.debug("Gatekeepers: {}", Arrays.toString(gatekeeperIds.toArray()));
     if (ResultListUtil.hasResult(savedAnswers)) {
 
       savedAnswers.stream().forEach(e -> {
@@ -208,6 +244,17 @@ public class GroupServiceImpl implements GroupService {
             throw new UpdateException("Update expected to alter 1 rows, but actually altered "
                 + actualCount + " actual rows");
           }
+
+          if (gatekeeperIds.contains(e.getQuestion().getId())) {
+            logger.info("Question: '{}' is a gatekeeper, checking answer: '{}'",
+                e.getQuestion().getId(), e.getId());
+            e.setPointesEarned(BigDecimal.ZERO);
+            if (autoGradeService.checkAnswer(e.getId())) {
+              logger.info("Answer: '{}' is correct", e.getId());
+              e.setPointesEarned(e.getQuestion().getPoints());
+            }
+            entityManager.merge(e);
+          }
         }
       });
 
@@ -218,12 +265,31 @@ public class GroupServiceImpl implements GroupService {
   }
 
   @Override
+  public List<Answer> gradeAnswers(Map<String, Map<String, String>> answers) {
+    return answers.keySet().stream().map(e -> {
+      Map<String, String> graded = answers.get(e);
+
+      if (NumberUtils.isParsable(graded.getOrDefault("points", "NaN"))) {
+        Answer saved = entityManager.find(Answer.class, e);
+        if (saved == null) {
+          return null;
+        }
+        saved.setPointesEarned(new BigDecimal(graded.get("points")));
+        saved.setComment(graded.get("comment"));
+        entityManager.merge(saved);
+        return saved;
+      }
+
+      return null;
+    }).filter(Predicates.notNull()).collect(Collectors.toList());
+  }
+
+  @Override
   public Long submissionNumber(String groupId) {
 
     logger.debug("Getting submission number for groupId: '{}'", groupId);
     TypedQuery<Long> query = entityManager.createQuery(
-        "select max(a.submissionNumber) from Answer a join a.group g where "
-            + "g.id = :groupId",
+        "select max(a.submissionNumber) from Answer a join a.group g where " + "g.id = :groupId",
         Long.class);
     query.setParameter("groupId", groupId);
     List<Long> result = query.getResultList();
@@ -245,7 +311,7 @@ public class GroupServiceImpl implements GroupService {
 
     if (!getSavedAnswers) {
       logger.debug("Appending saved answers querery for groupId: '{}'", groupId);
-      jpql.append(" and a.submissionDate is not null");
+      jpql.append(" and a.submissionTimestamp is not null");
     }
 
     TypedQuery<Answer> query = entityManager.createQuery(jpql.toString(), Answer.class);
@@ -294,14 +360,20 @@ public class GroupServiceImpl implements GroupService {
   public List<Answer> submitAnswers(String groupId) {
     logger.debug("Submitting asnwers for group: '{}'", groupId);
     List<Answer> answers = getAnswers(groupId, true);
+    long submissionNumber = submissionNumber(groupId) + 1;
 
     if (ResultListUtil.hasResult(answers)) {
       Date date = new Date();
-      answers.parallelStream().map(a -> {
-        a.setId(null);
-        a.setSubmissionNumber(submissionNumber(groupId) + 1);
-        a.setSubmissionTimestamp(date);
-        return a;
+      answers.stream().map(a -> {
+        Answer submission = new Answer();
+        submission.setSubmissionNumber(submissionNumber);
+        submission.setSubmissionTimestamp(date);
+        submission.setValue(a.getValue());
+        submission.setGroup(a.getGroup());
+        submission.setQuestion(a.getQuestion());
+        submission.setPointesEarned(a.getPointesEarned());
+
+        return submission;
       }).forEach(entityManager::persist);;
     }
 
@@ -350,4 +422,14 @@ public class GroupServiceImpl implements GroupService {
 
     return query.getResultList();
   }
+
+  @Override
+  public Map<String, List<CourseUser>> getGroups(String moduleId) {
+    return entityManager
+        .createQuery("select g.id from ModuleGroup g join g.module m where m.id = :moduleId",
+            String.class)
+        .setParameter("moduleId", moduleId).getResultList().parallelStream()
+        .collect(Collectors.toMap(e -> e, e -> getUsersInGroup(e)));
+  }
+
 }

@@ -193,6 +193,8 @@ public class CourseServiceImpl implements CourseService {
       logger.debug("Migrating module: '{}'", e.getId());
       e.setId(null);
       e.setDueDate(null);
+      e.setCloseTimestamp(null);
+      e.setVisibleTimestamp(null);
       e.setOpenTimestamp(null);
       e.setCourse(course);
       entityManager.persist(e);

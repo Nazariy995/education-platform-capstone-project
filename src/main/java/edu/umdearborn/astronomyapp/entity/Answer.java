@@ -25,6 +25,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -49,6 +50,7 @@ public class Answer extends AbstractGeneratedId {
   @JoinColumn(name = "moduleGroupId", updatable = false)
   private ModuleGroup group;
 
+  @JsonProperty("pointsEarned")
   @DecimalMin("0")
   private BigDecimal pointesEarned;
 

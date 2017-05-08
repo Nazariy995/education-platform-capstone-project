@@ -11,6 +11,19 @@ spring:
   cache:
     guava:
       spec: maximumSize=500,expireAfterAccess=600s
+  mail:
+    host: ${email.host}
+    port: ${email.port:25}
+    username: ${email.username}
+    password: ${email.password}
+    protocol: smtps
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+  http:
+    multipart:
+      max-file-size: 100Mb
 server:
   port: ${port:8080}
   session:
@@ -36,4 +49,5 @@ logging:
   level:
     root: info
     edu.umdearborn.astronomyapp: debug
+    org.springframework.mail: debug
     org.hibernate.type: trace
